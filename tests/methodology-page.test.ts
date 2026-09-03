@@ -16,7 +16,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import MethodologyPage from "../src/app/methodology/page";
-import { programs, redemptions } from "../src/data";
+import { programs, redemptions, routes } from "../src/data";
+import { requiredSourcePoints } from "../src/engine/paths";
 import { cppX100 } from "../src/engine/valuation";
 import { formatCpp, formatDollars, formatPoints } from "../src/lib/format";
 
@@ -41,6 +42,16 @@ const SECTION_HEADINGS = [
 const anchor = redemptions.find(
   (redemption) => redemption.slug === "ana-business-tokyo-roundtrip",
 );
+
+/** The seed route behind the page's structural-bonus example. */
+const bonusRoute = routes.find(
+  (route) =>
+    route.fromProgramSlug === "marriott-bonvoy" &&
+    route.toProgramSlug === "alaska-mileage-plan",
+);
+
+/** Mirrors the page's EXAMPLE_PARTNER_MILES. */
+const EXAMPLE_PARTNER_MILES = 60_000;
 
 describe("/methodology (VAL-03)", () => {
   it('renders the h1 "How we value your points"', () => {
@@ -90,13 +101,42 @@ describe("/methodology (VAL-03)", () => {
     expect(html).toContain(formatPoints(conservativePoints));
   });
 
-  it("states the A2 conservative reading, the disclaimers, and the Marriott example", () => {
+  it("states the A2 conservative reading and the disclaimers", () => {
     expect(html).toContain("high end");
     expect(html).toContain("conservative");
     expect(html).toContain("not financial advice");
     expect(html).toContain("no affiliate links");
-    expect(html).toContain("150,000");
     expect(html).toContain("Bilt");
+  });
+
+  it("derives the Marriott structural-bonus example from the seed route", () => {
+    expect(bonusRoute).toBeDefined();
+    if (bonusRoute === undefined) return;
+    const { bonusMilesPerBlock, bonusBlockPoints } = bonusRoute;
+    expect(bonusMilesPerBlock).not.toBeNull();
+    expect(bonusBlockPoints).not.toBeNull();
+    if (bonusMilesPerBlock === null || bonusBlockPoints === null) return;
+
+    const sourcePoints = requiredSourcePoints(
+      bonusRoute,
+      null,
+      EXAMPLE_PARTNER_MILES,
+    );
+    expect(sourcePoints).not.toBeNull();
+    if (sourcePoints === null) return;
+    const naiveSourcePoints = Math.ceil(
+      (EXAMPLE_PARTNER_MILES * bonusRoute.ratioDenominator) /
+        bonusRoute.ratioNumerator,
+    );
+
+    // The point of the drift guard: change the block bonus or the increment in
+    // src/data/transfers.ts and these expectations move with the page. A
+    // hand-typed figure fails here instead of shipping green and stale.
+    expect(sourcePoints).toBeLessThan(naiveSourcePoints);
+    expect(html).toContain(formatPoints(bonusMilesPerBlock));
+    expect(html).toContain(formatPoints(bonusBlockPoints));
+    expect(html).toContain(formatPoints(sourcePoints));
+    expect(html).toContain(formatPoints(naiveSourcePoints));
   });
 
   it('links back to the results page with href="/"', () => {

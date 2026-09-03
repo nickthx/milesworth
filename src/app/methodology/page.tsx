@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { programs, redemptions } from "@/data";
-import { cppX100 } from "@/engine";
+import { programs, redemptions, routes } from "@/data";
+import { cppX100, requiredSourcePoints } from "@/engine";
 import { formatCpp, formatDollars, formatPoints } from "@/lib/format";
 
 // The methodology page (VAL-03). Static server component: no client
@@ -32,6 +32,61 @@ const anchor = redemptions.find(
 
 /** The eight programs a visitor can enter, in seed order. */
 const enterablePrograms = programs.filter((program) => program.isUserEnterable);
+
+/** The one figure the structural-bonus example is free to choose. */
+const EXAMPLE_PARTNER_MILES = 60_000;
+
+interface BonusExample {
+  milesPerBlock: number;
+  blockPoints: number;
+  partnerMiles: number;
+  /** What the transfer actually costs, priced by the engine. */
+  sourcePoints: number;
+  /** What the ratio alone would suggest, ignoring the block bonus. */
+  naiveSourcePoints: number;
+}
+
+/**
+ * The structural-bonus worked example (T-05-04). Every figure comes from the
+ * seed route priced through the same requiredSourcePoints the ranking uses —
+ * change bonusMilesPerBlock, bonusBlockPoints or incrementPoints in
+ * src/data/transfers.ts and this paragraph moves with it. Returns null if the
+ * route or its bonus fields ever disappear, and the paragraph drops the
+ * example rather than stating a stale one.
+ */
+function buildBonusExample(): BonusExample | null {
+  const route = routes.find(
+    (candidate) =>
+      candidate.fromProgramSlug === "marriott-bonvoy" &&
+      candidate.toProgramSlug === "alaska-mileage-plan",
+  );
+  if (route === undefined) {
+    return null;
+  }
+  const { bonusMilesPerBlock, bonusBlockPoints } = route;
+  if (bonusMilesPerBlock === null || bonusBlockPoints === null) {
+    return null;
+  }
+  const sourcePoints = requiredSourcePoints(
+    route,
+    null,
+    EXAMPLE_PARTNER_MILES,
+  );
+  if (sourcePoints === null) {
+    return null;
+  }
+  return {
+    milesPerBlock: bonusMilesPerBlock,
+    blockPoints: bonusBlockPoints,
+    partnerMiles: EXAMPLE_PARTNER_MILES,
+    sourcePoints,
+    naiveSourcePoints: Math.ceil(
+      (EXAMPLE_PARTNER_MILES * route.ratioDenominator) / route.ratioNumerator,
+    ),
+  };
+}
+
+const bonusExample = buildBonusExample();
 
 const SECTION_CLASS = "flex flex-col gap-6";
 const HEADING_CLASS =
@@ -187,10 +242,18 @@ export default function MethodologyPage() {
           <p className={BODY_CLASS}>
             Points move to partners at a published ratio and in fixed
             increments, so a transfer is always rounded down to a whole block.
-            Some routes carry a structural bonus, such as Marriott&apos;s 5,000
-            bonus miles for every 60,000 points transferred. We model these
-            exactly: 60,000 Alaska miles via Marriott cost 150,000 Bonvoy
-            points, not the naive 180,000.
+            {bonusExample !== null && (
+              <>
+                {" "}
+                Some routes carry a structural bonus, such as Marriott&apos;s{" "}
+                {formatPoints(bonusExample.milesPerBlock)} bonus miles for every{" "}
+                {formatPoints(bonusExample.blockPoints)} points transferred. We
+                model these exactly: {formatPoints(bonusExample.partnerMiles)}{" "}
+                Alaska miles via Marriott cost{" "}
+                {formatPoints(bonusExample.sourcePoints)} Bonvoy points, not the
+                naive {formatPoints(bonusExample.naiveSourcePoints)}.
+              </>
+            )}
           </p>
           <p className={BODY_CLASS}>
             Promotional transfer bonuses multiply the base conversion for the
