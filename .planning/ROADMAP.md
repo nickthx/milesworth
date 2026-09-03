@@ -15,7 +15,7 @@ Build bottom-up in horizontal layers: stand up the production skeleton on Vercel
 - [ ] **Phase 2: Redemption Database** - Schema, typed seed files, and the verified curated dataset
 - [ ] **Phase 3: Valuation & Ranking Engine** - Pure TypeScript engine: transfer paths, cpp math, wow delta, hybrid ranking
 - [x] **Phase 4: Core Experience** - Balance entry → ranked results flow, shareable URLs, guest-first
-- [ ] **Phase 5: Credibility Layer** - Methodology page, OG cards, v2 advisor tease
+- [x] **Phase 5: Credibility Layer** - Methodology page, OG cards, v2 advisor tease (completed 2026-09-03)
 - [ ] **Phase 6: Accounts & Legal** - Optional Clerk save, bookmarks, goals, privacy/deletion
 - [ ] **Phase 7: Editorial Polish & Launch** - Design system pass, mobile/WebView hardening, launch gate
 
@@ -183,6 +183,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 (5 and 6 
 | 2. Redemption Database | 0/TBD | Not started | - |
 | 3. Valuation & Ranking Engine | 0/TBD | Not started | - |
 | 4. Core Experience | 0/4 | Planned | - |
-| 5. Credibility Layer | 5/5 | Awaiting verification | - |
+| 5. Credibility Layer | 5/5 | Complete    | 2026-09-03 |
 | 6. Accounts & Legal | 0/TBD | Not started | - |
 | 7. Editorial Polish & Launch | 0/TBD | Not started | - |
