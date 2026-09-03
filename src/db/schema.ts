@@ -9,6 +9,7 @@ import {
   serial,
   text,
   timestamp,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 // D-16 fulfilled: the Phase 1 health_check placeholder is replaced by the four
@@ -132,8 +133,14 @@ export const interestSignups = pgTable("interest_signups", {
   // Lower-cased + trimmed by interestSchema before insert; unique so repeat
   // submits are idempotent via onConflictDoNothing (T-05-12).
   email: text("email").notNull().unique(),
-  // Where the signal came from — lets v2 filter ("advisor-tease" today).
+  // Where the signal came from — lets v2 filter ("advisor-tease" today), and
+  // doubles as the consent record: which surface the address was entered on.
   source: text("source").notNull().default("advisor-tease"),
+  // Minted at insert so the v2 send can carry a working opt-out link from its
+  // very first email rather than retrofitting tokens onto addresses already
+  // collected. Nothing reads it yet; the unsubscribe route is a v2 task and
+  // the tease copy does not promise one until it exists.
+  unsubscribeToken: uuid("unsubscribe_token").notNull().defaultRandom().unique(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

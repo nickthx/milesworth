@@ -19,6 +19,11 @@ import type { InterestState } from "@/app/actions/interest";
 // Honeypot (T-05-12): the hidden "website" field is never shown to humans and
 // is skipped by tab order and screen readers. Bots auto-fill it; the action
 // then returns success without storing anything.
+//
+// Consent copy: promise only what the code can honour. There is no
+// unsubscribe route yet (interest_signups mints a token for the v2 send, but
+// nothing consumes it), so the helper text commits to a single launch email
+// instead of "unsubscribe any time".
 
 const INITIAL: InterestState = { status: "idle", message: "" };
 
@@ -87,7 +92,7 @@ export function AdvisorTease() {
           <p aria-live="polite" className="text-ink/70 text-sm leading-5">
             {state.status === "error"
               ? state.message
-              : "One email when it launches. No spam, unsubscribe any time."}
+              : "One email when it launches — that's the only one you'll get."}
           </p>
         </>
       )}
