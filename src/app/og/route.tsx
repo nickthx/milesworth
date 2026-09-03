@@ -54,6 +54,14 @@ const INK = "#262119";
  * Memoized font loader: the two .woff files are read exactly once per process
  * (format.ts module-scope setup pattern). A lazy promise instead of top-level
  * await keeps the module shape identical under Next's bundler and vitest.
+ *
+ * Only a FULFILLED promise is memoized. A transient read failure (EMFILE /
+ * EAGAIN under load, a cold-start filesystem hiccup) would otherwise poison
+ * the cache and make every later request in that instance return the neutral
+ * 500 until the instance recycled — and since the 500 path deliberately does
+ * not log (T-05-09), that would present as "OG images broken in some regions"
+ * with no diagnostic trail. Clearing the slot on rejection lets the next
+ * request retry.
  */
 let fontsPromise: Promise<{ fraunces: Buffer; inter: Buffer }> | undefined;
 
@@ -61,7 +69,12 @@ function loadFonts(): Promise<{ fraunces: Buffer; inter: Buffer }> {
   fontsPromise ??= Promise.all([
     readFile(join(FONT_DIR, "fraunces-latin-600-normal.woff")),
     readFile(join(FONT_DIR, "inter-latin-400-normal.woff")),
-  ]).then(([fraunces, inter]) => ({ fraunces, inter }));
+  ])
+    .then(([fraunces, inter]) => ({ fraunces, inter }))
+    .catch((error: unknown) => {
+      fontsPromise = undefined;
+      throw error;
+    });
   return fontsPromise;
 }
 
