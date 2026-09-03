@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,13 @@ import type { InterestState } from "@/app/actions/interest";
 // is skipped by tab order and screen readers. Bots auto-fill it; the action
 // then returns success without storing anything.
 //
+// Announcement: the status paragraph is ONE region that is mounted on first
+// paint and only ever changes its text. Screen readers announce changes to an
+// existing live region — inserting an already-populated one is commonly
+// skipped (Chrome/NVDA, Safari/VoiceOver) — so swapping the form out for a
+// fresh <p> would have left the success silent. Focus is moved to that
+// paragraph on success because the submit button the user was on unmounts.
+//
 // Consent copy: promise only what the code can honour. There is no
 // unsubscribe route yet (interest_signups mints a token for the v2 send, but
 // nothing consumes it), so the helper text commits to a single launch email
@@ -29,6 +36,15 @@ const INITIAL: InterestState = { status: "idle", message: "" };
 
 export function AdvisorTease() {
   const [state, formAction, pending] = useActionState(joinAdvisorWaitlist, INITIAL);
+  const statusRef = useRef<HTMLParagraphElement>(null);
+
+  // Runs only when the status itself changes, so success focuses the message
+  // exactly once and the idle/error states never steal focus mid-typing.
+  useEffect(() => {
+    if (state.status === "ok") {
+      statusRef.current?.focus();
+    }
+  }, [state.status]);
 
   return (
     <section
@@ -49,53 +65,58 @@ export function AdvisorTease() {
         </p>
       </div>
 
-      {state.status === "ok" ? (
-        <p aria-live="polite" className="text-ink text-base leading-6">
-          {state.message}
-        </p>
-      ) : (
-        <>
-          <form
-            action={formAction}
-            className="flex flex-col gap-4 sm:flex-row sm:items-end"
-          >
-            <div className="flex flex-1 flex-col gap-2">
-              <Label
-                htmlFor="advisor-email"
-                className="text-ink text-sm font-semibold"
-              >
-                Email
-              </Label>
-              <Input
-                id="advisor-email"
-                name="email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                required
-                maxLength={254}
-                placeholder="you@example.com"
-                // UI-SPEC 44px touch target — overrides the vendored h-8.
-                className="text-ink h-11 bg-white text-base"
-              />
-            </div>
-            {/* prettier-ignore */}
-            <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
-            <Button
-              type="submit"
-              disabled={pending}
-              className="h-11 px-6 text-base font-semibold"
+      {state.status !== "ok" && (
+        <form
+          action={formAction}
+          className="flex flex-col gap-4 sm:flex-row sm:items-end"
+        >
+          <div className="flex flex-1 flex-col gap-2">
+            <Label
+              htmlFor="advisor-email"
+              className="text-ink text-sm font-semibold"
             >
-              {pending ? "Sending" : "Notify me"}
-            </Button>
-          </form>
-          <p aria-live="polite" className="text-ink/70 text-sm leading-5">
-            {state.status === "error"
-              ? state.message
-              : "One email when it launches — that's the only one you'll get."}
-          </p>
-        </>
+              Email
+            </Label>
+            <Input
+              id="advisor-email"
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              required
+              maxLength={254}
+              placeholder="you@example.com"
+              // UI-SPEC 44px touch target — overrides the vendored h-8.
+              className="text-ink h-11 bg-white text-base"
+            />
+          </div>
+          {/* prettier-ignore */}
+          <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+          <Button
+            type="submit"
+            disabled={pending}
+            className="h-11 px-6 text-base font-semibold"
+          >
+            {pending ? "Sending" : "Notify me"}
+          </Button>
+        </form>
       )}
+
+      {/* Persistent live region: mounted on first paint, text-only updates. */}
+      <p
+        ref={statusRef}
+        tabIndex={-1}
+        aria-live="polite"
+        className={
+          state.status === "ok"
+            ? "text-ink text-base leading-6 focus:outline-none"
+            : "text-ink/70 text-sm leading-5 focus:outline-none"
+        }
+      >
+        {state.status === "idle"
+          ? "One email when it launches — that's the only one you'll get."
+          : state.message}
+      </p>
     </section>
   );
 }
