@@ -87,16 +87,29 @@ export async function GET(request: Request): Promise<Response> {
   const share = buildShareContent({ balances, asOf });
   const isResult = share.kind === "result";
 
-  // T-05-08: one cache key per balance set. share.queryString is the canonical
-  // spelling (PARAM_KEY_BY_SLUG order, invalid values already dropped); any
-  // other spelling of the same request redirects to it before the render.
-  // generateMetadata on `/` emits the canonical form already, so the crawler
-  // path never takes this branch.
-  if (url.searchParams.toString() !== share.queryString) {
+  // T-05-08: one cache key per balance set per day. share.queryString is the
+  // canonical spelling (PARAM_KEY_BY_SLUG order, invalid values already
+  // dropped); any other spelling of the same request redirects to it before
+  // the render. generateMetadata on `/` emits the canonical form already, so
+  // the crawler path never takes this branch.
+  //
+  // The `d=YYYY-MM-DD` stamp is what keeps the "the card and the preview text
+  // can never disagree" invariant true: the PNG is CDN-cached for 24 h and
+  // served stale for 7 more days, while generateMetadata recomputes
+  // og:description every request, and the engine's output is date-gated
+  // (bonus windows). A new day is a new cache key, so the stale PNG can never
+  // outlive the description that was computed with it. `d` is a cache-key
+  // discriminator ONLY — its value is never read back as the engine date, so
+  // it can neither render a card for an arbitrary date nor mint extra keys.
+  // A balance-free request needs no stamp: the baseline card is static copy.
+  const canonicalQuery = share.queryString
+    ? `${share.queryString}&d=${asOf}`
+    : "";
+  if (url.searchParams.toString() !== canonicalQuery) {
     return new Response(null, {
       status: 308,
       headers: {
-        Location: share.queryString ? `/og?${share.queryString}` : "/og",
+        Location: canonicalQuery ? `/og?${canonicalQuery}` : "/og",
         "Cache-Control": REDIRECT_CACHE_CONTROL,
       },
     });

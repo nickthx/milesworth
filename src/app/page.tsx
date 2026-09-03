@@ -35,7 +35,13 @@ export async function generateMetadata({
   const asOf = new Date().toISOString().slice(0, 10);
   const share = buildShareContent({ balances, asOf });
   const pageUrl = share.queryString ? `/?${share.queryString}` : "/";
-  const imageUrl = share.queryString ? `/og?${share.queryString}` : "/og";
+  // The `d` stamp must match the /og route's canonical query exactly or the
+  // crawler eats a 308 (see the canonicalization block in og/route.tsx). It
+  // dates the CDN entry so a 24h-cached card can never be paired with an
+  // og:description computed on a later, differently-gated day.
+  const imageUrl = share.queryString
+    ? `/og?${share.queryString}&d=${asOf}`
+    : "/og";
 
   return {
     title: share.title,
