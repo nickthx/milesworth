@@ -40,26 +40,26 @@ key-decisions:
 patterns-established:
   - "Production verification: poll og:image count on the share URL until >= 1, then capture tags / PNG headers / cache-key isolation / methodology in one curl pass"
 
-requirements-completed: []
+requirements-completed: [VAL-03, PLAT-03, PLAT-04]
 
 # Metrics
-duration: in-progress (paused at Task 3 checkpoint)
-completed: pending human verification
+duration: ~5 min executor (Tasks 1-2) + human verify window for Task 3 (checkpoint approved 2026-09-03)
+completed: 2026-09-03
 ---
 
 # Phase 05 Plan 05: Mount Footer + Tease, Deploy, Probe Production Summary
 
-**Footer and advisor tease mounted, Phases 2-5 pushed to production, and the live OG tags, PNG, CDN cache, and /methodology route verified by curl — paused at the human-verify checkpoint for LinkedIn Post Inspector and a real waitlist submission.**
+**Footer and advisor tease mounted, Phases 2-5 pushed to production, live OG tags / PNG / CDN cache / /methodology verified by curl, and the unfurl plus a real waitlist row (`interest_signups rows: 1`) confirmed by the human against production.**
 
 ## Status
 
-**PAUSED at Task 3 (checkpoint:human-verify, gate=blocking).** Tasks 1-2 complete and committed. The plan is not complete until the human confirms the unfurl in an external inspector and submits one waitlist email, after which the executor records the `interest_signups rows: N` line below.
+**COMPLETE — all 3 tasks done.** Tasks 1-2 committed (`0f9260f`), production deployed and curl-verified, and Task 3 (checkpoint:human-verify, gate=blocking) approved by the human on 2026-09-03 with the automated row-count check passing (`interest_signups rows: 1`). VAL-03, PLAT-03, PLAT-04 are satisfied on the deployed product.
 
 ## Performance
 
-- **Duration:** Tasks 1-2 ~5 min (build + push + ~30s deploy wait)
+- **Duration:** Tasks 1-2 ~5 min (build + push + ~30s deploy wait); Task 3 human verify window, approved 2026-09-03
 - **Started:** 2026-09-03T04:22Z
-- **Tasks:** 2/3 (Task 3 awaiting human)
+- **Tasks:** 3/3
 - **Files modified:** 2
 
 ## Accomplishments
@@ -75,7 +75,7 @@ completed: pending human verification
 | ---- | ---- | ------ | ----- |
 | 1 | Mount SiteFooter + AdvisorTease and run every phase gate locally | `0f9260f` | src/app/layout.tsx, src/app/page.tsx |
 | 2 | Deploy to production and probe OG tags, PNG, and CDN cache with curl | (no files; push of `0f9260f`) | — |
-| 3 | Verify the unfurl in a link-preview inspector and submit one waitlist email | pending | — |
+| 3 | Verify the unfurl in a link-preview inspector and submit one waitlist email | complete (docs commit — this SUMMARY finalize) | — |
 
 ## Task 1 Gate Results (local, on 0f9260f)
 
@@ -159,7 +159,7 @@ Content-Type: image/png
 
 **Tease present (PLAT-04):** `curl -s 'https://points-unlocked.vercel.app/?ur=90000' | grep -ci 'coming soon'` → 1
 
-## Task 3 Human Verification (pending)
+## Task 3 Human Verification (approved)
 
 Inspector URLs and share link handed to the human:
 
@@ -168,10 +168,10 @@ Inspector URLs and share link handed to the human:
 - Production share link: https://points-unlocked.vercel.app/?ur=90000&mr=50000
 - Bare URL (baseline card): https://points-unlocked.vercel.app/
 
-**To be recorded after "approved":**
+**Recorded after "approved" (2026-09-03):**
 
-- `npx tsx scripts/db-check.ts` → `interest_signups rows: N` (N >= 1): _pending_
-- Inspector evidence (screenshot paths / pasted tag list): _pending_
+- `npx tsx scripts/db-check.ts | grep -E "^interest_signups rows: [1-9][0-9]*$"` → `interest_signups rows: 1`
+- Inspector evidence: Human confirmed steps 1-5 via /gsd-execute-phase checkpoint on 2026-09-03 (no screenshots supplied). Confirmed on production: LinkedIn Post Inspector branded card for the share link (terracotta dollar figure, "90,000 Chase Ultimate Rewards points → …" title, description ending "See every redemption these balances unlock."); bare-URL baseline card (ink headline, no dollar figure); Vercel Open Graph tab matching step 1; waitlist form → "You're on the list." with no reload, idempotent on resubmit from a fresh visit, and "Enter a valid email address." on `not-an-email`; /methodology page content (nine sections, per-program cash-out baselines, ANA worked example ending "= 9.3¢ per point.").
 
 ## Files Created/Modified
 
@@ -212,5 +212,13 @@ None new. Task 2 confirmed T-05-18 (og:image host is production, not a preview) 
 
 ## Next Phase Readiness
 
-- Blocked on Task 3 human verification (external crawler render + one real form submission).
-- After approval: run `npx tsx scripts/db-check.ts`, record the row-count line, then mark VAL-03 / PLAT-03 / PLAT-04 complete and update ROADMAP plan progress.
+- Phase 5 plans 01-05 all complete; phase is ready for `/gsd:verify-phase 5`.
+- VAL-03 / PLAT-03 / PLAT-04 marked complete; ROADMAP plan progress updated in the tracking commit that follows this SUMMARY.
+- Carry-forward for Phase 6/7: the Phase 4 `NuqsAdapter` gate should be re-expressed as `grep -c 'import { NuqsAdapter }'` = 1 (see Deviations #2).
+- Launch-gate reminder (STATE.md): test the LinkedIn in-app WebView session before the LinkedIn post.
+
+## Self-Check: PASSED
+
+- Files: src/app/layout.tsx, src/app/page.tsx present
+- Commits: 0f9260f (Task 1 mount), fde89c7 (draft summary) present in git log
+- Task 3 automated verify: `interest_signups rows: 1`
