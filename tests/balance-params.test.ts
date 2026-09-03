@@ -98,6 +98,15 @@ describe("paramsToBalances (URL → Balances, hostile input dropped)", () => {
     expect(paramsToBalances({ ur: Number.MAX_SAFE_INTEGER + 1 })).toEqual({});
   });
 
+  it("drops implausible balances above the 10,000,000 ceiling (T-05-08)", () => {
+    expect(paramsToBalances({ ur: 10_000_001 })).toEqual({});
+    expect(paramsToBalances({ ur: Number.MAX_SAFE_INTEGER })).toEqual({});
+    // The ceiling itself is still a valid balance.
+    expect(paramsToBalances({ ur: 10_000_000 })).toEqual({
+      "chase-ur": 10_000_000,
+    });
+  });
+
   it("returns {} for an empty params object", () => {
     expect(paramsToBalances({})).toEqual({});
   });

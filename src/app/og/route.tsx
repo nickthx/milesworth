@@ -24,12 +24,18 @@ import { buildShareContent } from "@/lib/share-content";
 // below lets Vercel's CDN cache each PNG per URL.
 //
 // Threats: T-05-07 (hostile params) — the nuqs loader (parseAsInteger) →
-// paramsToBalances (positive safe integers only) → engine sanitizeBalances
-// is the same triple layer the page uses (T-04-10); unknown keys, arrays,
-// floats, negatives and 1e9-style strings simply drop, so bad input yields
-// the baseline card, never a 500. T-05-08 (CPU/DoS) — input collapses to at
-// most 8 bounded integers, the engine search is bounded, fonts are read once
-// per process, and the CDN absorbs repeat requests. T-05-09 (information
+// paramsToBalances (positive safe integers under the plausible ceiling) →
+// engine sanitizeBalances is the same triple layer the page uses (T-04-10);
+// unknown keys, arrays, floats, negatives and 1e9-style strings simply drop,
+// so bad input yields the baseline card, never a 500. T-05-08 (CPU/DoS) —
+// the CDN keys on the FULL query string, so "the CDN absorbs repeat requests"
+// only holds once the key space is finite: the canonicalizing 308 below
+// collapses every spelling of a balance set (junk keys, duplicates, reordered
+// keys, invalid values) onto ONE cache key, and the MAX_BALANCE ceiling in
+// balance-params.ts stops huge integers from minting fresh ones. A redirect
+// costs no Satori render. NOTE: this bounds the key space but does not cap
+// request RATE — an edge rate-limit rule on /og is still required and is an
+// operational decision (see 05-REVIEW-FIX.md). T-05-09 (information
 // disclosure) — the error path returns a neutral 500 with no detail and no
 // logging (T-01-07 precedent).
 
@@ -37,6 +43,9 @@ const FONT_DIR = join(process.cwd(), "src/assets/fonts");
 
 const CACHE_CONTROL =
   "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800";
+
+/** Canonicalizing 308s are cheap to recompute; keep them briefly cacheable. */
+const REDIRECT_CACHE_CONTROL = "public, max-age=0, s-maxage=60";
 
 const CREAM = "#faf7f2";
 const INK = "#262119";
@@ -57,12 +66,28 @@ function loadFonts(): Promise<{ fraunces: Buffer; inter: Buffer }> {
 }
 
 export async function GET(request: Request): Promise<Response> {
+  const url = new URL(request.url);
   // Synchronous for a Request (the page awaits the searchParams Promise form).
   const balances = paramsToBalances(loadBalanceParams(request));
   // Server-only clock read (Pitfall 10) — the island and engine stay clock-free.
   const asOf = new Date().toISOString().slice(0, 10);
   const share = buildShareContent({ balances, asOf });
   const isResult = share.kind === "result";
+
+  // T-05-08: one cache key per balance set. share.queryString is the canonical
+  // spelling (PARAM_KEY_BY_SLUG order, invalid values already dropped); any
+  // other spelling of the same request redirects to it before the render.
+  // generateMetadata on `/` emits the canonical form already, so the crawler
+  // path never takes this branch.
+  if (url.searchParams.toString() !== share.queryString) {
+    return new Response(null, {
+      status: 308,
+      headers: {
+        Location: share.queryString ? `/og?${share.queryString}` : "/og",
+        "Cache-Control": REDIRECT_CACHE_CONTROL,
+      },
+    });
+  }
 
   try {
     const { fraunces, inter } = await loadFonts();

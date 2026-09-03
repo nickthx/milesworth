@@ -52,12 +52,28 @@ export const balanceParsers = Object.fromEntries(
 export const loadBalanceParams = createLoader(balanceParsers);
 
 /**
- * True only for values the engine accepts: positive safe integers. Replicates
- * the engine's sanitizeBalances guard at the URL boundary (T-04-01); the
- * engine re-applies it downstream — defense in depth, T-03-09.
+ * Plausible ceiling for a real points balance (T-05-08). Nothing above this
+ * is an enterable balance — it is only a way to mint unbounded distinct /og
+ * cache keys (`ur=9007199254740991`, `ur=9007199254740990`, …), each of which
+ * would be a CDN miss and a fresh ~1s Satori render at origin. Ten million
+ * points is an order of magnitude above the largest realistic single-program
+ * balance, so the cap costs no legitimate user anything.
+ */
+const MAX_BALANCE = 10_000_000;
+
+/**
+ * True only for values the engine accepts: positive safe integers within the
+ * plausible ceiling. Replicates the engine's sanitizeBalances guard at the URL
+ * boundary (T-04-01); the engine re-applies it downstream — defense in depth,
+ * T-03-09.
  */
 function isValidBalance(value: number | null | undefined): value is number {
-  return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
+  return (
+    typeof value === "number" &&
+    Number.isSafeInteger(value) &&
+    value > 0 &&
+    value <= MAX_BALANCE
+  );
 }
 
 /**

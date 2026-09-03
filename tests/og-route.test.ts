@@ -36,13 +36,34 @@ describe("GET /og", () => {
     expect(await pngSignature(res)).toBe("PNG");
   });
 
-  it("degrades to a 200 PNG on hostile params instead of erroring (T-05-07)", async () => {
+  it("redirects hostile params to the canonical baseline URL instead of erroring (T-05-07)", async () => {
     const res = await GET(
       new Request("http://localhost/og?ur=-5&mr=abc&zz=1&ur=1e9"),
     );
 
-    expect(res.status).toBe(200);
-    expect(res.headers.get("content-type")).toBe("image/png");
-    expect(await pngSignature(res)).toBe("PNG");
+    // Every hostile value drops, so the canonical form of this request is the
+    // no-params baseline card — reached by redirect, not by a fresh render.
+    expect(res.status).toBe(308);
+    expect(res.headers.get("location")).toBe("/og");
+  });
+
+  it("collapses non-canonical spellings onto one cache key (T-05-08)", async () => {
+    // Reordered keys plus a junk key: same balance set, so the CDN must not
+    // see a second key for it. No render happens on this path.
+    const res = await GET(
+      new Request("http://localhost/og?mr=50000&zz=nonce&ur=90000"),
+    );
+
+    expect(res.status).toBe(308);
+    expect(res.headers.get("location")).toBe("/og?ur=90000&mr=50000");
+  });
+
+  it("drops implausibly huge balances rather than minting a cache key", async () => {
+    const res = await GET(
+      new Request("http://localhost/og?ur=9007199254740991"),
+    );
+
+    expect(res.status).toBe(308);
+    expect(res.headers.get("location")).toBe("/og");
   });
 });
