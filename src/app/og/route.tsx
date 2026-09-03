@@ -4,6 +4,7 @@ import { join } from "node:path";
 
 import { loadBalanceParams, paramsToBalances } from "@/lib/balance-params";
 import { buildShareContent } from "@/lib/share-content";
+import { SITE_HOST } from "@/lib/site";
 
 // GET /og — the social card for a share link (PLAT-03). Renders a 1200x630
 // PNG of the top bookable redemption's wow delta so the product markets
@@ -185,8 +186,10 @@ export async function GET(request: Request): Promise<Response> {
             {share.subline}
           </div>
 
+          {/* Derived from the same constant as metadataBase, so a custom
+              domain never leaves the card naming the old host. */}
           <div style={{ display: "flex", fontSize: 22, opacity: 0.6 }}>
-            points-unlocked.vercel.app
+            {SITE_HOST}
           </div>
         </div>
       </div>,

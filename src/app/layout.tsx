@@ -4,6 +4,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 
 import { SiteFooter } from "@/components/site-footer";
+import { SITE_URL } from "@/lib/site";
 
 // D-13: Fraunces chosen for its optical-size (opsz) axis — it carries the big
 // dollar numbers in the Phase 4 wow reveal, not just headlines.
@@ -20,13 +21,10 @@ const inter = Inter({
   display: "swap",
 });
 
-// Absolute origin for metadataBase (PLAT-03). Fixed production constant with
-// an optional NEXT_PUBLIC_SITE_URL override — never derived from Vercel's
-// injected per-deployment host variable: preview hosts sit behind Deployment
-// Protection, so a crawler following an og:image on that host gets a 401 and
-// the canonical URL is wrong (T-05-10).
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://points-unlocked.vercel.app";
+// Absolute origin for metadataBase (PLAT-03) — see src/lib/site.ts for why it
+// is a fixed constant with an env override rather than Vercel's per-deployment
+// host (T-05-10). Shared with the /og card footer so the two can never name
+// different hosts.
 
 export const metadata: Metadata = {
   title: "Points Unlocked",
