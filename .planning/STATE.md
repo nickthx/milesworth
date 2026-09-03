@@ -78,6 +78,8 @@ Recent decisions affecting current work:
 - [Phase 04]: asOf derived once per request on the server and passed as a prop; island and engine are clock-free so SSR and hydration agree
 - [Phase 04]: A1 precedence — storage-restored balances pushed to URL with history: replace; storage written only after the visitor edits, so share links never clobber stored balances
 - [Phase 04]: Engine throw renders only the neutral UI-SPEC error string; caught error never rendered or logged
+- [Phase 05]: Vercel strips s-maxage from the client-facing Cache-Control header; X-Vercel-Cache MISS then HIT is the observable proof of CDN caching for /og
+- [Phase 05]: grep -c NuqsAdapter reads 3 (not the Phase 4 gate's 2) because prettier splits the two-child wrap across lines; one import + one usage unchanged
 
 ### Pending Todos
 
