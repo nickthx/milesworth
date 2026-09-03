@@ -17,8 +17,11 @@ import { z } from "zod";
  * `.pipe(z.email())` applies zod 4's top-level email validator (A8).
  *
  * `website` is the honeypot: never rendered to humans, so a real browser
- * submits it empty or not at all. Any other value (a bot auto-filling the
- * field, or a null smuggled through) fails validation outright.
+ * submits it empty or not at all. Any other value fails validation outright —
+ * a bot auto-filling the field, a null smuggled through, or the File a
+ * multipart submission can put in a text field. The Server Action passes the
+ * raw FormData value straight here rather than pre-checking it, so this rule
+ * is the one that runs in production and these are the shapes it must reject.
  */
 export const interestSchema = z.object({
   email: z.string().trim().toLowerCase().max(254).pipe(z.email()),

@@ -63,4 +63,17 @@ describe("interestSchema (PLAT-04 waitlist email boundary)", () => {
         .success,
     ).toBe(false);
   });
+
+  it("rejects a File honeypot (multipart submission smuggling a file into a text field)", () => {
+    const result = interestSchema.safeParse({
+      email: "nick@example.com",
+      website: new File(["spam"], "spam.txt", { type: "text/plain" }),
+    });
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    // The Server Action routes on this path to return the bot success copy.
+    expect(result.error.issues.some((issue) => issue.path[0] === "website")).toBe(
+      true,
+    );
+  });
 });
