@@ -42,8 +42,8 @@
 
 - [x] **PLAT-01**: App is deployed publicly on Vercel and shareable via a single link
 - [ ] **PLAT-02**: App is fully responsive and works in the LinkedIn in-app browser (mobile WebView tested before launch)
-- [ ] **PLAT-03**: Share links render proper OG tags with a branded OG image
-- [ ] **PLAT-04**: A "coming soon" tease for the v2 AI card-roadmap advisor is present
+- [x] **PLAT-03**: Share links render proper OG tags with a branded OG image
+- [x] **PLAT-04**: A "coming soon" tease for the v2 AI card-roadmap advisor is present
 - [ ] **PLAT-05**: Editorial travel design system (light, magazine-like, destination imagery, big numbers) applied across all pages
 
 ## v2 Requirements (Deferred)
