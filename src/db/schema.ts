@@ -68,7 +68,11 @@ export const transferRoutes = pgTable(
     active: boolean("active").notNull().default(true),
     notes: text("notes"),
   },
-  (t) => [primaryKey({ columns: [t.fromProgramSlug, t.toProgramSlug] })],
+  // Phase 6 RESEARCH Pitfall 1: drizzle-kit 0.31.10 introspects composite-PK
+  // columns from an unordered information_schema query and PostgreSQL 18
+  // returns them (to, from); matching that order removes the DROP/ADD churn
+  // on every push. PK column order is semantically irrelevant to the app/seed.
+  (t) => [primaryKey({ columns: [t.toProgramSlug, t.fromProgramSlug] })],
 );
 
 export const transferBonuses = pgTable(
@@ -86,6 +90,10 @@ export const transferBonuses = pgTable(
   },
   (t) => [
     foreignKey({
+      // Explicit short name: the auto-generated name is 100 chars and Postgres
+      // truncates identifiers to 63, so every push saw a phantom rename
+      // (Phase 5 deferred-items.md). Renamed live once via a TTY push (06-01).
+      name: "transfer_bonuses_route_fk",
       columns: [t.fromProgramSlug, t.toProgramSlug],
       foreignColumns: [
         transferRoutes.fromProgramSlug,
