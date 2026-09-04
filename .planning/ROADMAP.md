@@ -149,11 +149,17 @@ Plans:
   2. Signed-in user can bookmark redemptions and record travel goals, and both persist across sessions
   3. Privacy policy and consent are in place; a user can delete their account and data
 
-**Plans**: TBD
+**Plans**: 7 plans
 
 Plans:
 
-- [ ] 06-01: TBD
+- [ ] 06-01-PLAN.md — Wave 0: fix drizzle-kit push churn (FK name + PK order), install @clerk/nextjs, fill VALIDATION.md; human gates: TTY push + Clerk keys/Dashboard consent-on/self-serve-delete-off
+- [ ] 06-02-PLAN.md — users/user_balances/bookmarks/travel_goals schema + [BLOCKING] push + no-op gate; account-validation Zod boundary + tests; account precedence branch in resolveInitialBalances
+- [ ] 06-03-PLAN.md — src/proxy.ts (public by default, /og excluded), ClerkProvider inside body, SiteHeader, static /privacy page + test, footer link
+- [ ] 06-04-PLAN.md — Server Actions (saveBalances, setBookmark, addGoal, deleteGoal, deleteAccount DB→Clerk), account-data read module, mocked action tests, guest-flow-gate test
+- [ ] 06-05-PLAN.md — / reads auth() → island props; account precedence; Save CTA beside Copy my link; bookmark toggle on both result tiers
+- [ ] 06-06-PLAN.md — /account page: saved balances + restore link, bookmarks, goals add/remove, Delete my account dialog → signOut
+- [ ] 06-07-PLAN.md — Local gates, deploy by push, production curl probes (/privacy, /account, /og cache), human end-to-end walkthrough, VALIDATION sign-off
 
 ### Phase 7: Editorial Polish & Launch
 
