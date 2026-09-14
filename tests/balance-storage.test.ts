@@ -138,11 +138,16 @@ describe("writeStoredBalances", () => {
   });
 
   it("silently no-ops when storage.setItem throws (T-04-03)", () => {
-    expect(() => writeStoredBalances(throwingSetter, VALID_BALANCES)).not.toThrow();
+    expect(() =>
+      writeStoredBalances(throwingSetter, VALID_BALANCES),
+    ).not.toThrow();
   });
 });
 
-describe("resolveInitialBalances (A1 precedence: URL wins; storage hydrates only when URL is empty)", () => {
+describe("resolveInitialBalances (A1 precedence: URL > storage > account > none; account hydrates only when URL and storage are both empty)", () => {
+  /** Balances the signed-in user last saved to their account (ACCT-01). */
+  const SAVED: Balances = { "amex-mr": 50_000 };
+
   it('URL non-empty → { source: "url" } even when storage also has balances', () => {
     expect(
       resolveInitialBalances({ "chase-ur": 90_000 }, VALID_BALANCES),
@@ -168,6 +173,34 @@ describe("resolveInitialBalances (A1 precedence: URL wins; storage hydrates only
 
   it('URL empty + stored is an empty object → { source: "none" } (nothing to hydrate)', () => {
     expect(resolveInitialBalances({}, {})).toEqual({ source: "none" });
+  });
+
+  it('URL empty + null stored + saved account balances → { source: "account", balances }', () => {
+    expect(resolveInitialBalances({}, null, SAVED)).toEqual({
+      source: "account",
+      balances: SAVED,
+    });
+  });
+
+  it('URL empty + valid stored + saved → { source: "storage" } (a device\'s own edits outrank the last explicit save)', () => {
+    expect(resolveInitialBalances({}, VALID_BALANCES, SAVED)).toEqual({
+      source: "storage",
+      balances: VALID_BALANCES,
+    });
+  });
+
+  it('URL non-empty + null stored + saved → { source: "url" } (a share link still wins)', () => {
+    expect(resolveInitialBalances({ "chase-ur": 1 }, null, SAVED)).toEqual({
+      source: "url",
+    });
+  });
+
+  it('URL empty + null stored + saved is an empty object → { source: "none" }', () => {
+    expect(resolveInitialBalances({}, null, {})).toEqual({ source: "none" });
+  });
+
+  it('URL empty + null stored + null saved → { source: "none" }', () => {
+    expect(resolveInitialBalances({}, null, null)).toEqual({ source: "none" });
   });
 });
 
