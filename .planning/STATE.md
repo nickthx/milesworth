@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-05-PLAN.md (Save CTA, bookmark toggles, account props on /; 289 tests green); next 06-06 (wave 4) then 06-07
-last_updated: "2026-09-14T17:58:53.785Z"
+stopped_at: Completed 06-06-PLAN.md (/account page, goals, bookmarks, delete dialog; 289 tests green); next 06-07 (wave 5, human checkpoint)
+last_updated: "2026-09-14T18:08:26.511Z"
 last_activity: 2026-09-14
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 30
-  completed_plans: 28
-  percent: 93
+  completed_plans: 29
+  percent: 97
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 06 (accounts-legal) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-09-14
 
-Progress: [█████████░] 93%
+Progress: [██████████] 97%
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [█████████░] 93%
 | Phase 06 P03 | 18min | 2 tasks | 7 files |
 | Phase 06 P04 | 7min | 3 tasks | 7 files |
 | Phase 06 P05 | 6min | 3 tasks | 6 files |
+| Phase 06 P06 | 7min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,8 @@ Recent decisions affecting current work:
 - [Phase 06]: Session state crosses into the / island as server-derived props (isSignedIn / savedBalances / bookmarkedSlugs), never a Clerk client hook — hydration stays exact and no component imports @/db
 - [Phase 06]: Account balance restore runs only in the ref-guarded mount effect with history: replace and never writes storage; the mount effect no longer early-returns on null storage so restricted WebViews still get the account branch
 - [Phase 06]: Gated tokens (useAuth/useUser/terracotta) stay out of component comments; the h-11 class string is inlined per branch so the touch-target grep counts each rendered branch
+- [Phase 06]: A6 confirmed — useClerk().signOut({ redirectUrl: '/' }) typechecks on @clerk/nextjs 7.9.1; the router.push fallback and useRouter import were dropped from DeleteAccountDialog
+- [Phase 06]: /account is a prompt-not-redirect when signed out and shares one Shell frame across the signed-out, null-snapshot, and signed-in branches; the restore link is balancesToParams with nulls dropped, the same canonical query the share link uses
 
 ### Pending Todos
 
@@ -125,6 +128,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-14T17:58:53.754Z
-Stopped at: Completed 06-05-PLAN.md (Save CTA, bookmark toggles, account props on /; 289 tests green); next 06-06 (wave 4) then 06-07
+Last session: 2026-09-14T18:08:26.477Z
+Stopped at: Completed 06-06-PLAN.md (/account page, goals, bookmarks, delete dialog; 289 tests green); next 06-07 (wave 5, human checkpoint)
 Resume file: None
