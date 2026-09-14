@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 06-01-PLAN.md (Wave 0: push clean, Clerk provisioned); next 06-02 and 06-03 (wave 2)"
-last_updated: "2026-09-14T17:09:57.849Z"
-last_activity: 2026-09-14 -- 06-01 complete (Wave 0); Clerk keys on Vercel Prod/Preview/Dev, consent ON, delete OFF; next 06-02 / 06-03
+stopped_at: "Completed 06-02-PLAN.md (accounts data layer: 4 tables live, Zod boundary, account precedence); next 06-03 (wave 2), then 06-04"
+last_updated: "2026-09-14T17:22:32.396Z"
+last_activity: 2026-09-14
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 30
-  completed_plans: 24
-  percent: 80
+  completed_plans: 25
+  percent: 83
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 06 (accounts-legal) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
 Last activity: 2026-09-14
 
-Progress: [████████░░] 80%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [████████░░] 80%
 | Phase 04 P04 | 10min | 3 tasks | 3 files |
 | Phase 05 P05 | 5min | 3 tasks | 2 files |
 | Phase 06 P01 | ~2h (2 human gates) | 3 tasks | 5 files |
+| Phase 06 P02 | 10min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,9 @@ Recent decisions affecting current work:
 - [Phase 06]: Clerk development instance (A1) — *.vercel.app cannot host a Clerk production instance; consent-to-legal ON with /privacy URL, self-serve delete OFF, no Terms URL required; production cut-over deferred to Phase 7
 - [Phase 06]: Drizzle constraints carry explicit short FK names and PG18-ordered composite PK columns so drizzle-kit push is a no-op; live Neon already matched, no rename needed
 - [Phase 06]: PRIVACY_CONTACT_EMAIL nick@whitflow.com recorded in 06-01-SUMMARY for plan 06-03's /privacy mailto
+- [Phase 06]: Account tables carry no FK into programs/redemptions (Pitfall 6) — seed delete-then-insert must keep working once a bookmark exists; bookmarkSlugSchema enum is the read-time truth
+- [Phase 06]: uniqueIndex (not composite PK / .unique()) on user_balances and bookmarks — first push prompt-free, second push 'No changes detected' on PG18
+- [Phase 06]: resolveInitialBalances ranks URL > storage > account > none; account branch never writes storage (T-06-09); MAX_BALANCE shared between URL codec and balancesSchema
 
 ### Pending Todos
 
@@ -111,6 +115,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-14T17:09:57.822Z
-Stopped at: Completed 06-01-PLAN.md (Wave 0). Push gate evidence and Clerk provisioning decisions (instance = development, consent ON with /privacy URL, self-serve delete OFF, no Terms URL, PRIVACY_CONTACT_EMAIL) are recorded in .planning/phases/06-accounts-legal/06-01-SUMMARY.md. Next: 06-02 and 06-03 (wave 2).
+Last session: 2026-09-14T17:22:05.047Z
+Stopped at: Completed 06-02-PLAN.md (accounts data layer: 4 tables live, Zod boundary, account precedence); next 06-03 (wave 2), then 06-04
 Resume file: None
