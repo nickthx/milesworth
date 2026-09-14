@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 06-02-PLAN.md (accounts data layer: 4 tables live, Zod boundary, account precedence); next 06-03 (wave 2), then 06-04"
-last_updated: "2026-09-14T17:35:59.722Z"
+stopped_at: Completed 06-04-PLAN.md (account Server Actions, read module, guest-flow gate; 289 tests green); next 06-05 and 06-06 (wave 4)
+last_updated: "2026-09-14T17:49:28.731Z"
 last_activity: 2026-09-14
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 30
-  completed_plans: 26
-  percent: 87
+  completed_plans: 27
+  percent: 90
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 06 (accounts-legal) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-09-14
 
-Progress: [█████████░] 87%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Progress: [█████████░] 87%
 | Phase 06 P01 | ~2h (2 human gates) | 3 tasks | 5 files |
 | Phase 06 P02 | 10min | 3 tasks | 7 files |
 | Phase 06 P03 | 18min | 2 tasks | 7 files |
+| Phase 06 P04 | 7min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,8 @@ Recent decisions affecting current work:
 - [Phase 06]: resolveInitialBalances ranks URL > storage > account > none; account branch never writes storage (T-06-09); MAX_BALANCE shared between URL codec and balancesSchema
 - [Phase 06]: site-header.tsx is a client component — the RSC-resolved Clerk <Show> calls auth() and would make every route dynamic; client boundary keeps ○ /methodology and ○ /privacy
 - [Phase 06]: /privacy ships with contact nick@whitflow.com and PRIVACY_LAST_UPDATED 2026-09-03 as constants; no /terms (Dashboard did not require one)
+- [Phase 06]: deleteAccount() takes no parameters — eslint no-unused-vars has no underscore exemption; a zero-arg function is still assignable to useActionState's (state, payload) signature
+- [Phase 06]: @/db importer set is exactly actions/interest.ts, actions/account.ts, lib/server/account-data.ts — enforced by tests/guest-flow-gate.test.ts, not a plan-time grep
 
 ### Pending Todos
 
@@ -118,6 +121,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-14T17:34:15.622Z
-Stopped at: Completed 06-02-PLAN.md (accounts data layer: 4 tables live, Zod boundary, account precedence); next 06-03 (wave 2), then 06-04
+Last session: 2026-09-14T17:49:28.700Z
+Stopped at: Completed 06-04-PLAN.md (account Server Actions, read module, guest-flow gate; 289 tests green); next 06-05 and 06-06 (wave 4)
 Resume file: None
