@@ -1,3 +1,4 @@
+import { BookmarkButton } from "@/components/bookmark-button";
 import {
   Card,
   CardContent,
@@ -25,14 +26,26 @@ import { formatTransferPath } from "@/lib/path-display";
 // Accent discipline (UI-SPEC): terracotta is used for exactly two things on
 // this card — the hero delta and the active transfer-bonus badge. Everything
 // else stays ink/muted so the delta carries the drama.
+//
+// ACCT-02: when the island passes `bookmarked`, the footer carries an ink
+// BookmarkButton (a client child; this file stays server-compatible). Both
+// props are optional so the plan 04-03 callers and tests need no change.
 
 interface ResultCardProps {
   result: RankedResult;
   programs: ProgramSeed[];
   routes: TransferRouteSeed[];
+  bookmarked?: boolean;
+  isSignedIn?: boolean;
 }
 
-export function ResultCard({ result, programs, routes }: ResultCardProps) {
+export function ResultCard({
+  result,
+  programs,
+  routes,
+  bookmarked,
+  isSignedIn,
+}: ResultCardProps) {
   const { redemption, chosenPath } = result;
 
   const sourceProgram = programs.find(
@@ -121,10 +134,17 @@ export function ResultCard({ result, programs, routes }: ResultCardProps) {
       {/* VAL-04: engine output is A5-filtered so verifiedAt is non-null, but
           guard with a conditional rather than a non-null assertion. */}
       {redemption.verifiedAt !== null && (
-        <CardFooter>
+        <CardFooter className="flex items-center justify-between gap-4">
           <p className="text-ink/70 text-sm leading-5">
             Verified {formatVerifiedDate(redemption.verifiedAt)}
           </p>
+          {bookmarked !== undefined && (
+            <BookmarkButton
+              slug={redemption.slug}
+              bookmarked={bookmarked}
+              isSignedIn={isSignedIn ?? false}
+            />
+          )}
         </CardFooter>
       )}
     </Card>

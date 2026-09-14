@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AlmostThere } from "@/components/almost-there";
 import { BalanceForm } from "@/components/balance-form";
 import { ResultCard } from "@/components/result-card";
+import { SaveBalancesButton } from "@/components/save-balances-button";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,7 +23,7 @@ import {
 import { bonuses, programs, redemptions, routes } from "@/data";
 import type { RedemptionSeed } from "@/data";
 import { rankRedemptions } from "@/engine";
-import type { EnterableProgramSlug, RankedResults } from "@/engine";
+import type { Balances, EnterableProgramSlug, RankedResults } from "@/engine";
 import {
   PARAM_KEY_BY_SLUG,
   balanceParsers,
@@ -43,7 +44,12 @@ import { formatDollars, formatPoints, formatVerifiedDate } from "@/lib/format";
 //
 // Accent discipline (UI-SPEC): terracotta appears here exactly once — the
 // "Copy my link" primary CTA (sanctioned use #2). The page hero heading, the
-// section headings, and every state copy stay ink.
+// section headings, every state copy, and the Save CTA stay ink.
+//
+// Phase 6 (ACCT-01/02): the island receives account props from the server
+// page — isSignedIn, savedBalances, bookmarkedSlugs — and still never imports
+// "@/db" (T-06-05) or reads Clerk client hooks (Pitfall 5). Session-aware
+// affordances (SaveBalancesButton, BookmarkButton) get the same props.
 
 interface CoreExperienceProps {
   /**
@@ -53,6 +59,20 @@ interface CoreExperienceProps {
    * transfer-bonus boundaries. This file never reads the clock.
    */
   asOf: string;
+  /**
+   * Server-read via `auth()` in src/app/page.tsx — never a Clerk client hook
+   * here (Pitfall 5): a prop is identical on server and client, so the Save
+   * CTA and bookmark labels hydrate exactly (T-06-17).
+   */
+  isSignedIn: boolean;
+  /**
+   * The signed-in user's last explicit save (ACCT-01), or null. Consumed ONLY
+   * inside the ref-guarded mount effect below — never during render — so the
+   * first client paint still matches the URL-only server HTML.
+   */
+  savedBalances: Balances | null;
+  /** Redemption slugs the user has bookmarked (ACCT-02); [] when signed out. */
+  bookmarkedSlugs: readonly string[];
 }
 
 type StorageLike = Pick<Storage, "getItem" | "setItem">;
@@ -81,7 +101,12 @@ const dataset = { programs, routes, bonuses, redemptions };
 const SECTION_HEADING_CLASS =
   "font-heading text-ink text-[1.75rem] leading-tight font-semibold";
 
-export function CoreExperience({ asOf }: CoreExperienceProps) {
+export function CoreExperience({
+  asOf,
+  isSignedIn,
+  savedBalances,
+  bookmarkedSlugs,
+}: CoreExperienceProps) {
   // nuqs defaults are exactly what INPUT-03 wants: shallow=true (no server
   // round-trip per keystroke) and history="replace" (typing never spams the
   // back button). First render is URL-only on both server and client.
@@ -115,23 +140,30 @@ export function CoreExperience({ asOf }: CoreExperienceProps) {
     if (hydratedRef.current) return;
     hydratedRef.current = true;
 
+    // No early return when storage is unreachable: a restricted WebView must
+    // still get the account branch below.
     const storage = getSafeStorage();
-    if (storage === null) return;
+    const stored = storage === null ? null : readStoredBalances(storage);
 
     const action = resolveInitialBalances(
       paramsToBalances(params),
-      readStoredBalances(storage),
+      stored,
+      savedBalances,
     );
-    // A1 precedence: source === "url" → do NOTHING. A share link drives the
-    // display but must never overwrite the visitor's own stored balances.
-    if (action.source === "storage") {
-      // Pattern 4 rule 2: push stored balances into the URL with a replace so
-      // the bare "/" visit is instantly shareable again with no history spam.
+    // A1 precedence — URL > storage > account: source === "url" → do NOTHING.
+    // A share link drives the display but must never overwrite the visitor's
+    // own stored balances, and a device's own edits outrank the last explicit
+    // account save. The account branch never writes storage (T-06-09) — the
+    // write effect below still keys on hasEditedRef only.
+    if (action.source === "storage" || action.source === "account") {
+      // Pattern 4 rule 2: push the restored balances into the URL with a
+      // replace so the bare "/" visit is instantly shareable again with no
+      // history spam.
       void setParams(balancesToParams(action.balances), {
         history: "replace",
       });
     }
-  }, [params, setParams]);
+  }, [params, setParams, savedBalances]);
 
   // Pattern 4 rule 3: persist the full balance set on every URL change, but
   // only after the visitor has edited (A1 — never on a share-link visit).
@@ -183,16 +215,20 @@ export function CoreExperience({ asOf }: CoreExperienceProps) {
           balances={balances}
           onBalanceChange={handleBalanceChange}
         />
-        <Button
-          type="button"
-          onClick={handleCopyLink}
-          // Sanctioned accent use #2 + UI-SPEC 44px touch target (h-11).
-          className="bg-terracotta hover:bg-terracotta/90 h-11 min-w-44 self-start px-6 text-base font-semibold text-white"
-        >
-          <span aria-live="polite">
-            {copied ? "Link copied" : "Copy my link"}
-          </span>
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+          <Button
+            type="button"
+            onClick={handleCopyLink}
+            // Sanctioned accent use #2 + UI-SPEC 44px touch target (h-11).
+            className="bg-terracotta hover:bg-terracotta/90 h-11 min-w-44 self-start px-6 text-base font-semibold text-white"
+          >
+            <span aria-live="polite">
+              {copied ? "Link copied" : "Copy my link"}
+            </span>
+          </Button>
+          {/* ACCT-01: explicit save beside the share CTA — ink/outline. */}
+          <SaveBalancesButton balances={balances} isSignedIn={isSignedIn} />
+        </div>
       </header>
 
       {/* Pitfall 9: every branch is an explicit, designed state. */}
@@ -225,6 +261,10 @@ export function CoreExperience({ asOf }: CoreExperienceProps) {
                       result={result}
                       programs={programs}
                       routes={routes}
+                      bookmarked={bookmarkedSlugs.includes(
+                        result.redemption.slug,
+                      )}
+                      isSignedIn={isSignedIn}
                     />
                   </li>
                 ))}
@@ -235,6 +275,8 @@ export function CoreExperience({ asOf }: CoreExperienceProps) {
             results={results.almostThere}
             programs={programs}
             routes={routes}
+            bookmarkedSlugs={bookmarkedSlugs}
+            isSignedIn={isSignedIn}
           />
         </div>
       )}

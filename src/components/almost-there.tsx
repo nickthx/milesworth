@@ -1,3 +1,4 @@
+import { BookmarkButton } from "@/components/bookmark-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ProgramSeed, TransferRouteSeed } from "@/data";
 import type { RankedResult } from "@/engine";
@@ -10,14 +11,26 @@ import { formatTransferPath } from "@/lib/path-display";
 //
 // Accent discipline (UI-SPEC): no accent color anywhere in this section. The
 // drama stays in Bookable now; the callout and the potential delta are ink.
+//
+// ACCT-02 "redemptions they're working toward" — the near-miss tier is exactly
+// that, so when the island passes `bookmarkedSlugs` every card ends with an
+// ink BookmarkButton. Both props are optional so existing callers are unchanged.
 
 interface AlmostThereProps {
   results: RankedResult[];
   programs: ProgramSeed[];
   routes: TransferRouteSeed[];
+  bookmarkedSlugs?: readonly string[];
+  isSignedIn?: boolean;
 }
 
-export function AlmostThere({ results, programs, routes }: AlmostThereProps) {
+export function AlmostThere({
+  results,
+  programs,
+  routes,
+  bookmarkedSlugs,
+  isSignedIn,
+}: AlmostThereProps) {
   if (results.length === 0) {
     return null;
   }
@@ -63,6 +76,13 @@ export function AlmostThere({ results, programs, routes }: AlmostThereProps) {
                     {formatTransferPath(chosenPath, routes, programs)}
                   </p>
                   <p className="text-ink/70 text-base leading-6">{deltaLine}</p>
+                  {bookmarkedSlugs !== undefined && (
+                    <BookmarkButton
+                      slug={redemption.slug}
+                      bookmarked={bookmarkedSlugs.includes(redemption.slug)}
+                      isSignedIn={isSignedIn ?? false}
+                    />
+                  )}
                 </CardContent>
               </Card>
             </li>
