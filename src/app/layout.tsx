@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
+import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SITE_URL } from "@/lib/site";
 
@@ -72,12 +74,21 @@ export default function RootLayout({
           adapter wrapping the tree — this is the one required wrap for the
           URL-state balance flow (INPUT-03). */}
       <body className="flex min-h-full flex-col">
-        {/* VAL-03: SiteFooter sits inside the adapter after every route's
-            content; mt-auto pins it to the bottom of the flex-column body. */}
-        <NuqsAdapter>
-          {children}
-          <SiteFooter />
-        </NuqsAdapter>
+        {/* ACCT-01: ClerkProvider is the outermost child of <body> (Clerk
+            Core 3 requirement) and carries NO `dynamic` prop — that prop would
+            opt every route into dynamic rendering and un-prerender
+            /methodology and /privacy (T-06-16). afterSignOutUrl="/" makes the
+            UserButton sign-out land back on the guest flow. */}
+        <ClerkProvider afterSignOutUrl="/">
+          {/* VAL-03: SiteHeader and SiteFooter sit inside the adapter around
+              every route's content; mt-auto pins the footer to the bottom of
+              the flex-column body. */}
+          <NuqsAdapter>
+            <SiteHeader />
+            {children}
+            <SiteFooter />
+          </NuqsAdapter>
+        </ClerkProvider>
       </body>
     </html>
   );
