@@ -153,7 +153,7 @@ Plans:
 
 Plans:
 
-- [ ] 06-01-PLAN.md — Wave 0: fix drizzle-kit push churn (FK name + PK order), install @clerk/nextjs, fill VALIDATION.md; human gates: TTY push + Clerk keys/Dashboard consent-on/self-serve-delete-off
+- [x] 06-01-PLAN.md — Wave 0: fix drizzle-kit push churn (FK name + PK order), install @clerk/nextjs, fill VALIDATION.md; human gates: TTY push + Clerk keys/Dashboard consent-on/self-serve-delete-off
 - [ ] 06-02-PLAN.md — users/user_balances/bookmarks/travel_goals schema + [BLOCKING] push + no-op gate; account-validation Zod boundary + tests; account precedence branch in resolveInitialBalances
 - [ ] 06-03-PLAN.md — src/proxy.ts (public by default, /og excluded), ClerkProvider inside body, SiteHeader, static /privacy page + test, footer link
 - [ ] 06-04-PLAN.md — Server Actions (saveBalances, setBookmark, addGoal, deleteGoal, deleteAccount DB→Clerk), account-data read module, mocked action tests, guest-flow-gate test

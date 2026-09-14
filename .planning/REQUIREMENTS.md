@@ -33,10 +33,10 @@
 
 ### Accounts & Legal
 
-- [ ] **ACCT-01**: User can optionally sign up (Clerk) to save balances to their profile — core flow never requires login
+- [x] **ACCT-01**: User can optionally sign up (Clerk) to save balances to their profile — core flow never requires login
 - [ ] **ACCT-02**: Signed-in user can bookmark redemptions they're working toward
 - [ ] **ACCT-03**: Signed-in user can record travel goals (stored only; no v1 ranking effect)
-- [ ] **ACCT-04**: Privacy policy, consent, and account/data deletion are available
+- [x] **ACCT-04**: Privacy policy, consent, and account/data deletion are available
 
 ### Platform & Launch
 

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "06-01 Task 2 push gate PASSED 2026-09-14 (push-clean); resume 06-01 at Task 3 (Clerk provisioning)"
-last_updated: "2026-09-14T15:05:00.000Z"
-last_activity: 2026-09-14 -- 06-01 Task 2 push gate passed; next is Task 3 Clerk provisioning
+stopped_at: "Completed 06-01-PLAN.md (Wave 0: push clean, Clerk provisioned); next 06-02 and 06-03 (wave 2)"
+last_updated: "2026-09-14T17:09:57.849Z"
+last_activity: 2026-09-14 -- 06-01 complete (Wave 0); Clerk keys on Vercel Prod/Preview/Dev, consent ON, delete OFF; next 06-02 / 06-03
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 30
-  completed_plans: 23
-  percent: 77
+  completed_plans: 24
+  percent: 80
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 06 (accounts-legal) — EXECUTING
-Plan: 1 of 7
-Status: Executing Phase 06
-Last activity: 2026-09-04 -- Phase 06 execution started
+Plan: 2 of 7
+Status: Ready to execute
+Last activity: 2026-09-14
 
-Progress: [██████████] 100%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [██████████] 100%
 | Phase 01 P05 | 6min | 3 tasks | 7 files |
 | Phase 04 P04 | 10min | 3 tasks | 3 files |
 | Phase 05 P05 | 5min | 3 tasks | 2 files |
+| Phase 06 P01 | ~2h (2 human gates) | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,9 @@ Recent decisions affecting current work:
 - [Phase 04]: Engine throw renders only the neutral UI-SPEC error string; caught error never rendered or logged
 - [Phase 05]: Vercel strips s-maxage from the client-facing Cache-Control header; X-Vercel-Cache MISS then HIT is the observable proof of CDN caching for /og
 - [Phase 05]: grep -c NuqsAdapter reads 3 (not the Phase 4 gate's 2) because prettier splits the two-child wrap across lines; one import + one usage unchanged
+- [Phase 06]: Clerk development instance (A1) — *.vercel.app cannot host a Clerk production instance; consent-to-legal ON with /privacy URL, self-serve delete OFF, no Terms URL required; production cut-over deferred to Phase 7
+- [Phase 06]: Drizzle constraints carry explicit short FK names and PG18-ordered composite PK columns so drizzle-kit push is a no-op; live Neon already matched, no rename needed
+- [Phase 06]: PRIVACY_CONTACT_EMAIL nick@whitflow.com recorded in 06-01-SUMMARY for plan 06-03's /privacy mailto
 
 ### Pending Todos
 
@@ -107,6 +111,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-14T15:05:00.000Z
-Stopped at: 06-01 Task 2 push gate PASSED 2026-09-14 — resume 06-01 at Task 3 (Clerk provisioning). Evidence for 06-01-SUMMARY "Push gate evidence": human `npx drizzle-kit push --verbose` (PowerShell TTY) printed "[i] No changes detected" on the FIRST run; executor non-TTY `npx drizzle-kit push` also "No changes detected"; pg_constraint shows live FK `transfer_bonuses_route_fk` and PK `transfer_routes_to_program_slug_from_program_slug_pk` (no rename statement was needed — the live DB already matched schema.ts); `scripts/db-check.ts` → programs rows: 21, interest_signups rows: 1; `git grep 'postgresql://'` hits are 5 prose mentions in planning docs only, no connection strings.
+Last session: 2026-09-14T17:09:57.822Z
+Stopped at: Completed 06-01-PLAN.md (Wave 0). Push gate evidence and Clerk provisioning decisions (instance = development, consent ON with /privacy URL, self-serve delete OFF, no Terms URL, PRIVACY_CONTACT_EMAIL) are recorded in .planning/phases/06-accounts-legal/06-01-SUMMARY.md. Next: 06-02 and 06-03 (wave 2).
 Resume file: None
