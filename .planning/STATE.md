@@ -72,7 +72,7 @@ Recent decisions affecting current work:
 - Init: Stack corrections from research — Neon via Vercel Marketplace (Vercel Postgres is sunset), Next.js 16 uses `proxy.ts` not `middleware.ts` for Clerk
 - Init: Engine must be pure TS, no framework/DB imports — it becomes the v2 advisor's tool
 - Init: Ranking gate — 30 Nick-verified entries covering all 8 programs before UI work leans on data
-- [Phase 01]: Vercel project points-unlocked on free *.vercel.app subdomain; Git auto-deploy unconditional; DATABASE_URL sourced only via Neon Marketplace injection + vercel env pull
+- [Phase 01]: Vercel project milesworth on free *.vercel.app subdomain; Git auto-deploy unconditional; DATABASE_URL sourced only via Neon Marketplace injection + vercel env pull
 - [Phase ?]: Neon client is lazy-initialized (Proxy) so next build succeeds without DATABASE_URL at module eval; connection resolves at first query
 - [Phase ?]: Homepage is force-dynamic in Phase 1 to prove the live DB path (D-16); Phase 2+ moves to cached reads
 - [Phase 04]: Phase 1 placeholder page deleted, not migrated — awaiting searchParams makes / dynamic implicitly; no force-dynamic, no @/db import in the guest flow
