@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: 06-07 Task 1 complete (289 tests, typecheck, lint, build green; pushed 0cd9898..c2c8dad; prod probes recorded; db-check baseline users rows: 0). PAUSED at 06-07 Task 2 checkpoint:human-verify (blocking) — awaiting 'approved' with step 4 (A5) / step 8 (consent timestamp) notes, then Task 3 VALIDATION sign-off
-last_updated: "2026-09-14T18:14:35.194Z"
+status: verifying
+stopped_at: "Completed 06-07-PLAN.md — Phase 06 complete (7/7 plans); 06-VALIDATION.md signed off nyquist_compliant: true; human walkthrough approved, post-delete users rows: 0; ready for /gsd:verify-work 6"
+last_updated: "2026-09-14T18:49:07.302Z"
 last_activity: 2026-09-14
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 30
-  completed_plans: 29
-  percent: 97
+  completed_plans: 30
+  percent: 100
 ---
 
 # Project State
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 Phase: 06 (accounts-legal) — EXECUTING
 Plan: 7 of 7
-Status: Paused at Task 2 human-verify checkpoint (06-07)
+Status: Phase complete — ready for verification
 Last activity: 2026-09-14
 
-Progress: [██████████] 97%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -66,6 +66,7 @@ Progress: [██████████] 97%
 | Phase 06 P04 | 7min | 3 tasks | 7 files |
 | Phase 06 P05 | 6min | 3 tasks | 6 files |
 | Phase 06 P06 | 7min | 3 tasks | 5 files |
+| Phase 06 P07 | ~40min (human gate) | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,7 @@ Recent decisions affecting current work:
 - [Phase 06]: Gated tokens (useAuth/useUser/terracotta) stay out of component comments; the h-11 class string is inlined per branch so the touch-target grep counts each rendered branch
 - [Phase 06]: A6 confirmed — useClerk().signOut({ redirectUrl: '/' }) typechecks on @clerk/nextjs 7.9.1; the router.push fallback and useRouter import were dropped from DeleteAccountDialog
 - [Phase 06]: /account is a prompt-not-redirect when signed out and shares one Shell frame across the signed-out, null-snapshot, and signed-in branches; the restore link is balancesToParams with nulls dropped, the same canonical query the share link uses
+- [Phase 06]: /og bare URL 308s cookie-free to the canonical &d= PNG (Phase 5 CR-01/WR-02); the T-06-08 gate is read on the redirect + PNG pair (MISS→HIT, zero set-cookie), not on the plan's literal image/png-first probe
 
 ### Pending Todos
 
@@ -128,6 +130,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-14T18:14:35.158Z
-Stopped at: 06-07 Task 1 complete (289 tests, typecheck, lint, build green; pushed 0cd9898..c2c8dad; prod probes recorded; db-check baseline users rows: 0). PAUSED at 06-07 Task 2 checkpoint:human-verify (blocking) — awaiting 'approved' with step 4 (A5) / step 8 (consent timestamp) notes, then Task 3 VALIDATION sign-off
+Last session: 2026-09-14T18:49:07.229Z
+Stopped at: Completed 06-07-PLAN.md — Phase 06 complete (7/7 plans); 06-VALIDATION.md signed off nyquist_compliant: true; human walkthrough approved, post-delete users rows: 0; ready for /gsd:verify-work 6
 Resume file: None

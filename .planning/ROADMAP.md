@@ -159,7 +159,7 @@ Plans:
 - [x] 06-04-PLAN.md — Server Actions (saveBalances, setBookmark, addGoal, deleteGoal, deleteAccount DB→Clerk), account-data read module, mocked action tests, guest-flow-gate test
 - [x] 06-05-PLAN.md — / reads auth() → island props; account precedence; Save CTA beside Copy my link; bookmark toggle on both result tiers
 - [x] 06-06-PLAN.md — /account page: saved balances + restore link, bookmarks, goals add/remove, Delete my account dialog → signOut
-- [ ] 06-07-PLAN.md — Local gates, deploy by push, production curl probes (/privacy, /account, /og cache), human end-to-end walkthrough, VALIDATION sign-off
+- [x] 06-07-PLAN.md — Local gates, deploy by push, production curl probes (/privacy, /account, /og cache), human end-to-end walkthrough, VALIDATION sign-off
 
 ### Phase 7: Editorial Polish & Launch
 
