@@ -2,7 +2,7 @@
 phase: quick-260914-ei5
 plan: 01
 subsystem: branding / infra
-status: checkpoint
+status: complete
 tags: [rename, branding, github, vercel, metadata]
 requires: []
 provides:
@@ -41,7 +41,7 @@ metrics:
 
 # Quick Task 260914-ei5: Rename Points Unlocked to Milesworth — Summary
 
-**Status: CHECKPOINT (Task 3 — human-action, blocking).** Code and planning docs are renamed, committed, and pushed; GitHub repo is `nickthx/milesworth`. The Vercel project still carries the old name until renamed in the dashboard.
+**Status: COMPLETE.** Code, planning docs, GitHub repo, and Vercel project are all renamed; `https://milesworth.vercel.app` is the production host and `points-unlocked.vercel.app` 307-redirects to it.
 
 One-liner: Full-surface rename to Milesworth (metadata, share card, footer, methodology, `SITE_URL` fallback `https://milesworth.vercel.app`, package name, 42 planning docs) plus GitHub repo rename and remote switch, with all four gates green.
 
@@ -74,7 +74,7 @@ Residual grep `Points Unlocked|points-unlocked|PointsUnlocked` over `src tests p
 | `points-unlocked.vercel.app` | live | still HTTP 200, and **already serving the renamed build** ("Milesworth" x12 in HTML) — the push triggered a Production deploy, proving Vercel's Git link followed the GitHub rename |
 | `milesworth.vercel.app` | — | HTTP 404 (project not yet renamed in Vercel) |
 
-## Task 3 — HUMAN ACTION REQUIRED (Vercel dashboard)
+## Task 3 — Vercel dashboard rename (human action, done 2026-09-14)
 
 Vercel CLI is not installed and there is no `VERCEL_TOKEN`, so this cannot be automated. Do the following:
 
@@ -88,6 +88,16 @@ Vercel CLI is not installed and there is no `VERCEL_TOKEN`, so this cannot be au
 
 **Post-resume automated verify:**
 `test "$(curl -s -o /dev/null -w '%{http_code}' https://milesworth.vercel.app)" = "200" && curl -s https://milesworth.vercel.app | grep -c "Milesworth" | grep -qv '^0$'`
+
+**Resume signal received:** Nick renamed the project, set `milesworth.vercel.app` as the production domain, and left `points-unlocked.vercel.app` attached as a redirect.
+
+**Post-resume evidence (2026-09-14):**
+
+| Probe | Result |
+|-------|--------|
+| `https://milesworth.vercel.app` | HTTP 200, "Milesworth" appears 12 times in HTML |
+| `https://points-unlocked.vercel.app` | HTTP 307 → `https://milesworth.vercel.app/` (old share links keep working) |
+| `https://milesworth.vercel.app/og` | HTTP 200, `image/png` |
 
 ## Deviations from Plan
 
