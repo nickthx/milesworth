@@ -20,3 +20,18 @@ export const SITE_URL =
  * rendered card.
  */
 export const SITE_HOST = new URL(SITE_URL).host;
+
+// Privacy policy contacts (ACCT-04). Recorded in 06-01-SUMMARY.md by the
+// human during Clerk provisioning; the /privacy page renders both from here
+// so the address and the date live in exactly one place.
+
+/** Where privacy and deletion requests go — rendered as a mailto on /privacy. */
+export const PRIVACY_CONTACT_EMAIL = "nick@whitflow.com";
+
+/**
+ * The policy's "Last updated" date, as an ISO calendar date. Rendered from a
+ * constant because the static-route source scan forbids `new Date` (the
+ * T-05-05 pattern: a clock read would opt the page out of prerendering and
+ * would also lie — the policy changes when its text changes, not daily).
+ */
+export const PRIVACY_LAST_UPDATED = "2026-09-03";

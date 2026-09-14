@@ -1,10 +1,9 @@
 import Link from "next/link";
 
-// Site footer (VAL-03 link placement). Server component: no client directive,
-// no hooks, no data — a wordmark, the methodology link, and the standing
-// disclaimer. Plan 05-05 mounts it in src/app/layout.tsx so it appears under
-// every route; this file deliberately stays unmounted until then to avoid a
-// layout.tsx conflict with the wave-2 metadata work.
+// Site footer (VAL-03 link placement; ACCT-04 privacy link). Server
+// component: no client directive, no hooks, no data — a wordmark, the
+// methodology and privacy links, and the standing disclaimer. Mounted in
+// src/app/layout.tsx (plan 05-05) so it appears under every route.
 //
 // Accent discipline (UI-SPEC): ink only. Nothing in the footer is the wow
 // delta, so no accent color appears here.
@@ -23,6 +22,12 @@ export function SiteFooter() {
             className="text-ink/70 text-sm leading-5 underline-offset-4 hover:underline"
           >
             Methodology
+          </Link>
+          <Link
+            href="/privacy"
+            className="text-ink/70 text-sm leading-5 underline-offset-4 hover:underline"
+          >
+            Privacy
           </Link>
           <span className="text-ink/70 text-sm leading-5">
             Educational only — not financial advice

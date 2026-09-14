@@ -84,7 +84,9 @@ describe("/privacy (ACCT-04)", () => {
 
   it("renders the Last updated line from the site constant, not a clock", () => {
     expect(PRIVACY_LAST_UPDATED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    expect(html).toMatch(new RegExp(`Last updated[^<]*${PRIVACY_LAST_UPDATED}`));
+    expect(html).toMatch(
+      new RegExp(`Last updated[^<]*${PRIVACY_LAST_UPDATED}`),
+    );
   });
 
   it("never uses the accent color and never shouts", () => {
@@ -124,7 +126,7 @@ describe("site footer (ACCT-04 link placement)", () => {
     "utf8",
   );
 
-  it('links to /privacy exactly once', () => {
+  it("links to /privacy exactly once", () => {
     expect((source.match(/href="\/privacy"/g) ?? []).length).toBe(1);
   });
 });
