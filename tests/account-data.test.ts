@@ -80,7 +80,7 @@ describe("account-data source scan (server-only DB reader — T-06-04 / T-06-05)
     "utf8",
   );
 
-  it('imports the database (it is the read path, not a component)', () => {
+  it("imports the database (it is the read path, not a component)", () => {
     expect(source).toContain('from "@/db"');
   });
 
