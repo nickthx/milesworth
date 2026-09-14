@@ -9,6 +9,7 @@ import {
   serial,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -20,6 +21,16 @@ import {
 // (cpp, wow delta) are never persisted; the engine computes them.
 // interest_signups (PLAT-04) is the first table with a runtime writer; the
 // curated four remain seed-only and scripts/seed.ts never touches it.
+//
+// Phase 6 accounts (ACCT-01..03): users, user_balances, bookmarks and
+// travel_goals are written ONLY by the Server Actions in
+// src/app/actions/account.ts; scripts/seed.ts never touches them. No user
+// table has a FK into a seeded table (programs / redemptions) — the seed is a
+// full delete-then-insert, and a FK from user data would make it fail the
+// moment one bookmark exists (RESEARCH Pitfall 6). Slugs are validated at
+// write time by src/lib/account-validation.ts and filtered at read time.
+// Every child row cascades from users.clerk_user_id, so deleting the users
+// row (deleteAccount) removes the whole account in one statement.
 
 export const programKind = pgEnum("program_kind", ["bank", "airline", "hotel"]);
 
@@ -148,7 +159,89 @@ export const interestSignups = pgTable("interest_signups", {
   // very first email rather than retrofitting tokens onto addresses already
   // collected. Nothing reads it yet; the unsubscribe route is a v2 task and
   // the tease copy does not promise one until it exists.
-  unsubscribeToken: uuid("unsubscribe_token").notNull().defaultRandom().unique(),
+  unsubscribeToken: uuid("unsubscribe_token")
+    .notNull()
+    .defaultRandom()
+    .unique(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+// ACCT-01 cascade anchor. Written only by src/app/actions/account.ts (upsert
+// on first save); the seed script never touches it. Deleting this row removes
+// every child row below via ON DELETE CASCADE.
+export const users = pgTable("users", {
+  // The Clerk userId from auth() — the only identity key the app stores.
+  clerkUserId: text("clerk_user_id").primaryKey(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+// ACCT-01 saved balances, one row per (user, program). Written only by
+// src/app/actions/account.ts; never by the seed script.
+export const userBalances = pgTable(
+  "user_balances",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.clerkUserId, { onDelete: "cascade" }),
+    // Validated against the 8 enterable slugs by balancesSchema. Deliberately
+    // NO FK into programs (Pitfall 6): the seed does delete-then-insert.
+    programSlug: text("program_slug").notNull(),
+    // Positive safe int <= MAX_BALANCE — the same guard as balance-params.
+    points: integer("points").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  // uniqueIndex, not a composite PK / .unique(): composite constraints churn
+  // under drizzle-kit 0.31.10 on PG18 (RESEARCH Pitfall 1 / A3).
+  (t) => [
+    uniqueIndex("user_balances_user_program_uidx").on(t.userId, t.programSlug),
+  ],
+);
+
+// ACCT-02 bookmarked redemptions. Written only by src/app/actions/account.ts;
+// never by the seed script.
+export const bookmarks = pgTable(
+  "bookmarks",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.clerkUserId, { onDelete: "cascade" }),
+    // Validated against the @/data slugs by bookmarkSlugSchema. NO FK into
+    // redemptions (Pitfall 6); a slug that later leaves the dataset is
+    // filtered at read time rather than blocking the seed.
+    redemptionSlug: text("redemption_slug").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("bookmarks_user_redemption_uidx").on(
+      t.userId,
+      t.redemptionSlug,
+    ),
+  ],
+);
+
+// ACCT-03 travel goals — stored only, no ranking effect (V2-03 deferred).
+// Written only by src/app/actions/account.ts; never by the seed script.
+export const travelGoals = pgTable("travel_goals", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.clerkUserId, { onDelete: "cascade" }),
+  // <= 280 chars, trimmed by goalSchema.
+  text: text("text").notNull(),
+  // Optional, <= 80 chars; "" from FormData is stored as null.
+  destination: text("destination"),
+  // Optional ISO yyyy-mm-dd; "" from FormData is stored as null.
+  targetDate: date("target_date"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
