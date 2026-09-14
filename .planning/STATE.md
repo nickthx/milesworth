@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: "Completed 06-02-PLAN.md (accounts data layer: 4 tables live, Zod boundary, account precedence); next 06-03 (wave 2), then 06-04"
-last_updated: "2026-09-14T17:34:15.653Z"
+last_updated: "2026-09-14T17:35:59.722Z"
 last_activity: 2026-09-14
 progress:
   total_phases: 7
@@ -62,6 +62,7 @@ Progress: [█████████░] 87%
 | Phase 05 P05 | 5min | 3 tasks | 2 files |
 | Phase 06 P01 | ~2h (2 human gates) | 3 tasks | 5 files |
 | Phase 06 P02 | 10min | 3 tasks | 7 files |
+| Phase 06 P03 | 18min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,8 @@ Recent decisions affecting current work:
 - [Phase 06]: Account tables carry no FK into programs/redemptions (Pitfall 6) — seed delete-then-insert must keep working once a bookmark exists; bookmarkSlugSchema enum is the read-time truth
 - [Phase 06]: uniqueIndex (not composite PK / .unique()) on user_balances and bookmarks — first push prompt-free, second push 'No changes detected' on PG18
 - [Phase 06]: resolveInitialBalances ranks URL > storage > account > none; account branch never writes storage (T-06-09); MAX_BALANCE shared between URL codec and balancesSchema
+- [Phase 06]: site-header.tsx is a client component — the RSC-resolved Clerk <Show> calls auth() and would make every route dynamic; client boundary keeps ○ /methodology and ○ /privacy
+- [Phase 06]: /privacy ships with contact nick@whitflow.com and PRIVACY_LAST_UPDATED 2026-09-03 as constants; no /terms (Dashboard did not require one)
 
 ### Pending Todos
 
