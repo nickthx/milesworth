@@ -14,7 +14,7 @@ provides:
   - Drizzle layer wired to Neon over drizzle-orm/neon-http (lazy-init client in src/db/index.ts)
   - health_check placeholder table live in Neon, pushed via drizzle-kit push (D-16)
   - Homepage server component queries health_check and renders "infrastructure: live" from real DB data
-  - Verified production deployment at https://points-unlocked.vercel.app (200, noindex, git auto-deployed)
+  - Verified production deployment at https://milesworth.vercel.app (200, noindex, git auto-deployed)
 affects: [phase-02-data, phase-04-ui, deployment]
 
 # Tech tracking
@@ -46,7 +46,7 @@ completed: 2026-09-01
 
 # Phase 01 Plan 05: Database Wiring + Production Verification Summary
 
-**Full data path proven end-to-end: schema.ts → drizzle-kit push → Neon → server-component query rendering "infrastructure: live" on the auto-deployed production URL points-unlocked.vercel.app**
+**Full data path proven end-to-end: schema.ts → drizzle-kit push → Neon → server-component query rendering "infrastructure: live" on the auto-deployed production URL milesworth.vercel.app**
 
 ## Performance
 
@@ -62,8 +62,8 @@ completed: 2026-09-01
 - `health_check` placeholder table (id, status default "ok", checked_at) — the only table, per D-16; pushed to Neon with `drizzle-kit push` (no --force needed)
 - Round trip proven twice via `scripts/db-check.ts`: insert + select exits 0, "health_check rows: 2, latest status: ok" — no connection details in output (T-01-08)
 - Homepage server component (`force-dynamic`) queries `db.select().from(healthCheck).limit(1)` in try/catch; success renders "infrastructure: live", failure renders neutral "infrastructure: warming up" (T-01-07); D-04 content untouched
-- Push to main auto-deployed production in ~58s (Building 6s after push; `points-unlocked-git-main-*` alias confirms Git-integration source; CI run 33459593383 green)
-- Production verified: `https://points-unlocked.vercel.app/` → HTTP 200, body contains "Points Unlocked", `<meta name="robots" content="noindex, nofollow"/>`, and the exact success text "infrastructure: live" — production DATABASE_URL works through the server component
+- Push to main auto-deployed production in ~58s (Building 6s after push; `milesworth-git-main-*` alias confirms Git-integration source; CI run 33459593383 green)
+- Production verified: `https://milesworth.vercel.app/` → HTTP 200, body contains "Milesworth", `<meta name="robots" content="noindex, nofollow"/>`, and the exact success text "infrastructure: live" — production DATABASE_URL works through the server component
 
 ## Task Commits
 
@@ -100,7 +100,7 @@ completed: 2026-09-01
 
 ## Issues Encountered
 
-None beyond the deviation above. `vercel inspect` (CLI v57) does not print git commit metadata, so Git-integration provenance was confirmed via the `points-unlocked-git-main-nick-whitsetts-projects.vercel.app` alias (only created for Git deploys), deploy creation 6s after the push, and the deployed body containing content that only exists in commit 6cf759b.
+None beyond the deviation above. `vercel inspect` (CLI v57) does not print git commit metadata, so Git-integration provenance was confirmed via the `milesworth-git-main-nick-whitsetts-projects.vercel.app` alias (only created for Git deploys), deploy creation 6s after the push, and the deployed body containing content that only exists in commit 6cf759b.
 
 ## Known Stubs
 

@@ -7,9 +7,9 @@ tags: [vercel, neon, postgres, env-vars, deployment]
 # Dependency graph
 requires:
   - phase: 01-foundation (01-03)
-    provides: GitHub repo nickthx/points-unlocked with origin remote wired
+    provides: GitHub repo nickthx/milesworth with origin remote wired
 provides:
-  - Vercel project "points-unlocked" linked locally (.vercel/project.json) and Git-connected — push to main auto-deploys production
+  - Vercel project "milesworth" linked locally (.vercel/project.json) and Git-connected — push to main auto-deploys production
   - Neon Postgres provisioned via Vercel Marketplace with DATABASE_URL (+ DATABASE_URL_UNPOOLED) injected into Production, Preview, and Development
   - .env.development.local pulled locally (gitignored) containing DATABASE_URL for drizzle.config.ts / Next.js
 affects: [01-05, database, deployment, phase-07-domain]
@@ -24,7 +24,7 @@ key-files:
   modified: []
 
 key-decisions:
-  - "Project name points-unlocked on team nick-whitsetts-projects; free *.vercel.app subdomain only (D-02, no custom domain)"
+  - "Project name milesworth on team nick-whitsetts-projects; free *.vercel.app subdomain only (D-02, no custom domain)"
   - "Git auto-deploy is unconditional — no required checks or deploy gating (D-06)"
   - "DATABASE_URL sourced exclusively from the Neon Marketplace injection and pulled via `vercel env pull` — never copied by hand"
 
@@ -41,7 +41,7 @@ completed: 2026-09-01
 
 # Phase 01 Plan 04: Vercel + Neon Provisioning Summary
 
-**Vercel project "points-unlocked" linked with GitHub push-to-main auto-deploy, Neon Postgres installed via Marketplace, and DATABASE_URL flowing both in Vercel envs and a gitignored local .env.development.local**
+**Vercel project "milesworth" linked with GitHub push-to-main auto-deploy, Neon Postgres installed via Marketplace, and DATABASE_URL flowing both in Vercel envs and a gitignored local .env.development.local**
 
 ## Performance
 
@@ -53,8 +53,8 @@ completed: 2026-09-01
 
 ## Accomplishments
 
-- Linked the repo to Vercel project `nick-whitsetts-projects/points-unlocked` via `vercel link --yes` (.vercel/project.json created, gitignored)
-- Confirmed GitHub repo `nickthx/points-unlocked` is connected for auto-deploy — `vercel git connect` reported "already connected to your project", so every push to main deploys production (D-01, D-06)
+- Linked the repo to Vercel project `nick-whitsetts-projects/milesworth` via `vercel link --yes` (.vercel/project.json created, gitignored)
+- Confirmed GitHub repo `nickthx/milesworth` is connected for auto-deploy — `vercel git connect` reported "already connected to your project", so every push to main deploys production (D-01, D-06)
 - Neon Marketplace integration verified installed: `vercel env ls` shows DATABASE_URL and DATABASE_URL_UNPOOLED for Production, Preview, and Development
 - Pulled development env vars locally with `vercel env pull .env.development.local`; file contains a `DATABASE_URL=` line (value never printed)
 - Secret hygiene proven: `git check-ignore` passes for `.vercel/project.json`, `.env.local`, and `.env.development.local`; `git ls-files` contains no `.env*` match
@@ -74,14 +74,14 @@ No per-task code commits exist for this plan: every artifact the plan produces (
 
 ## Decisions Made
 
-None beyond plan — followed plan as specified (project name "points-unlocked" was already the plan's suggested discretionary choice).
+None beyond plan — followed plan as specified (project name "milesworth" was already the plan's suggested discretionary choice).
 
 ## Deviations from Plan
 
 None - plan executed exactly as written. Two notes, neither a deviation:
 
 1. **Task 2 checkpoint (blocking human-action) was pre-satisfied.** The Vercel project and Neon integration had been created ~4h before this execution (DATABASE_URL already present in all three environments), so the browser consent flow required no pause. Checkpoint acceptance criteria verified via `vercel env ls` before proceeding.
-2. **`vercel git connect` exited 1** with "nickthx/points-unlocked is already connected to your project" — the desired end state, treated as success.
+2. **`vercel git connect` exited 1** with "nickthx/milesworth is already connected to your project" — the desired end state, treated as success.
 
 ## Issues Encountered
 

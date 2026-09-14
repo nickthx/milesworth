@@ -15,7 +15,7 @@ requires:
 provides:
   - "<SiteFooter /> mounted in the root layout after {children} inside NuqsAdapter (every route)"
   - "<AdvisorTease /> mounted on / below CoreExperience in a max-w-3xl container"
-  - "Production deploy of Phases 2-5 at https://points-unlocked.vercel.app (Vercel Git auto-deploy)"
+  - "Production deploy of Phases 2-5 at https://milesworth.vercel.app (Vercel Git auto-deploy)"
   - "Curl evidence that production serves per-link OG tags, a cached /og PNG, and /methodology"
 affects: [06-launch-polish]
 
@@ -101,13 +101,13 @@ completed: 2026-09-03
 
 **Deploy poll:** `og:image` count on `/?ur=90000&mr=50000` was 0 at 04:23:56, 1 at 04:24:27.
 
-**Tags** — `curl -s "https://points-unlocked.vercel.app/?ur=90000&mr=50000" | grep -oE '<meta (property="og:[a-z:]+"|name="twitter:[a-z]+")[^>]*>'`:
+**Tags** — `curl -s "https://milesworth.vercel.app/?ur=90000&mr=50000" | grep -oE '<meta (property="og:[a-z:]+"|name="twitter:[a-z]+")[^>]*>'`:
 
 ```
 <meta property="og:title" content="90,000 Chase Ultimate Rewards points → ANA First Class to Tokyo via Virgin Atlantic"/>
 <meta property="og:description" content="90,000 Chase Ultimate Rewards points → ANA First Class to Tokyo via Virgin Atlantic — $12,870 more than cashing out. See every redemption these balances unlock."/>
-<meta property="og:url" content="https://points-unlocked.vercel.app/?ur=90000&amp;mr=50000"/>
-<meta property="og:image" content="https://points-unlocked.vercel.app/og?ur=90000&amp;mr=50000"/>
+<meta property="og:url" content="https://milesworth.vercel.app/?ur=90000&amp;mr=50000"/>
+<meta property="og:image" content="https://milesworth.vercel.app/og?ur=90000&amp;mr=50000"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:image:alt" content="90,000 Chase Ultimate Rewards points → ANA First Class to Tokyo via Virgin Atlantic — $12,870"/>
@@ -115,12 +115,12 @@ completed: 2026-09-03
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="90,000 Chase Ultimate Rewards points → ANA First Class to Tokyo via Virgin Atlantic"/>
 <meta name="twitter:description" content="90,000 Chase Ultimate Rewards points → ANA First Class to Tokyo via Virgin Atlantic — $12,870 more than cashing out. See every redemption these balances unlock."/>
-<meta name="twitter:image" content="https://points-unlocked.vercel.app/og?ur=90000&amp;mr=50000"/>
+<meta name="twitter:image" content="https://milesworth.vercel.app/og?ur=90000&amp;mr=50000"/>
 ```
 
-`og:image` host is `points-unlocked.vercel.app` (T-05-18 mitigated — not a Deployment-Protected preview host).
+`og:image` host is `milesworth.vercel.app` (T-05-18 mitigated — not a Deployment-Protected preview host).
 
-**Image** — `curl -sI "https://points-unlocked.vercel.app/og?ur=90000&mr=50000"`, twice:
+**Image** — `curl -sI "https://milesworth.vercel.app/og?ur=90000&mr=50000"`, twice:
 
 ```
 #1  HTTP/1.1 200 OK
@@ -145,11 +145,11 @@ completed: 2026-09-03
 **Methodology (VAL-03):**
 
 ```
-curl -s -o /dev/null -w '%{http_code}' https://points-unlocked.vercel.app/methodology → 200
-curl -s https://points-unlocked.vercel.app/ | grep -c 'href="/methodology"'          → 1
+curl -s -o /dev/null -w '%{http_code}' https://milesworth.vercel.app/methodology → 200
+curl -s https://milesworth.vercel.app/ | grep -c 'href="/methodology"'          → 1
 ```
 
-**Baseline card** — `curl -sI https://points-unlocked.vercel.app/og`:
+**Baseline card** — `curl -sI https://milesworth.vercel.app/og`:
 
 ```
 HTTP/1.1 200 OK
@@ -157,7 +157,7 @@ Cache-Control: public, max-age=0
 Content-Type: image/png
 ```
 
-**Tease present (PLAT-04):** `curl -s 'https://points-unlocked.vercel.app/?ur=90000' | grep -ci 'coming soon'` → 1
+**Tease present (PLAT-04):** `curl -s 'https://milesworth.vercel.app/?ur=90000' | grep -ci 'coming soon'` → 1
 
 ## Task 3 Human Verification (approved)
 
@@ -165,8 +165,8 @@ Inspector URLs and share link handed to the human:
 
 - LinkedIn Post Inspector: https://www.linkedin.com/post-inspector/
 - Vercel dashboard → production deployment → Open Graph tab, path `/?ur=90000&mr=50000`
-- Production share link: https://points-unlocked.vercel.app/?ur=90000&mr=50000
-- Bare URL (baseline card): https://points-unlocked.vercel.app/
+- Production share link: https://milesworth.vercel.app/?ur=90000&mr=50000
+- Bare URL (baseline card): https://milesworth.vercel.app/
 
 **Recorded after "approved" (2026-09-03):**
 

@@ -19,7 +19,7 @@ Not in this phase: real database schema (Phase 2), any product UI beyond a minim
 - **D-01:** Deploy the real app shell from day one — no holding page, no throwaway work. The production URL always shows the actual app, however minimal.
 - **D-02:** Ship on the free `*.vercel.app` subdomain. Custom domain decision is deferred to Phase 7's launch gate.
 - **D-03:** Add a `noindex` robots meta tag until launch; removing it is a Phase 7 launch-gate task.
-- **D-04:** Phase 1 homepage = "Points Unlocked" wordmark + one-sentence pitch + an in-progress note. Ten-minute page, intentional-looking, replaced by the real balance-entry flow in Phase 4.
+- **D-04:** Phase 1 homepage = "Milesworth" wordmark + one-sentence pitch + an in-progress note. Ten-minute page, intentional-looking, replaced by the real balance-entry flow in Phase 4.
 
 ### CI & quality gates
 - **D-05:** GitHub Actions workflow runs lint + typecheck + test on every push/PR — visible green checks on the repo are part of the portfolio pitch. Vercel builds/deploys in parallel.

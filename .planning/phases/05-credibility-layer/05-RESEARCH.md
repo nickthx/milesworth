@@ -27,7 +27,7 @@ No CONTEXT.md exists for this phase (user chose to plan from research + requirem
 
 ## Project Constraints (from CLAUDE.md)
 
-Actionable directives from `C:\Users\geoca\points-unlocked\CLAUDE.md` and `C:\Users\geoca\CLAUDE.md`:
+Actionable directives from `C:\Users\geoca\milesworth\CLAUDE.md` and `C:\Users\geoca\CLAUDE.md`:
 
 - **`next/og` is built in — do NOT install `@vercel/og`.** "`ImageResponse` supports custom fonts (pass TTF/WOFF buffer) and flex layouts, but only a CSS subset. Keep the card to: big number, route line, delta. Load the display font once from the filesystem." `[VERIFIED: matches nextjs.org ImageResponse reference]`
 - Stack locked: Next.js 16.3.4 App Router, Tailwind v4 `@theme` tokens, shadcn primitives (vendored: button, card, dialog, input, label), Drizzle 0.45 + `@neondatabase/serverless` via `drizzle-orm/neon-http`, nuqs 2.10, zod 4.5. Clerk is Phase 6 (not installed today — `[VERIFIED: node_modules]`).
@@ -121,7 +121,7 @@ Alternative: Google Fonts CSS API returns a **static TTF instance** when request
  └───────────────────────────────────────────┬────────────────┼──────────────┘
                                              │                │
               <head> og:title / og:description / og:url(with params)
-              og:image = https://points-unlocked.vercel.app/og?ur=90000&mr=50000
+              og:image = https://milesworth.vercel.app/og?ur=90000&mr=50000
               twitter:card = summary_large_image                │
                                              │                ▼
                                              │   src/lib/share-content.ts (pure)
@@ -194,7 +194,7 @@ import { cppX100 } from "@/engine";
 import { formatCpp, formatDollars, formatPoints } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Methodology — Points Unlocked",
+  title: "Methodology — Milesworth",
   description: "How we source cash fares, treat taxes and fees, value points, and why award prices are ranges.",
 };
 
@@ -234,21 +234,21 @@ Notes: no `searchParams` → route prerenders as `○ /methodology` in the build
 
 ```tsx
 // src/app/layout.tsx additions — source: nextjs.org generate-metadata reference
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://points-unlocked.vercel.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://milesworth.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Points Unlocked",
+  title: "Milesworth",
   description: "See what your credit card points are actually worth.",
   robots: { index: false, follow: false }, // D-03 — Phase 7 removes
   openGraph: {
     type: "website",
-    siteName: "Points Unlocked",
-    title: "Points Unlocked",
+    siteName: "Milesworth",
+    title: "Milesworth",
     description: "See what your credit card points are actually worth.",
-    images: [{ url: "/og", width: 1200, height: 630, alt: "Points Unlocked" }],
+    images: [{ url: "/og", width: 1200, height: 630, alt: "Milesworth" }],
   },
-  twitter: { card: "summary_large_image", title: "Points Unlocked",
+  twitter: { card: "summary_large_image", title: "Milesworth",
     description: "See what your credit card points are actually worth.", images: ["/og"] },
 };
 ```
@@ -272,7 +272,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   return {
     title: share.title,
     description: share.description,
-    openGraph: { type: "website", siteName: "Points Unlocked", title: share.title,
+    openGraph: { type: "website", siteName: "Milesworth", title: share.title,
       description: share.description, url: pageUrl,
       images: [{ url: imageUrl, width: 1200, height: 630, alt: share.imageAlt }] },
     twitter: { card: "summary_large_image", title: share.title, description: share.description, images: [imageUrl] },
@@ -307,7 +307,7 @@ export async function GET(request: Request) {
       (
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between",
           width: "100%", height: "100%", padding: 72, background: "#faf7f2", color: "#262119", fontFamily: "Inter" }}>
-          <div style={{ display: "flex", fontSize: 28 }}>{share.eyebrow /* "Points Unlocked" or "90,000 Chase Ultimate Rewards points" */}</div>
+          <div style={{ display: "flex", fontSize: 28 }}>{share.eyebrow /* "Milesworth" or "90,000 Chase Ultimate Rewards points" */}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ fontFamily: "Fraunces", fontWeight: 600, fontSize: 176, lineHeight: 1, letterSpacing: "-0.02em", color: "#c05f33" }}>{share.headline}</div>
             <div style={{ display: "flex", fontFamily: "Fraunces", fontWeight: 600, fontSize: 44, lineHeight: 1.15 }}>{share.title}</div>
@@ -541,7 +541,7 @@ describe("GET /og", () => {
 | Neon Postgres (production) | `interest_signups` table + action | assumed ✓ (used in Phases 1–2) | — | None — blocks PLAT-04's interest hook only; tease copy can ship first |
 | Network to cdn.jsdelivr.net / fonts.gstatic.com | one-time font vendoring | ✓ (200 this session) | — | `npm pack` from registry |
 | slopcheck | package audit | ✓ (`python -m slopcheck` 0.6.1) | — | n/a — no packages this phase |
-| Production site | unfurl verification | ✓ https://points-unlocked.vercel.app (200; currently emits only title/description/robots meta — no OG tags) | — | — |
+| Production site | unfurl verification | ✓ https://milesworth.vercel.app (200; currently emits only title/description/robots meta — no OG tags) | — | — |
 
 **Missing dependencies with no fallback:** none.
 **Missing dependencies with fallback:** none.
@@ -564,7 +564,7 @@ describe("GET /og", () => {
 | PLAT-03 | `buildShareContent`: baseline copy with no balances; top-result copy for `{chase-ur: 90000}`; canonical param order; description ≤ 200 chars; hotel framing branch | unit | `npx vitest run tests/share-content.test.ts` | ❌ Wave 0 |
 | PLAT-03 | `GET /og` returns `image/png`, PNG magic, `s-maxage` header; hostile params → 200 baseline | unit (real ImageResponse in node) | `npx vitest run tests/og-route.test.ts` | ❌ Wave 0 |
 | PLAT-03 | HTML head carries og:title/description/url/image (absolute, with params) + twitter:card | smoke (local) | `npm run build && npm run start` then `curl -s "http://localhost:3000/?ur=90000"` piped to `grep -oE '<meta (property="og:[a-z:]+"\|name="twitter:[a-z]+")[^>]*>'` | — |
-| PLAT-03 | Unfurl verified in a link-preview inspector | **manual-only** (checkpoint:human-verify) | LinkedIn Post Inspector on `https://points-unlocked.vercel.app/?ur=90000&mr=50000` + Vercel deployment → Open Graph tab; evidence = screenshot path or pasted inspector output in SUMMARY; plus `curl -sI "https://points-unlocked.vercel.app/og?ur=90000&mr=50000"` twice → `content-type: image/png`, second `x-vercel-cache: HIT` | — (justification: third-party crawler behavior cannot be exercised locally) |
+| PLAT-03 | Unfurl verified in a link-preview inspector | **manual-only** (checkpoint:human-verify) | LinkedIn Post Inspector on `https://milesworth.vercel.app/?ur=90000&mr=50000` + Vercel deployment → Open Graph tab; evidence = screenshot path or pasted inspector output in SUMMARY; plus `curl -sI "https://milesworth.vercel.app/og?ur=90000&mr=50000"` twice → `content-type: image/png`, second `x-vercel-cache: HIT` | — (justification: third-party crawler behavior cannot be exercised locally) |
 | PLAT-04 | Email normalization, rejection of invalid/oversized input, honeypot rejection | unit | `npx vitest run tests/interest-validation.test.ts` | ❌ Wave 0 |
 | PLAT-04 | Tease section present with copy + form; action wired | grep + typecheck | `grep -c "joinAdvisorWaitlist" src/components/advisor-tease.tsx` ≥ 1; `npm run typecheck` | — |
 | PLAT-04 | Row lands in Neon on submit | **manual** (checkpoint) | submit on the deployed site, then a `scripts/db-check.ts`-style count or Neon console; evidence in SUMMARY | — |

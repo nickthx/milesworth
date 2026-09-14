@@ -42,7 +42,7 @@ Phase 6 adds an *optional* account layer to an app whose entire value is deliver
 
 The blocking discovery is in the database layer. The live Neon database runs **PostgreSQL 18.6**, and `drizzle-kit pull` (read-only, run three times) shows drizzle-kit 0.31.10 introspects the `transfer_routes` composite primary key with its columns **reversed** (`[to_program_slug, from_program_slug]`) even though the catalog order is `(from, to)`. drizzle-kit builds composite-PK/unique column lists from an unordered `information_schema` query, and PG18 returns those rows in a different order — so every push sees a "changed" PK, emits DROP/ADD, and dies with `2BP01`. The deferred-items diagnosis (63-char FK-name truncation) explains the FK churn but not the PK churn; both must be fixed. The fix is cheap: name the FK explicitly and reorder the `primaryKey()` columns in `schema.ts` to match what drizzle-kit introspects, then prove idempotence with a second push that prints "No changes detected". New Phase 6 tables must avoid composite PKs/unique *constraints* entirely (use `serial` id + `uniqueIndex`) so they don't reintroduce the same churn.
 
-Two more findings shape the plan. First, a Clerk **production instance requires a custom domain** ("you cannot use a `*.vercel.app` domain for production"); on the current free `points-unlocked.vercel.app` host the app will run on a Clerk *development* instance (100-user cap, "Development mode" badge in the modal). Second, the seed script does a full delete-then-insert of `programs`/`redemptions`, so any FK from `bookmarks`/`user_balances` into those tables would break `npm run db:seed` the moment one bookmark exists — store validated slugs as plain text instead.
+Two more findings shape the plan. First, a Clerk **production instance requires a custom domain** ("you cannot use a `*.vercel.app` domain for production"); on the current free `milesworth.vercel.app` host the app will run on a Clerk *development* instance (100-user cap, "Development mode" badge in the modal). Second, the seed script does a full delete-then-insert of `programs`/`redemptions`, so any FK from `bookmarks`/`user_balances` into those tables would break `npm run db:seed` the moment one bookmark exists — store validated slugs as plain text instead.
 
 **Primary recommendation:** Wave 0 fixes the push (FK name + PK column order, prove idempotent) and provisions Clerk env vars; then add `src/proxy.ts`, `<ClerkProvider>` inside `<body>`, four `users`-anchored tables with `ON DELETE CASCADE`, thin Zod-guarded Server Actions in `src/app/actions/account.ts`, a dynamic `/account` page, a static `/privacy` page, and a delete flow that cascades the DB *before* calling `clerkClient().users.deleteUser()` — no webhook in v1.
 
@@ -403,7 +403,7 @@ export const travelGoals = pgTable("travel_goals", {
 
 ### Pitfall 2: Clerk production instance needs a domain you control
 **What goes wrong:** Planner assumes `pk_live` keys; Clerk refuses — "you cannot use a `*.vercel.app` domain for production" `[CITED: clerk.com/docs/guides/development/deployment/vercel]`; DNS CNAMEs are required for production `[CITED: clerk-docs deployment/production.mdx]`.
-**How to avoid:** Ship v1 on the Clerk **development** instance (`pk_test`/`sk_test`) — works on `points-unlocked.vercel.app`; limits: 100 users, "Development mode" badge in Clerk UI, shared OAuth credentials, emails from `@accounts.dev` `[CITED: clerk-docs managing-environments.mdx]`. Record as an assumption for Nick (A1). If a custom domain is bought later, production cut-over is a config task, not code.
+**How to avoid:** Ship v1 on the Clerk **development** instance (`pk_test`/`sk_test`) — works on `milesworth.vercel.app`; limits: 100 users, "Development mode" badge in Clerk UI, shared OAuth credentials, emails from `@accounts.dev` `[CITED: clerk-docs managing-environments.mdx]`. Record as an assumption for Nick (A1). If a custom domain is bought later, production cut-over is a config task, not code.
 
 ### Pitfall 3: Build fails or every route 500s when Clerk env vars are missing
 **What goes wrong:** `<ClerkProvider>` in the root layout means `next build` (which prerenders `/methodology`) and every request need `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`; `auth()` needs `CLERK_SECRET_KEY` and a running `clerkMiddleware`. Locally, keyless mode auto-generates temporary keys when none are set `[CITED: clerk-docs prompts (keyless mode)]`, which can mask a missing Vercel var.
@@ -426,7 +426,7 @@ export const travelGoals = pgTable("travel_goals", {
 
 ### Pitfall 8: Clerk in the `/og` crawler path
 **What goes wrong:** `/og` is CDN-cached per URL (`s-maxage=86400`, X-Vercel-Cache HIT proof in Phase 5). If the proxy touches it, any `Set-Cookie`/`Vary` header or a dev-instance handshake redirect could defeat caching or 307 a crawler.
-**How to avoid:** exclude `/og` in the matcher (Pattern 1) and re-run the Phase 5 curl gate: `curl -sI "https://points-unlocked.vercel.app/og?ur=90000&mr=50000"` twice → `image/png`, no `set-cookie`, second `x-vercel-cache: HIT`. `[ASSUMED]` that clerkMiddleware would otherwise add headers — the exclusion is cheap insurance either way.
+**How to avoid:** exclude `/og` in the matcher (Pattern 1) and re-run the Phase 5 curl gate: `curl -sI "https://milesworth.vercel.app/og?ur=90000&mr=50000"` twice → `image/png`, no `set-cookie`, second `x-vercel-cache: HIT`. `[ASSUMED]` that clerkMiddleware would otherwise add headers — the exclusion is cheap insurance either way.
 
 ### Pitfall 9: Testing Server Actions that call `auth()`
 **What goes wrong:** Importing `src/app/actions/account.ts` in vitest pulls `@clerk/nextjs/server`, which expects request context, and `@/db`, which expects `DATABASE_URL` at first query.
@@ -444,7 +444,7 @@ Minimal, honest, plain-language sections (mirror the `/methodology` h1/h2 struct
 5. **Retention & deletion.** Account data kept until you delete your account (`/account` → Delete my account, immediate, irreversible); waitlist email removable on request until the single launch email; contact address for requests (Nick's email — Open Question 3).
 6. **Consent.** You accept this policy at sign-up (Clerk checkbox, timestamp recorded); continuing to use the guest flow requires no account.
 7. **Children / changes.** Not directed at children under 13; "last updated" date rendered from a constant, not `new Date()`.
-Clerk Dashboard → Legal: paste `https://points-unlocked.vercel.app/privacy` as the Privacy Policy URL and enable "Require express consent to legal documents" `[CITED: clerk-docs legal-compliance.mdx]`. Whether a Terms URL is mandatory alongside Privacy is `[ASSUMED: optional]` — check the Dashboard form during the checkpoint.
+Clerk Dashboard → Legal: paste `https://milesworth.vercel.app/privacy` as the Privacy Policy URL and enable "Require express consent to legal documents" `[CITED: clerk-docs legal-compliance.mdx]`. Whether a Terms URL is mandatory alongside Privacy is `[ASSUMED: optional]` — check the Dashboard form during the checkpoint.
 
 ## Code Examples
 
@@ -540,7 +540,7 @@ foreignKey({
 ## Open Questions
 
 1. **Does Nick want a custom domain before launch?**
-   - What we know: Clerk production requires one; the current host is `points-unlocked.vercel.app`; Phase 7 owns launch polish.
+   - What we know: Clerk production requires one; the current host is `milesworth.vercel.app`; Phase 7 owns launch polish.
    - What's unclear: budget/timing.
    - Recommendation: plan Phase 6 on the dev instance; put "production instance cut-over" in Phase 7's launch checklist.
 2. **Webhook backstop now or later?**

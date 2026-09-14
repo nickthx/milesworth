@@ -21,15 +21,15 @@ Roadmap Success Criteria (contract) first, then plan-frontmatter truths (dedupli
 
 | #   | Truth | Status | Evidence |
 | --- | ----- | ------ | -------- |
-| 1   | Next.js 16 (App Router) app with Tailwind v4 + shadcn/ui builds clean and deploys to a public Vercel URL (SC1) | ✓ VERIFIED | package.json: next 16.3.4, tailwindcss ^4 (CSS-first, no tailwind.config.js), 5 vendored shadcn components; `npm run build` exit 0 (route `ƒ /` dynamic); `curl https://points-unlocked.vercel.app/` → HTTP 200 |
+| 1   | Next.js 16 (App Router) app with Tailwind v4 + shadcn/ui builds clean and deploys to a public Vercel URL (SC1) | ✓ VERIFIED | package.json: next 16.3.4, tailwindcss ^4 (CSS-first, no tailwind.config.js), 5 vendored shadcn components; `npm run build` exit 0 (route `ƒ /` dynamic); `curl https://milesworth.vercel.app/` → HTTP 200 |
 | 2   | Neon Postgres (Vercel Marketplace) connected through Drizzle with env vars flowing locally AND in production (SC2) | ✓ VERIFIED | src/db/index.ts uses `drizzle-orm/neon-http` + `neon(process.env.DATABASE_URL!)`; `.env.development.local` exists on disk (gitignored, contents not inspected); production HTML renders the DB-success-branch text "infrastructure: live" — only reachable when the deployed server component's `db.select().from(healthCheck)` succeeds against Neon |
-| 3   | Pushing to main auto-deploys; lint, typecheck, and test run green (SC3) | ✓ VERIFIED | `gh run list --workflow=ci.yml`: latest 3 runs on main all `success`; local `npm run lint`/`typecheck`/`test` all exit 0; `points-unlocked-git-main-*.vercel.app` alias exists (302, not 404 — Git-integration deploys only); prod body contains content that only exists in pushed commit 6cf759b |
+| 3   | Pushing to main auto-deploys; lint, typecheck, and test run green (SC3) | ✓ VERIFIED | `gh run list --workflow=ci.yml`: latest 3 runs on main all `success`; local `npm run lint`/`typecheck`/`test` all exit 0; `milesworth-git-main-*.vercel.app` alias exists (302, not 404 — Git-integration deploys only); prod body contains content that only exists in pushed commit 6cf759b |
 | 4   | Vitest smoke test passes with no jsdom/testing-library, no coverage, no E2E tooling (D-09/D-10/D-11/D-12) | ✓ VERIFIED | vitest.config.ts: node env, `tests/**/*.test.ts`, zero coverage config; `npm test` → 1 passed (1); no playwright/cypress in package.json |
 | 5   | .gitignore covers env files; no secret ever tracked | ✓ VERIFIED | `git check-ignore .env`, `.env.development.local`, `.vercel/project.json` all exit 0; `git ls-files | grep -i .env` → no matches |
 | 6   | Full directory skeleton src/app, src/db, src/data, src/engine, src/components exists (D-14) | ✓ VERIFIED | All five directories present on disk |
 | 7   | shadcn D-15 set (button, input, label, card, dialog) vendored — no CLI runs needed mid-Phase-4 | ✓ VERIFIED | src/components/ui/{button,input,label,card,dialog}.tsx + src/lib/utils.ts + components.json exist; tw-animate-css present, no tailwindcss-animate |
 | 8   | Fraunces (opsz) + Inter via next/font wired into Tailwind v4 @theme with warm palette (D-13) | ✓ VERIFIED | layout.tsx: `Fraunces({ variable: "--font-fraunces", axes: ["opsz"] })` + Inter; globals.css `@theme` consumes `var(--font-fraunces)` and defines --color-cream/--color-ink/--color-terracotta + display type scale |
-| 9   | Homepage shows wordmark + pitch + in-progress note — real app shell, no holding page (D-01/D-04) | ✓ VERIFIED | page.tsx renders "Points Unlocked", pitch, "In progress — launching soon"; production HTML contains "Points Unlocked" |
+| 9   | Homepage shows wordmark + pitch + in-progress note — real app shell, no holding page (D-01/D-04) | ✓ VERIFIED | page.tsx renders "Milesworth", pitch, "In progress — launching soon"; production HTML contains "Milesworth" |
 | 10  | Every page carries robots noindex until Phase 7 (D-03) | ✓ VERIFIED | layout.tsx `robots: { index: false, follow: false }` with Phase 7 removal comment; production HTML contains `<meta name="robots" content="noindex, nofollow"/>` |
 | 11  | CI is advisory, secret-free, no git hooks (D-05/D-06/D-08) | ✓ VERIFIED | ci.yml: 3 jobs (lint/typecheck/test), zero `secrets.` references, zero env blocks, first-party actions only; no .husky/, no husky/lint-staged in package.json |
 | 12  | Full data path proven: schema.ts → drizzle-kit push → Neon → queried from a server component; health_check is the only table (D-16) | ✓ VERIFIED | schema.ts exports only `healthCheck` (`health_check` table); page.tsx queries `db.select().from(healthCheck).limit(1)` in try/catch; production renders the success branch "infrastructure: live" — the failure fallback would render "warming up" |
@@ -65,7 +65,7 @@ Roadmap Success Criteria (contract) first, then plan-frontmatter truths (dedupli
 | src/app/layout.tsx | src/app/globals.css | --font-fraunces CSS variable | ✓ WIRED | layout defines the variable; globals.css @theme consumes `var(--font-fraunces)` at line 12 |
 | drizzle.config.ts | .env.development.local | guarded process.loadEnvFile | ✓ WIRED | try/catch loadEnvFile present; file exists on disk |
 | src/app/page.tsx | src/db/index.ts | `db.select().from(healthCheck)` in try/catch | ✓ WIRED | Import `from "@/db"`, query present, catch renders neutral string only |
-| git push to main | https://points-unlocked.vercel.app | Vercel Git integration | ✓ WIRED | git-main alias exists (302, not DEPLOYMENT_NOT_FOUND); prod serves commit-6cf759b content; Server: Vercel headers |
+| git push to main | https://milesworth.vercel.app | Vercel Git integration | ✓ WIRED | git-main alias exists (302, not DEPLOYMENT_NOT_FOUND); prod serves commit-6cf759b content; Server: Vercel headers |
 | Neon Marketplace | Vercel env / local env | auto-injected DATABASE_URL | ✓ WIRED | Production success-branch text proves prod DATABASE_URL works; local file pulled and present |
 
 ### Data-Flow Trace (Level 4)
@@ -82,7 +82,7 @@ Roadmap Success Criteria (contract) first, then plan-frontmatter truths (dedupli
 | Typecheck green | `npm run typecheck` | exit 0 | ✓ PASS |
 | Test green | `npm test` | 1 passed (1), exit 0 | ✓ PASS |
 | Build clean | `npm run build` | exit 0; `ƒ /` dynamic, `/_not-found` static | ✓ PASS |
-| Prod URL live | `curl https://points-unlocked.vercel.app/` | HTTP 200; body has "Points Unlocked", noindex meta, "infrastructure: live" | ✓ PASS |
+| Prod URL live | `curl https://milesworth.vercel.app/` | HTTP 200; body has "Milesworth", noindex meta, "infrastructure: live" | ✓ PASS |
 | CI green on main | `gh run list --workflow=ci.yml --limit 3` | 3/3 conclusion success on main | ✓ PASS |
 | DB round-trip script | `npx tsx scripts/db-check.ts` | ? SKIP — not run by verifier: it inserts a row into the production DB (state-modifying); production "infrastructure: live" already proves the DB path end-to-end | ? SKIP |
 
@@ -94,7 +94,7 @@ No `scripts/*/tests/probe-*.sh` probes exist or are declared by any plan — not
 
 | Requirement | Source Plan | Description | Status | Evidence |
 | ----------- | ----------- | ----------- | ------ | -------- |
-| PLAT-01 | 01-01 through 01-05 (all five plans) | App is deployed publicly on Vercel and shareable via a single link | ✓ SATISFIED | https://points-unlocked.vercel.app returns 200 serving the built app shell; single shareable link, no auth wall |
+| PLAT-01 | 01-01 through 01-05 (all five plans) | App is deployed publicly on Vercel and shareable via a single link | ✓ SATISFIED | https://milesworth.vercel.app returns 200 serving the built app shell; single shareable link, no auth wall |
 
 Orphan check: REQUIREMENTS.md traceability maps only PLAT-01 to Phase 1; all five plans declare `requirements: [PLAT-01]`. No orphaned requirements.
 

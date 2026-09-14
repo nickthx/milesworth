@@ -97,7 +97,7 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `package.json` - next 16.3.4, scripts dev/build/lint/typecheck/test/format; renamed to points-unlocked
+- `package.json` - next 16.3.4, scripts dev/build/lint/typecheck/test/format; renamed to milesworth
 - `vitest.config.ts` - Vitest node environment, tests/**/*.test.ts include, no coverage (D-11)
 - `tests/smoke.test.ts` - single trivial passing test (D-10)
 - `.prettierrc` - prettier-plugin-tailwindcss class sorting
@@ -109,7 +109,7 @@ Each task was committed atomically:
 
 - Scaffolded into a scratchpad temp directory then moved contents into the repo root, since create-next-app refuses non-empty directories; scaffold's own .git, .next, and CLAUDE.md pointer were dropped
 - Kept scaffold-generated `AGENTS.md` (Next 16 regenerates it on `next dev`; committing it keeps the working tree clean)
-- Renamed package from "scaffold" to "points-unlocked" in package.json and package-lock.json
+- Renamed package from "scaffold" to "milesworth" in package.json and package-lock.json
 
 ## Deviations from Plan
 

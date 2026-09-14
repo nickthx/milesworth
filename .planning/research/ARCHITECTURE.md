@@ -6,7 +6,7 @@
 
 ## How Systems Like This Are Typically Structured
 
-Points Unlocked belongs to a recognizable architecture class: **small curated dataset + deterministic compute engine + read-heavy public frontend + optional persistence**. Close cousins: mortgage/loan comparison calculators, award-travel tools (AwardHacker, older FlyerTalk-era tools), "which card should I get" quizzes, tax estimators, The Points Guy's valuations pages. The defining traits:
+Milesworth belongs to a recognizable architecture class: **small curated dataset + deterministic compute engine + read-heavy public frontend + optional persistence**. Close cousins: mortgage/loan comparison calculators, award-travel tools (AwardHacker, older FlyerTalk-era tools), "which card should I get" quizzes, tax estimators, The Points Guy's valuations pages. The defining traits:
 
 1. **The data is the product.** ~80–120 hand-curated rows, updated by a human, versioned like code. There is no user-generated content and no live external data in v1.
 2. **The "engine" is a pure function.** `(balances, dataset) → ranked results`. No I/O, no state, fully unit-testable. Systems in this class that put ranking logic in SQL or scatter it across components consistently regret it.
@@ -335,5 +335,5 @@ Phases 4–6 overlap; 1→2→3 is a strict chain.
 - `.planning/PROJECT.md` — requirements, constraints, and key decisions
 
 ---
-*Architecture research for: Points Unlocked (credit-card points redemption visualizer)*
+*Architecture research for: Milesworth (credit-card points redemption visualizer)*
 *Researched: 2026-08-31*

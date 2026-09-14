@@ -310,7 +310,7 @@ Assuming a roadmap shaped like: (1) foundation/schema + walking-skeleton deploy,
 - [Roaming Cactus — Bilt Rewards 2.0 (2026)](https://roamingcactus.com/news/bilt-rewards-20-2026)
 - [FlightPoints — How Dynamic Pricing Affects Airline Award Redemptions](https://flightpoints.com/blogs/how-dynamic-pricing-affects-airline-redemptions/)
 - Domain knowledge: transfer-partner mechanics (Marriott 3:1 + 5K/60K, Amex→Hilton 1:2, transfer increments), cpp-methodology debates in the points community, LinkedIn in-app WebView behavior for shared links
-- Project context: `C:\Users\geoca\points-unlocked\.planning\PROJECT.md`
+- Project context: `C:\Users\geoca\milesworth\.planning\PROJECT.md`
 
 ---
 *Pitfalls research for: credit-card points & miles redemption visualizer*

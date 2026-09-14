@@ -1,13 +1,13 @@
 # Project Research Summary
 
-**Project:** Points Unlocked — credit-card points redemption visualizer
+**Project:** Milesworth — credit-card points redemption visualizer
 **Domain:** Curated-data recommendation app (small hand-curated dataset + deterministic compute engine + read-heavy public frontend + optional persistence)
 **Researched:** 2026-08-31
 **Confidence:** HIGH
 
 ## Executive Summary
 
-Points Unlocked fills a genuine market gap: every existing tool asks "where do you want to go?" (point.me, Seats.aero) or tracks cards (Travel Freely, AwardWallet); none takes multi-program balances as input and answers "here is the most jaw-dropping thing your points buy, with the cash-value receipt." The architecture class is deliberately boring — ~80–120 curated Postgres rows, a pure TypeScript ranking engine, an anonymous-first Next.js frontend — and that is correct for a 2–4 week portfolio deadline. The value is data quality and editorial presentation, not infrastructure.
+Milesworth fills a genuine market gap: every existing tool asks "where do you want to go?" (point.me, Seats.aero) or tracks cards (Travel Freely, AwardWallet); none takes multi-program balances as input and answers "here is the most jaw-dropping thing your points buy, with the cash-value receipt." The architecture class is deliberately boring — ~80–120 curated Postgres rows, a pure TypeScript ranking engine, an anonymous-first Next.js frontend — and that is correct for a 2–4 week portfolio deadline. The value is data quality and editorial presentation, not infrastructure.
 
 Recommended approach: Next.js 16 App Router (pin >=16.3.3 for the Aug 2026 security fixes; note `middleware.ts` is now `proxy.ts`) + Tailwind v4 + shadcn/ui, Drizzle ORM over Neon Postgres (installed via Vercel Marketplace — "Vercel Postgres" no longer exists), Clerk v7 for optional-save auth (public-by-default middleware), and nuqs for URL-canonical balance state so every result screen is a shareable link with a dynamic OG card via built-in `next/og`. Curated data lives in the repo as typed, Zod-validated TS seed files ("repo-as-CMS") — no admin UI in v1. The engine is a sealed pure module (`(balances, dataset) -> ranked results`), exhaustively unit-tested, isomorphic so v2's AI advisor can call it server-side unchanged.
 

@@ -9,7 +9,7 @@ requires:
   - phase: 01-foundation (plan 01-01)
     provides: npm scripts lint/typecheck/test that the workflow invokes
 provides:
-  - GitHub origin remote verified (nickthx/points-unlocked, public, main pushed, unprotected)
+  - GitHub origin remote verified (nickthx/milesworth, public, main pushed, unprotected)
   - .github/workflows/ci.yml — advisory CI with three parallel jobs (lint, typecheck, test) on push + pull_request
 affects: [01-04 vercel-deploy, all future phases pushing to main]
 
@@ -28,7 +28,7 @@ key-files:
 
 key-decisions:
   - "Node 22 + npm cache + parallel jobs, per CONTEXT's Claude's Discretion list"
-  - "Origin remote already existed (nickthx/points-unlocked, public) — verified instead of created; no branch protection present"
+  - "Origin remote already existed (nickthx/milesworth, public) — verified instead of created; no branch protection present"
 
 patterns-established:
   - "CI jobs mirror npm scripts 1:1 — adding a quality gate means adding a script, then a job"
@@ -42,7 +42,7 @@ completed: 2026-08-31
 
 # Phase 1 Plan 03: Advisory CI Workflow Summary
 
-**GitHub Actions CI with three parallel secret-free jobs (lint, typecheck, test) on every push/PR against the verified public nickthx/points-unlocked origin — advisory only, nothing gates deploys**
+**GitHub Actions CI with three parallel secret-free jobs (lint, typecheck, test) on every push/PR against the verified public nickthx/milesworth origin — advisory only, nothing gates deploys**
 
 ## Performance
 
@@ -54,7 +54,7 @@ completed: 2026-08-31
 
 ## Accomplishments
 
-- Verified origin remote: `https://github.com/nickthx/points-unlocked.git`, resolves via `gh repo view` as public `nickthx/points-unlocked`, `main` exists on the remote, and branch protection returns 404 (unprotected — push-to-main auto-deploy stays unconditional per D-06/D-07)
+- Verified origin remote: `https://github.com/nickthx/milesworth.git`, resolves via `gh repo view` as public `nickthx/milesworth`, `main` exists on the remote, and branch protection returns 404 (unprotected — push-to-main auto-deploy stays unconditional per D-06/D-07)
 - Created `.github/workflows/ci.yml`: workflow "CI" triggered on `push` (all branches) and `pull_request`, three parallel jobs named `lint`, `typecheck`, `test`, each using actions/checkout@v4 + actions/setup-node@v4 (Node 22, npm cache) + `npm ci` + the matching script
 - Zero `secrets.` references and zero `env:` blocks in the workflow (T-01-03: nothing sensitive can appear in public CI logs); only first-party actions (T-01-SC)
 

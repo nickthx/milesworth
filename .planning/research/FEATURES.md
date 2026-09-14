@@ -6,20 +6,20 @@
 
 ## Competitive Landscape Snapshot
 
-The market splits into four tool categories, and Points Unlocked sits in a gap between them:
+The market splits into four tool categories, and Milesworth sits in a gap between them:
 
 1. **Valuation references** (TPG monthly valuations, AwardWallet valuations) — static cents-per-point tables updated monthly, with published methodology. No personalization; you look up "Amex MR = 2.0cpp" yourself.
 2. **Award search engines** (point.me $12/mo, Seats.aero, PointsYeah, Roame) — real-time award availability for a route you already chose. Powerful but require the user to know where they want to go, and the best ones are paid.
 3. **Card/balance trackers** (Travel Freely, AwardWallet, MaxRewards, CardPointers) — track cards, bonuses, annual fees, 5/24 status; balance tracking via manual entry or account sync.
 4. **Discovery/inspiration tools** (Roame SkyView, point.me Explore, Daily Drop deal alerts) — "where can I go?" maps and deal feeds; the newest, fastest-growing category.
 
-**The gap Points Unlocked fills:** none of these takes "here are my balances across 8 programs" as the *input* and answers "here is the most jaw-dropping thing those specific points buy, with the cash-value receipt." Hilton's Points Explorer does a single-program version of this; point.me Explore does destination discovery but is search-driven and paywalled. The multi-program, balance-first, wow-delta-ranked framing is genuinely underserved — that is the differentiator to protect.
+**The gap Milesworth fills:** none of these takes "here are my balances across 8 programs" as the *input* and answers "here is the most jaw-dropping thing those specific points buy, with the cash-value receipt." Hilton's Points Explorer does a single-program version of this; point.me Explore does destination discovery but is search-driven and paywalled. The multi-program, balance-first, wow-delta-ranked framing is genuinely underserved — that is the differentiator to protect.
 
 ## Feature Landscape
 
 ### Table Stakes (Users Expect These)
 
-Missing these makes the product feel broken or untrustworthy for its category. Note: table stakes for a *visualizer* are different from table stakes for a *search engine* — Points Unlocked does not need live availability, but it absolutely needs credible numbers.
+Missing these makes the product feel broken or untrustworthy for its category. Note: table stakes for a *visualizer* are different from table stakes for a *search engine* — Milesworth does not need live availability, but it absolutely needs credible numbers.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
@@ -37,7 +37,7 @@ Missing these makes the product feel broken or untrustworthy for its category. N
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Balance-first ranked "wow" feed | The core inversion: every competitor asks "where do you want to go?"; Points Unlocked asks "what do you have?" and answers with the best thing it buys. No mainstream tool does this across programs | MEDIUM | The product. Ranking = wow delta (cash value − cash-out value) filtered to affordable-now. Depends entirely on DB quality |
+| Balance-first ranked "wow" feed | The core inversion: every competitor asks "where do you want to go?"; Milesworth asks "what do you have?" and answers with the best thing it buys. No mainstream tool does this across programs | MEDIUM | The product. Ranking = wow delta (cash value − cash-out value) filtered to affordable-now. Depends entirely on DB quality |
 | Dual valuation side-by-side (cash fare vs cpp, with delta) | point.me added value labels only in 2026 and shows them per-search; leading with the *delta in dollars* ("worth $4,500, you were about to take $900") is more visceral than a cpp number alone. Fits the finance-author brand | LOW-MEDIUM | Already decided. Presentation is the work: big numbers, the delta as the hero stat. This is where the editorial design earns its keep |
 | "Almost there" section | Turns a dead-end ("you can't afford this") into aspiration and a return visit ("18K more MR unlocks Lufthansa First"). No competitor frames near-miss redemptions as a product surface; closest analog is Travel Freely's goal tracking, which is manual | MEDIUM | Already decided. Needs a threshold rule (e.g., within 25–30% of required points) and a "you're X points away" callout. Also the natural hook for the v2 advisor tease: "a card bonus would cover this" |
 | Curated sweet-spot database with expert voice | AwardHacker died because it was a stale exhaustive table; blogs publish sweet-spot listicles that aren't interactive. A curated, opinionated 80–120-entry DB with an active churner's picks is a moat competitors' aggregation can't fake | HIGH (effort, not tech) | The single largest v1 work item and the v2 advisor's knowledge base. Schema decisions here cascade everywhere — get program/partner/ratio/pricing/verified-date fields right early |
@@ -168,7 +168,7 @@ Auto-sync balances ──conflicts──> No-login instant flow
 | Booking help | Step-by-step (core paid value) | Links out | Editorial | N/A | Short static booking notes per entry |
 | Account sync | N/A | N/A | N/A | AwardWallet auto-sync; Travel Freely deliberately manual | **Deliberately manual** (Travel Freely's playbook: privacy as a feature) |
 
-**Positioning takeaway:** Points Unlocked is not competing with award search engines and should never frame itself as one — it competes with *ignorance* (the 1¢ cash-out) the way TPG valuations do, but personalized and interactive the way trackers are. The honest pitch: "point.me tells you how to book the trip you chose; Points Unlocked shows you the trip you didn't know you could afford."
+**Positioning takeaway:** Milesworth is not competing with award search engines and should never frame itself as one — it competes with *ignorance* (the 1¢ cash-out) the way TPG valuations do, but personalized and interactive the way trackers are. The honest pitch: "point.me tells you how to book the trip you chose; Milesworth shows you the trip you didn't know you could afford."
 
 ## Sources
 
@@ -177,8 +177,8 @@ Auto-sync balances ──conflicts──> No-login instant flow
 - TPG valuation methodology (cpp formula, trimmed average/median, monthly cadence): [TPG monthly valuations](https://thepointsguy.com/loyalty-programs/monthly-valuations/), [TPG valuations methodology](https://thepointsguy.com/loyalty-programs/points-miles-valuations-methodology/), [TPG — points or cash](https://thepointsguy.com/loyalty-programs/calculate-redemption-values/)
 - Travel Freely feature set (free, no-credential tracking, CardGenie, 5/24): [Thrifty Traveler — Travel Freely review](https://thriftytraveler.com/guides/travel-freely-review/), [ChooseFI — Travel Freely review](https://choosefi.com/travel-freely-review-unleashing-the-power-of-travel-rewards), [Frequent Miler — Travel Freely](https://frequentmiler.com/take-the-stress-out-of-credit-card-bonus-hunting-travel-freely/)
 - Balance-filtered redemption exploration precedent (Hilton Points Explorer) and tool roundups: [Upgraded Points — best points and miles tools](https://upgradedpoints.com/news/points-and-miles-tools-expert-recommendations/), [NerdWallet — Hilton points guide](https://www.nerdwallet.com/travel/learn/the-complete-guide-to-using-hilton-honors-points), [AwardWallet — sweet spots roundup](https://awardwallet.com/travel/award-program-sweet-spots/)
-- Project context: `C:\Users\geoca\points-unlocked\.planning\PROJECT.md`
+- Project context: `C:\Users\geoca\milesworth\.planning\PROJECT.md`
 
 ---
-*Feature research for: points & miles redemption visualizer (Points Unlocked)*
+*Feature research for: points & miles redemption visualizer (Milesworth)*
 *Researched: 2026-08-31*

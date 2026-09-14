@@ -68,7 +68,7 @@ completed: 2026-08-31
 
 # Phase 1 Plan 02: UI Foundation Summary
 
-**shadcn/ui (radix-nova, neutral) with the five D-15 primitives vendored, Fraunces(opsz)+Inter design tokens in Tailwind v4 @theme, and the noindexed Points Unlocked homepage shell**
+**shadcn/ui (radix-nova, neutral) with the five D-15 primitives vendored, Fraunces(opsz)+Inter design tokens in Tailwind v4 @theme, and the noindexed Milesworth homepage shell**
 
 ## Performance
 
@@ -151,7 +151,7 @@ None - no external service configuration required.
 - components.json, src/components/ui/{button,input,label,card,dialog}.tsx, src/lib/utils.ts: all exist on disk
 - Commits 0f38b86, a648144, 36cca82 present in git log
 - `npm run build`, `npm run lint`, `npm run typecheck`, `npm test` all exit 0
-- globals.css contains @theme + --font-fraunces; layout.tsx loads Fraunces/Inter; page.tsx contains "Points Unlocked"; built index.html contains `<meta name="robots" content="noindex, nofollow"/>`; no tailwind.config.js exists
+- globals.css contains @theme + --font-fraunces; layout.tsx loads Fraunces/Inter; page.tsx contains "Milesworth"; built index.html contains `<meta name="robots" content="noindex, nofollow"/>`; no tailwind.config.js exists
 
 ---
 *Phase: 01-foundation*

@@ -13,7 +13,7 @@ requires:
 provides:
   - "GET /og — Node Route Handler rendering a 1200x630 PNG via next/og ImageResponse from buildShareContent; CDN-cacheable (s-maxage=86400, stale-while-revalidate=604800); hostile params degrade to the baseline card; neutral 500 on render failure"
   - "generateMetadata({ searchParams }) on / emitting complete openGraph/twitter objects — title, description, og:url with canonical params, og:image → /og?<canonical params>, twitter:card=summary_large_image"
-  - "Root layout metadataBase (NEXT_PUBLIC_SITE_URL ?? https://points-unlocked.vercel.app) + site-wide openGraph/twitter defaults pointing at the baseline /og card"
+  - "Root layout metadataBase (NEXT_PUBLIC_SITE_URL ?? https://milesworth.vercel.app) + site-wide openGraph/twitter defaults pointing at the baseline /og card"
   - "tests/og-route.test.ts — 3 node-env cases rendering real PNGs (share link, baseline, hostile params)"
 affects: [05-05, linkedin-unfurl, methodology-page-metadata, launch-gate]
 
@@ -66,7 +66,7 @@ completed: 2026-09-02
 - `GET /og` returns a 1200x630 PNG (`content-type: image/png`, `Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=604800`) for a share link, the branded baseline card for no params, and still a 200 PNG for hostile params (`ur=-5&mr=abc&zz=1&ur=1e9`) — verified by three real-render tests
 - Fonts are the OFL `.woff` static instances vendored in 05-01, read once per process from `src/assets/fonts` via `process.cwd()`; attribution lives in the route's header comment (CLAUDE.md forbids a README)
 - `/` now exports `generateMetadata({ searchParams })` returning complete `openGraph`/`twitter` objects: `og:url` carries the canonical query string (T-05-11), `og:image` is `/og?<same params>` resolved absolute via `metadataBase`
-- Root layout gained `metadataBase` (`NEXT_PUBLIC_SITE_URL ?? https://points-unlocked.vercel.app`) and site-wide social defaults; the D-03 `robots: { index: false, follow: false }` block is untouched
+- Root layout gained `metadataBase` (`NEXT_PUBLIC_SITE_URL ?? https://milesworth.vercel.app`) and site-wide social defaults; the D-03 `robots: { index: false, follow: false }` block is untouched
 - `npm run build` exits 0 with route table `ƒ /`, `○ /_not-found`, `ƒ /og`; full suite 170/170 across 14 files; `typecheck` and `lint` clean; `src/app` still has zero `@/db`/drizzle importers
 
 ## Task Commits
@@ -85,7 +85,7 @@ _Note: Task 1 is TDD — RED confirmed as a module-not-found failure before the 
 - `src/app/page.tsx` - `generateMetadata` above `Home`; imports `paramsToBalances` + `buildShareContent`; clock-read comment now documents two server-side reads per request (island/engine still clock-free)
 
 ## Decisions Made
-- Card layout follows the plan's spec exactly: eyebrow (Inter 28) top; bottom column with the headline (Fraunces 600 — 176px terracotta for results, 88px ink for the baseline sentence), title (Fraunces 44, `lineClamp: 2`, result only), subline (Inter 28 at 0.7 opacity), and a small `points-unlocked.vercel.app` wordmark at 0.6 opacity (not terracotta).
+- Card layout follows the plan's spec exactly: eyebrow (Inter 28) top; bottom column with the headline (Fraunces 600 — 176px terracotta for results, 88px ink for the baseline sentence), title (Fraunces 44, `lineClamp: 2`, result only), subline (Inter 28 at 0.7 opacity), and a small `milesworth.vercel.app` wordmark at 0.6 opacity (not terracotta).
 - `loadFonts()` memoizes a `Promise.all` of the two `readFile`s instead of using top-level await, so a font-read failure surfaces inside the `try` and becomes the neutral 500 rather than a module-evaluation crash.
 - `NEXT_PUBLIC_SITE_URL` is the only override; the Vercel per-deployment host variable is deliberately never consulted (T-05-10).
 
@@ -132,7 +132,7 @@ _Note: Task 1 is TDD — RED confirmed as a module-not-found failure before the 
 
 ## User Setup Required
 
-None locally. Optional: set `NEXT_PUBLIC_SITE_URL` in Vercel if the production domain ever changes from `points-unlocked.vercel.app`. Production unfurl verification (LinkedIn Post Inspector, Vercel OG tab, `x-vercel-cache: HIT` on a repeat `/og?…` request) is scheduled for plan 05-05 after deploy.
+None locally. Optional: set `NEXT_PUBLIC_SITE_URL` in Vercel if the production domain ever changes from `milesworth.vercel.app`. Production unfurl verification (LinkedIn Post Inspector, Vercel OG tab, `x-vercel-cache: HIT` on a repeat `/og?…` request) is scheduled for plan 05-05 after deploy.
 
 ## Known Stubs
 

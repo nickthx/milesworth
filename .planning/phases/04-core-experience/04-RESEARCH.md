@@ -16,7 +16,7 @@ The two genuinely fiddly areas are (1) the three-way state dance between URL par
 
 ## Project Constraints (from CLAUDE.md)
 
-Actionable directives from `C:\Users\geoca\points-unlocked\CLAUDE.md` and `C:\Users\geoca\CLAUDE.md` that bind this phase:
+Actionable directives from `C:\Users\geoca\milesworth\CLAUDE.md` and `C:\Users\geoca\CLAUDE.md` that bind this phase:
 
 - **Stack is locked:** Next.js 16.3.4 App Router, Tailwind v4 (`@theme` tokens in `globals.css`, no `tailwind.config.js`), shadcn/ui for primitives, TypeScript strict. Do not introduce CSS-in-JS or Pages Router patterns.
 - **nuqs 2.10.x is the designated shareable-results mechanism** — "Balances live in the URL (`/results?ur=90000&mr=50000`) … Requires wrapping the app in `NuqsAdapter` in `app/layout.tsx`." Research below confirms and refines this.

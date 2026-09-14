@@ -64,7 +64,7 @@ Per-fix verification was `npx tsc --noEmit -p .` plus the affected test file bef
 
 **Files modified:** `src/lib/site.ts` (**new file**), `src/app/layout.tsx`, `src/app/og/route.tsx`
 **Commit:** `76a3a10`
-**Applied fix:** Created `src/lib/site.ts` exporting `SITE_URL` (with the existing `NEXT_PUBLIC_SITE_URL` override and its T-05-10 rationale) and the derived `SITE_HOST`. `layout.tsx` imports `SITE_URL` for `metadataBase`; the OG card renders `{SITE_HOST}`. The literal `points-unlocked.vercel.app` now exists in exactly one place (verified by grep over `src/`).
+**Applied fix:** Created `src/lib/site.ts` exporting `SITE_URL` (with the existing `NEXT_PUBLIC_SITE_URL` override and its T-05-10 rationale) and the derived `SITE_HOST`. `layout.tsx` imports `SITE_URL` for `metadataBase`; the OG card renders `{SITE_HOST}`. The literal `milesworth.vercel.app` now exists in exactly one place (verified by grep over `src/`).
 
 **New file created:** `src/lib/site.ts` — required by the fix, as the review specified.
 

@@ -106,15 +106,15 @@ function loadFonts(): Promise<{ fraunces: Buffer; inter: Buffer }> {
 **Issue:** `generateMetadata` computes `asOf` and `share.description` fresh on every request. The PNG for the same query is served from the CDN for up to 24 h and then served stale for up to 7 more days while revalidating. The engine's output depends on `asOf` (bonus windows are date-gated; the live Amex -> Hilton +30% promo ends 2026-10-14, and `activeBonusFor` compares dates lexically). Across that boundary the `og:description` will say one dollar figure and the cached card will show another for up to eight days. The same applies to any redemption whose `verifiedAt` flips or whose fare is re-verified. Three separate comments (`og/route.tsx:12`, `page.tsx:22-23`, `share-content.ts:19-21`) state the two "can never disagree"; the cache policy makes that false for exactly the situations the methodology page promises are handled ("When a bonus window ends, every figure that depended on it reverts ... automatically").
 **Fix:** Either (a) make `asOf` part of the cache key — have `generateMetadata` emit `/og?${share.queryString}&d=${asOf}` and have the route read `d` (validated as `YYYY-MM-DD`, else today) so a day change is a new key; or (b) shorten the policy to something that bounds the disagreement window, e.g. `s-maxage=3600, stale-while-revalidate=86400`. Option (a) keeps the CDN hit rate and makes the invariant true; if you take it, fold it into the CR-01 canonicalization so `d` is included in the canonical redirect.
 
-### WR-03: Card footer hard-codes `points-unlocked.vercel.app` while the layout supports a `NEXT_PUBLIC_SITE_URL` override
+### WR-03: Card footer hard-codes `milesworth.vercel.app` while the layout supports a `NEXT_PUBLIC_SITE_URL` override
 
 **File:** `src/app/og/route.tsx:138`, `src/app/layout.tsx:28-29`
-**Issue:** `layout.tsx` defines `SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://points-unlocked.vercel.app"` specifically so the domain can change without code edits (the 05-03 summary calls this out). The OG card renders the literal string `points-unlocked.vercel.app`. The moment a custom domain is set via the env var — the likely path for a LinkedIn launch — every social card carries the old host while `og:url` and `og:image` carry the new one.
+**Issue:** `layout.tsx` defines `SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://milesworth.vercel.app"` specifically so the domain can change without code edits (the 05-03 summary calls this out). The OG card renders the literal string `milesworth.vercel.app`. The moment a custom domain is set via the env var — the likely path for a LinkedIn launch — every social card carries the old host while `og:url` and `og:image` carry the new one.
 **Fix:** Move the constant to a shared module and derive the display host from it.
 ```ts
 // src/lib/site.ts
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://points-unlocked.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://milesworth.vercel.app";
 export const SITE_HOST = new URL(SITE_URL).host;
 ```
 ```tsx

@@ -74,7 +74,7 @@ Wave 0 is folded into plan 05-01 (Wave 1) and the first task of each Wave 2 plan
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| Share link unfurls with the branded OG image in a link-preview inspector (ROADMAP criterion 2) | PLAT-03 | Third-party crawler rendering (LinkedIn/Slack/iMessage) cannot be exercised locally; previews are Deployment-Protected so only production counts | 05-05 Task 3 steps 1–3: LinkedIn Post Inspector on `https://points-unlocked.vercel.app/?ur=90000&mr=50000` and the bare URL; Vercel deployment → Open Graph tab. Evidence: screenshot path or pasted tag list in 05-05-SUMMARY |
+| Share link unfurls with the branded OG image in a link-preview inspector (ROADMAP criterion 2) | PLAT-03 | Third-party crawler rendering (LinkedIn/Slack/iMessage) cannot be exercised locally; previews are Deployment-Protected so only production counts | 05-05 Task 3 steps 1–3: LinkedIn Post Inspector on `https://milesworth.vercel.app/?ur=90000&mr=50000` and the bare URL; Vercel deployment → Open Graph tab. Evidence: screenshot path or pasted tag list in 05-05-SUMMARY |
 | Waitlist submission stores a row; repeat is idempotent; invalid input shows neutral copy | PLAT-04 | Server Actions require a browser-issued action request; the executor cannot forge one | 05-05 Task 3 step 4 (submit real email, resubmit, submit `not-an-email`); then executor runs `npx tsx scripts/db-check.ts` → `interest_signups rows: ≥1` |
 | Methodology page reads correctly and is reachable from both links | VAL-03 | Wording sign-off is Nick's (PITFALLS #4 — treat as a research note) | 05-05 Task 3 step 5 |
 

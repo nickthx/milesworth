@@ -120,14 +120,14 @@ In `generateMetadata`, keep the return value: `const balances = paramsToBalances
 **Analog:** itself, lines 21-27:
 ```tsx
 export const metadata: Metadata = {
-  title: "Points Unlocked",
+  title: "Milesworth",
   description: "See what your credit card points are actually worth.",
   // D-03 noindex gate: keep the pre-launch site out of search indexes.
   // Removing this is an explicit Phase 7 launch-gate task.
   robots: { index: false, follow: false },
 };
 ```
-Extend in place (keep the D-03 comment and `robots` verbatim) with `metadataBase: new URL(SITE_URL)`, `openGraph: { type: "website", siteName, title, description, images: [{ url: "/og", width: 1200, height: 630, alt }] }`, `twitter: { card: "summary_large_image", ... }` (RESEARCH Pattern 2). `SITE_URL` constant at module scope next to the font consts (lines 8-19 style): `process.env.NEXT_PUBLIC_SITE_URL ?? "https://points-unlocked.vercel.app"` — never `VERCEL_URL`.
+Extend in place (keep the D-03 comment and `robots` verbatim) with `metadataBase: new URL(SITE_URL)`, `openGraph: { type: "website", siteName, title, description, images: [{ url: "/og", width: 1200, height: 630, alt }] }`, `twitter: { card: "summary_large_image", ... }` (RESEARCH Pattern 2). `SITE_URL` constant at module scope next to the font consts (lines 8-19 style): `process.env.NEXT_PUBLIC_SITE_URL ?? "https://milesworth.vercel.app"` — never `VERCEL_URL`.
 
 **Footer placement** (lines 40-42): `<body className="flex min-h-full flex-col"><NuqsAdapter>{children}</NuqsAdapter></body>` — the body is already a flex column and pages use `flex-1` on `<main>`, so `<SiteFooter />` slots after `{children}` inside `<NuqsAdapter>` (or as a sibling — it has no nuqs hooks) and lands at the bottom naturally.
 

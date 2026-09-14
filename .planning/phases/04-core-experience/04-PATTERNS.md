@@ -74,7 +74,7 @@ export default function RootLayout({
 ```tsx
     <main className="flex flex-1 flex-col items-center justify-center bg-cream px-6 text-center">
       <h1 className="font-display text-display text-ink sm:text-display-xl">
-        Points Unlocked
+        Milesworth
       </h1>
       <p className="mt-6 max-w-md text-lg leading-8 text-ink/70">
         See what your credit card points are actually worth.

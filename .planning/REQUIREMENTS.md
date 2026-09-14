@@ -1,4 +1,4 @@
-# Requirements — Points Unlocked v1
+# Requirements — Milesworth v1
 
 ## v1 Requirements
 

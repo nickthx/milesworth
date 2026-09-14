@@ -97,7 +97,7 @@ For a curated dataset of ~80–120 destinations, **treat images as curated conte
 
 ```bash
 # Scaffold (accepts defaults: TS, App Router, Tailwind v4, ESLint, src/)
-npx create-next-app@latest points-unlocked
+npx create-next-app@latest milesworth
 
 # Core
 npm install @clerk/nextjs drizzle-orm @neondatabase/serverless nuqs zod
@@ -173,5 +173,5 @@ npm install -D drizzle-kit tsx prettier prettier-plugin-tailwindcss
 - [nuqs guides](https://www.robinwieruch.de/next-search-params/) — URL-state pattern for shareable links — HIGH confidence
 
 ---
-*Stack research for: Points Unlocked — points/miles redemption visualizer*
+*Stack research for: Milesworth — points/miles redemption visualizer*
 *Researched: 2026-08-31*

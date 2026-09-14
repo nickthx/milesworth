@@ -1,4 +1,4 @@
-# Points Unlocked
+# Milesworth
 
 ## What This Is
 
@@ -25,7 +25,7 @@ The "wow" moment: a user sees that the points they were about to burn at 1¢ eac
 - [ ] Saved user record holds: identity (email/OAuth), points balances, travel goals (stored only, no v1 ranking effect), and bookmarked redemptions
 - [ ] Legal handling of user data: privacy policy, consent, and deletion rights
 - [x] "Coming soon" tease of the v2 AI card-roadmap advisor — Validated in Phase 5: Credibility Layer (AdvisorTease on /, email interest hook writing to interest_signups via Server Action)
-- [x] Deployed publicly on Vercel, shareable via a single link — Validated in Phase 1: Foundation (https://points-unlocked.vercel.app, auto-deploy from main, Neon Postgres wired through Drizzle)
+- [x] Deployed publicly on Vercel, shareable via a single link — Validated in Phase 1: Foundation (https://milesworth.vercel.app, auto-deploy from main, Neon Postgres wired through Drizzle)
 
 ### Out of Scope
 
