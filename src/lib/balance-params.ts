@@ -58,8 +58,13 @@ export const loadBalanceParams = createLoader(balanceParsers);
  * would be a CDN miss and a fresh ~1s Satori render at origin. Ten million
  * points is an order of magnitude above the largest realistic single-program
  * balance, so the cap costs no legitimate user anything.
+ *
+ * Exported so the account write boundary (src/lib/account-validation.ts)
+ * enforces the SAME ceiling: the URL ceiling and the saved-balance ceiling
+ * must be one number, or a saved balance could fail to round-trip through a
+ * share link (T-05-08).
  */
-const MAX_BALANCE = 10_000_000;
+export const MAX_BALANCE = 10_000_000;
 
 /**
  * True only for values the engine accepts: positive safe integers within the
