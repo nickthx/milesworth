@@ -1,7 +1,7 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**Points Unlocked**
+**Milesworth**
 
 A web app that shows people who have credit card points — but no idea what to do with them — how powerful those points actually are. Users enter their balances across major programs and see ranked, aspirational redemptions ("Your 90K Amex MR → ANA business class to Tokyo, worth ~$4,500 cash") with the side-by-side delta between cash-out value and transfer-partner value. Built as both a real product for points beginners and a portfolio piece demonstrating product thinking + full-stack execution.
 

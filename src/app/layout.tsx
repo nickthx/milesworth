@@ -27,7 +27,7 @@ const inter = Inter({
 // different hosts.
 
 export const metadata: Metadata = {
-  title: "Points Unlocked",
+  title: "Milesworth",
   description: "See what your credit card points are actually worth.",
   // D-03 noindex gate: keep the pre-launch site out of search indexes.
   // Removing this is an explicit Phase 7 launch-gate task.
@@ -40,21 +40,21 @@ export const metadata: Metadata = {
   // not deep-merged). /og with no params renders the branded baseline card.
   openGraph: {
     type: "website",
-    siteName: "Points Unlocked",
-    title: "Points Unlocked",
+    siteName: "Milesworth",
+    title: "Milesworth",
     description: "See what your credit card points are actually worth.",
     images: [
       {
         url: "/og",
         width: 1200,
         height: 630,
-        alt: "Points Unlocked — what are your points actually worth?",
+        alt: "Milesworth — what are your points actually worth?",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Points Unlocked",
+    title: "Milesworth",
     description: "See what your credit card points are actually worth.",
     images: ["/og"],
   },

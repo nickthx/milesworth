@@ -20,7 +20,7 @@ import { formatCpp, formatDollars, formatPoints } from "@/lib/format";
 // delta, so the accent color is not used anywhere here.
 
 export const metadata: Metadata = {
-  title: "Methodology — Points Unlocked",
+  title: "Methodology — Milesworth",
   description:
     "How we source cash fares, treat taxes and fees, value points, and why award prices are ranges.",
 };

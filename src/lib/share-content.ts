@@ -74,14 +74,14 @@ function baselineContent(queryString: string): ShareContent {
   return {
     kind: "baseline",
     queryString,
-    title: "Points Unlocked",
+    title: "Milesworth",
     headline: "What are your points actually worth?",
-    eyebrow: "Points Unlocked",
+    eyebrow: "Milesworth",
     subline:
       "Enter your balances. See the business-class flight hiding in them.",
     description:
       "See what your credit card points are actually worth. Enter your balances to get ranked, concrete redemptions — with the cash-out comparison.",
-    imageAlt: "Points Unlocked — what are your points actually worth?",
+    imageAlt: "Milesworth — what are your points actually worth?",
   };
 }
 

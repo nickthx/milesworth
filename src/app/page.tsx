@@ -48,7 +48,7 @@ export async function generateMetadata({
     description: share.description,
     openGraph: {
       type: "website",
-      siteName: "Points Unlocked",
+      siteName: "Milesworth",
       title: share.title,
       description: share.description,
       url: pageUrl,

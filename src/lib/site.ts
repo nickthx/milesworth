@@ -9,12 +9,12 @@
 // hosts sit behind Deployment Protection, so a crawler following an og:image
 // on that host gets a 401 and the canonical URL is wrong.
 
-/** Absolute origin, e.g. "https://points-unlocked.vercel.app". */
+/** Absolute origin, e.g. "https://milesworth.vercel.app". */
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://points-unlocked.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://milesworth.vercel.app";
 
 /**
- * Bare host for display, e.g. "points-unlocked.vercel.app". Derived, never
+ * Bare host for display, e.g. "milesworth.vercel.app". Derived, never
  * typed. A malformed NEXT_PUBLIC_SITE_URL throws here at module load — the
  * same failure metadataBase already has, surfaced at boot rather than in a
  * rendered card.

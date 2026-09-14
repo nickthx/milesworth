@@ -1,4 +1,4 @@
-# Points Unlocked (working title)
+# Milesworth (working title)
 
 ## One-liner
 Show people who HAVE credit card points — but no idea what to do with them — how powerful those points actually are.
