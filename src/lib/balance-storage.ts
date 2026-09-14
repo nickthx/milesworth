@@ -109,6 +109,7 @@ export function writeStoredBalances(
 export type InitialBalancesSource =
   | { source: "url" }
   | { source: "storage"; balances: Balances }
+  | { source: "account"; balances: Balances }
   | { source: "none" };
 
 /**
@@ -120,19 +121,31 @@ export type InitialBalancesSource =
  * 2. URL empty + valid stored balances → `{ source: "storage", balances }`.
  *    The caller hydrates by pushing them into the URL (setParams with
  *    history: "replace") so the page is instantly shareable again.
- * 3. Both empty → `{ source: "none" }` (fresh visitor; render the empty state).
+ * 3. URL empty + storage empty + non-empty `savedBalances` (the signed-in
+ *    user's account save, ACCT-01) → the `account` source with those balances. A
+ *    fresh device lands on the last explicit save. The caller hydrates
+ *    exactly like rule 2 (push into the URL with history: "replace") and
+ *    must NOT write storage — storage is written only after an edit (A1), so
+ *    a device's own edits (rule 2) keep outranking the account until the
+ *    user saves again (T-06-09).
+ * 4. All empty → `{ source: "none" }` (fresh visitor; render the empty state).
  *
- * `storedBalances` is the readStoredBalances result (null = nothing usable).
+ * `storedBalances` is the readStoredBalances result (null = nothing usable);
+ * `savedBalances` is the account read (null = signed out or nothing saved).
  */
 export function resolveInitialBalances(
   urlBalances: Balances,
   storedBalances: Balances | null,
+  savedBalances: Balances | null = null,
 ): InitialBalancesSource {
   if (Object.keys(urlBalances).length > 0) {
     return { source: "url" };
   }
   if (storedBalances !== null && Object.keys(storedBalances).length > 0) {
     return { source: "storage", balances: storedBalances };
+  }
+  if (savedBalances !== null && Object.keys(savedBalances).length > 0) {
+    return { source: "account", balances: savedBalances };
   }
   return { source: "none" };
 }
