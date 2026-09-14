@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "05-05 complete (SUMMARY c1d73e6); Task 3 human-verify approved; Phase 05 awaiting /gsd:verify-phase 5"
+stopped_at: "06-01 Task 2 push gate PASSED 2026-09-14 (push-clean); resume 06-01 at Task 3 (Clerk provisioning)"
 last_updated: "2026-09-14T15:05:00.000Z"
-last_activity: 2026-09-14 -- Quick task 260914-ei5 (rename to Milesworth) complete; Phase 06 still paused at 06-01 Task 2 (TTY push)
+last_activity: 2026-09-14 -- 06-01 Task 2 push gate passed; next is Task 3 Clerk provisioning
 progress:
   total_phases: 7
   completed_phases: 5
@@ -108,5 +108,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-09-14T15:05:00.000Z
-Stopped at: 05-05 complete (SUMMARY c1d73e6); Task 3 human-verify approved; Phase 05 awaiting /gsd:verify-phase 5
+Stopped at: 06-01 Task 2 push gate PASSED 2026-09-14 — resume 06-01 at Task 3 (Clerk provisioning). Evidence for 06-01-SUMMARY "Push gate evidence": human `npx drizzle-kit push --verbose` (PowerShell TTY) printed "[i] No changes detected" on the FIRST run; executor non-TTY `npx drizzle-kit push` also "No changes detected"; pg_constraint shows live FK `transfer_bonuses_route_fk` and PK `transfer_routes_to_program_slug_from_program_slug_pk` (no rename statement was needed — the live DB already matched schema.ts); `scripts/db-check.ts` → programs rows: 21, interest_signups rows: 1; `git grep 'postgresql://'` hits are 5 prose mentions in planning docs only, no connection strings.
 Resume file: None
