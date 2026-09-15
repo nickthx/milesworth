@@ -67,8 +67,10 @@ interface CoreExperienceProps {
   isSignedIn: boolean;
   /**
    * The signed-in user's last explicit save (ACCT-01), or null. Consumed ONLY
-   * inside the ref-guarded mount effect below — never during render — so the
-   * first client paint still matches the URL-only server HTML.
+   * inside the two ref-guarded effects below — never during render — so the
+   * first client paint still matches the URL-only server HTML. It can change
+   * after mount: a modal sign-in triggers a soft refresh that re-renders the
+   * server page with a non-null value while this island stays mounted.
    */
   savedBalances: Balances | null;
   /** Redemption slugs the user has bookmarked (ACCT-02); [] when signed out. */
@@ -132,6 +134,11 @@ export function CoreExperience({
   // visitor's own; only then is storage written (Pattern 4 rule 3).
   const hasEditedRef = useRef(false);
   const hydratedRef = useRef(false);
+  // One-shot guard for the account branch specifically: set by whichever of
+  // the two effects below applies `savedBalances`, so it is applied at most
+  // once per mount regardless of whether it was present at mount or arrived
+  // later (post-sign-in refresh).
+  const appliedAccountRef = useRef(false);
 
   // Pitfall 2: storage is read in an effect AFTER mount — never during render
   // or in a state initializer — so server HTML and first client paint match.
@@ -156,6 +163,7 @@ export function CoreExperience({
     // account save. The account branch never writes storage (T-06-09) — the
     // write effect below still keys on hasEditedRef only.
     if (action.source === "storage" || action.source === "account") {
+      if (action.source === "account") appliedAccountRef.current = true;
       // Pattern 4 rule 2: push the restored balances into the URL with a
       // replace so the bare "/" visit is instantly shareable again with no
       // history spam.
@@ -163,6 +171,29 @@ export function CoreExperience({
         history: "replace",
       });
     }
+  }, [params, setParams, savedBalances]);
+
+  // A1 rule 3 after mount: the mount effect above is one-shot, so it cannot
+  // see `savedBalances` change from null to a saved set — which is exactly
+  // what happens when a visitor lands on an empty "/" and signs in through
+  // the modal (Clerk soft-refreshes the server page; this island keeps its
+  // refs). This effect applies the account save in that case ONLY — same
+  // precedence (URL > storage > account, via the same pure resolver), never
+  // after the visitor has edited (their own edits outrank the account), and
+  // never writing storage (T-06-09). The hydratedRef guard above stays as-is:
+  // dropping it would make "clear every field" re-hydrate from storage.
+  useEffect(() => {
+    if (appliedAccountRef.current || hasEditedRef.current) return;
+    const storage = getSafeStorage();
+    const stored = storage === null ? null : readStoredBalances(storage);
+    const action = resolveInitialBalances(
+      paramsToBalances(params),
+      stored,
+      savedBalances,
+    );
+    if (action.source !== "account") return;
+    appliedAccountRef.current = true;
+    void setParams(balancesToParams(action.balances), { history: "replace" });
   }, [params, setParams, savedBalances]);
 
   // Pattern 4 rule 3: persist the full balance set on every URL change, but

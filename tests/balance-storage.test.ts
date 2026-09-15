@@ -202,6 +202,26 @@ describe("resolveInitialBalances (A1 precedence: URL > storage > account > none;
   it('URL empty + null stored + null saved → { source: "none" }', () => {
     expect(resolveInitialBalances({}, null, null)).toEqual({ source: "none" });
   });
+
+  it("sign-in after mount: the prop flipping null → saved (URL and storage still empty) resolves to account, so the island's second effect applies it", () => {
+    // Before the modal sign-in the island resolved to "none"; the mount
+    // effect is one-shot, so a second, prop-driven effect in
+    // core-experience.tsx re-runs this exact resolver when savedBalances
+    // arrives and hydrates only when it answers "account".
+    expect(resolveInitialBalances({}, null, null)).toEqual({ source: "none" });
+    expect(resolveInitialBalances({}, null, SAVED)).toEqual({
+      source: "account",
+      balances: SAVED,
+    });
+    // A share link or the device's own stored edits still win after sign-in.
+    expect(resolveInitialBalances({ "chase-ur": 1 }, null, SAVED)).toEqual({
+      source: "url",
+    });
+    expect(resolveInitialBalances({}, VALID_BALANCES, SAVED)).toEqual({
+      source: "storage",
+      balances: VALID_BALANCES,
+    });
+  });
 });
 
 describe("purity (storage I/O is injected — module references no browser global)", () => {
