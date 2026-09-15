@@ -12,6 +12,7 @@ import {
   goalIdSchema,
   goalSchema,
 } from "@/lib/account-validation";
+import { NEUTRAL_ERROR_MESSAGE } from "@/lib/site";
 
 // ACCT-01..04 write path: every mutation of the four account tables. Second
 // "@/db" importer under src/app (with actions/interest.ts; the read module
@@ -31,9 +32,11 @@ export type ActionState = {
   message: string;
 };
 
+// The string lives in src/lib/site.ts so the client-side transport fallback
+// in bookmark-button.tsx / save-balances-button.tsx renders the same copy.
 const NEUTRAL_ERROR: ActionState = {
   status: "error",
-  message: "Something went wrong. Try again in a moment.",
+  message: NEUTRAL_ERROR_MESSAGE,
 };
 
 const SIGN_IN_FIRST: ActionState = {

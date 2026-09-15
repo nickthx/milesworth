@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { saveBalances } from "@/app/actions/account";
 import type { ActionState } from "@/app/actions/account";
 import type { Balances } from "@/engine";
+import { NEUTRAL_ERROR_MESSAGE } from "@/lib/site";
 
 // ACCT-01 Save CTA (RESEARCH Open Question 4 ruling): sits beside "Copy my
 // link" as a secondary ink/outline button. Explicit save only — never an
@@ -19,9 +20,17 @@ import type { Balances } from "@/engine";
 // modal keeps the visitor on "/" with the balances still in the URL.
 //
 // Accent discipline (UI-SPEC): ink/outline only — the accent stays on "Copy my
-// link". Errors render only the action's fixed neutral copy (T-06-04).
+// link". Errors render only fixed neutral copy (T-06-04): the action's own
+// result for driver errors, and the same shared string when the action CALL
+// rejects in transit (network drop, 5xx, stale action id after a deploy) —
+// otherwise React 19 would surface the rejection to the nearest error
+// boundary and replace the whole results page.
 
 const IDLE: ActionState = { status: "idle", message: "" };
+const TRANSPORT_FAILED: ActionState = {
+  status: "error",
+  message: NEUTRAL_ERROR_MESSAGE,
+};
 
 interface SaveBalancesButtonProps {
   balances: Balances;
@@ -69,7 +78,13 @@ export function SaveBalancesButton({
         variant="outline"
         disabled={pending || Object.keys(balances).length === 0}
         onClick={() =>
-          startTransition(async () => setState(await saveBalances(balances)))
+          startTransition(async () => {
+            try {
+              setState(await saveBalances(balances));
+            } catch {
+              setState(TRANSPORT_FAILED);
+            }
+          })
         }
         className="h-11 min-w-44 px-6 text-base font-semibold"
       >

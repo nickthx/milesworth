@@ -125,3 +125,28 @@ describe("the @/db importer set is exactly the three server files (T-06-05)", ()
     ]);
   });
 });
+
+describe("account write failures degrade to designed states, never the framework crash screen (T-06-04 / T-04-12)", () => {
+  it("src/app/error.tsx exists as a client boundary that renders no error detail", () => {
+    const path = join(SRC, "app", "error.tsx");
+    expect(existsSync(path)).toBe(true);
+    const source = readFileSync(path, "utf8");
+    expect(source.split("\n")[0].trim()).toBe('"use client";');
+    expect(source).toContain("reset()");
+    expect(source).not.toContain('from "@/db');
+    const offenders = source
+      .split("\n")
+      .filter((l) => !l.trim().startsWith("//"))
+      .filter((l) => /error\.message|error\.stack|digest\}|console\./.test(l));
+    expect(offenders).toEqual([]);
+  });
+
+  for (const file of ["bookmark-button.tsx", "save-balances-button.tsx"]) {
+    it(`${file} guards its awaited Server Action call with try/catch`, () => {
+      const source = read("src", "components", file);
+      expect(source).toMatch(/try \{[\s\S]*await (setBookmark|saveBalances)\(/);
+      expect(source).toContain("} catch {");
+      expect(source).toContain("NEUTRAL_ERROR_MESSAGE");
+    });
+  }
+});

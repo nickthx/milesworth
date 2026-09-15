@@ -4,6 +4,7 @@ import { SignInButton } from "@clerk/nextjs";
 import { useOptimistic, useState, useTransition } from "react";
 
 import { setBookmark } from "@/app/actions/account";
+import { NEUTRAL_ERROR_MESSAGE } from "@/lib/site";
 
 // ACCT-02 bookmark toggle. First useOptimistic in the codebase — a single
 // boolean: the label flips on click, and the action's revalidatePath("/")
@@ -12,7 +13,11 @@ import { setBookmark } from "@/app/actions/account";
 //
 // Session state is a prop (page.tsx reads auth()); no Clerk client hooks, so
 // hydration is exact (Pitfall 5). Imports only the Server Action reference —
-// never "@/db" (T-06-05). Errors render the action's fixed copy only (T-06-04).
+// never "@/db" (T-06-05). Errors render fixed copy only (T-06-04): the action
+// returns it for driver errors, and the catch below renders the same shared
+// string when the action CALL itself rejects (network drop, 5xx, stale action
+// id after a deploy) — otherwise React 19 would hand the rejection to the
+// nearest error boundary and replace the whole results page.
 //
 // Accent discipline (UI-SPEC): ink text buttons in both branches, no accent.
 // Both branches are h-11 for the 44px touch target.
@@ -55,8 +60,15 @@ export function BookmarkButton({
           startTransition(async () => {
             const next = !optimistic;
             setOptimistic(next);
-            const result = await setBookmark(slug, next);
-            setError(result.status === "error" ? result.message : "");
+            try {
+              const result = await setBookmark(slug, next);
+              setError(result.status === "error" ? result.message : "");
+            } catch {
+              // Transport failure: the transition still settles normally, so
+              // useOptimistic reverts the label to the server-derived prop
+              // (no revalidation happened) and the fixed copy explains why.
+              setError(NEUTRAL_ERROR_MESSAGE);
+            }
           })
         }
         className="text-ink h-11 text-sm font-semibold underline-offset-4 hover:underline"

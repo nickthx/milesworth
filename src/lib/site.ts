@@ -35,3 +35,12 @@ export const PRIVACY_CONTACT_EMAIL = "nick@whitflow.com";
  * would also lie — the policy changes when its text changes, not daily).
  */
 export const PRIVACY_LAST_UPDATED = "2026-09-03";
+
+// Shared failure copy (T-04-12 / T-06-04). ONE string so the account Server
+// Actions' neutral result and the client buttons' transport-failure fallback
+// (a rejected action call whose result never arrived) cannot drift apart.
+// Deliberately content-free: no error detail ever reaches the DOM or a log.
+
+/** Fixed neutral copy for any failed write or transport error. */
+export const NEUTRAL_ERROR_MESSAGE =
+  "Something went wrong. Try again in a moment.";
