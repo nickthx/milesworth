@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { PgDialect } from "drizzle-orm/pg-core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // ACCT-01/04: the account Server Actions' security behavior, pinned without a
@@ -11,7 +12,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 //
 // T-06-01 session gate, T-06-03 validation before DB, T-06-04 neutral copy
 // (driver error text never reaches the result), T-06-06 DB-before-Clerk
-// delete order, T-06-02 scoping (the where clause is always invoked).
+// delete order, T-06-02 scoping (every DELETE's where predicate binds the
+// session userId — compiled through PgDialect below, so a regression that
+// drops the userId term fails here rather than merely "where was called").
 
 // vi.mock factories are hoisted above every import, so anything they close
 // over must come from vi.hoisted.
@@ -81,6 +84,27 @@ function dbUntouched(): void {
   expect(mocks.ins).not.toHaveBeenCalled();
 }
 
+// T-06-02 is a property of the predicate, not of `.where()` having run. The
+// actions build real drizzle SQL (`and(eq(...), ...)`) against the real
+// schema and hand it to the fake's `where`; compiling that SQL with the pg
+// dialect exposes the bound params and the column names it filters on.
+// Dropping `eq(table.userId, userId)` removes "user_123" from the params and
+// the user_id column from the text — either assertion below then fails.
+const dialect = new PgDialect();
+
+function whereQuery(call = 0): { sql: string; params: unknown[] } {
+  const predicate = mocks.where.mock.calls[call][0];
+  const { sql, params } = dialect.sqlToQuery(predicate);
+  return { sql, params };
+}
+
+/** Asserts the Nth `.where()` predicate is scoped by the session user. */
+function expectScopedToSessionUser(call = 0, column = "user_id"): void {
+  const { sql, params } = whereQuery(call);
+  expect(params).toContain("user_123");
+  expect(sql).toContain(`"${column}" = $`);
+}
+
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.auth.mockResolvedValue({ userId: "user_123" });
@@ -113,6 +137,15 @@ describe("saveBalances (ACCT-01)", () => {
     expect(mocks.batch.mock.calls[0][0]).toHaveLength(3);
   });
 
+  it("valid balances → the cleanup delete is scoped by the session user AND keeps the saved slugs (T-06-02)", async () => {
+    await saveBalances({ "chase-ur": 90000 });
+    expect(mocks.del).toHaveBeenCalledTimes(1);
+    expectScopedToSessionUser();
+    expect(whereQuery().params).toEqual(
+      expect.arrayContaining(["user_123", "chase-ur"]),
+    );
+  });
+
   it("valid balances → revalidates / and /account", async () => {
     await saveBalances({ "chase-ur": 90000 });
     expect(mocks.revalidatePath).toHaveBeenCalledWith("/");
@@ -124,6 +157,9 @@ describe("saveBalances (ACCT-01)", () => {
     expect(result.status).toBe("ok");
     expect(mocks.batch).toHaveBeenCalledTimes(1);
     expect(mocks.batch.mock.calls[0][0]).toHaveLength(2);
+    // The "clear everything" delete must still be the session user's rows only.
+    expectScopedToSessionUser();
+    expect(whereQuery().params).toEqual(["user_123"]);
   });
 
   it("negative balance → error and no db call (T-06-03)", async () => {
@@ -152,12 +188,16 @@ describe("setBookmark (ACCT-02)", () => {
     expect(mocks.batch).toHaveBeenCalledTimes(1);
   });
 
-  it("known slug, bookmarked=false → a scoped delete", async () => {
+  it("known slug, bookmarked=false → a delete scoped by the session user AND the slug (T-06-02)", async () => {
     const result = await setBookmark(KNOWN_SLUG, false);
     expect(result.status).toBe("ok");
     expect(mocks.del).toHaveBeenCalledTimes(1);
     expect(mocks.where).toHaveBeenCalledTimes(1);
     expect(mocks.batch).not.toHaveBeenCalled();
+    expectScopedToSessionUser();
+    expect(whereQuery().params).toEqual(
+      expect.arrayContaining(["user_123", KNOWN_SLUG]),
+    );
   });
 });
 
@@ -176,11 +216,17 @@ describe("addGoal (ACCT-03)", () => {
 });
 
 describe("deleteGoal (ACCT-03, T-06-02)", () => {
-  it('goalId "7" → delete with the where clause invoked once', async () => {
+  it('goalId "7" → delete scoped by BOTH the id and the session user', async () => {
     const result = await deleteGoal(IDLE, form({ goalId: "7" }));
     expect(result.status).toBe("ok");
     expect(mocks.del).toHaveBeenCalledTimes(1);
     expect(mocks.where).toHaveBeenCalledTimes(1);
+    // The id alone must never be enough: `.where(eq(travelGoals.id, 7))`
+    // would let any signed-in user delete any goal by guessing ids.
+    expectScopedToSessionUser();
+    expect(whereQuery().params).toEqual(
+      expect.arrayContaining([7, "user_123"]),
+    );
   });
 
   it('goalId "abc" → error and no db call', async () => {
@@ -198,6 +244,12 @@ describe("deleteAccount (ACCT-04, T-06-06)", () => {
     expect(mocks.del.mock.invocationCallOrder[0]).toBeLessThan(
       mocks.deleteUser.mock.invocationCallOrder[0],
     );
+  });
+
+  it("the users delete is scoped to exactly the session user (T-06-02)", async () => {
+    await deleteAccount();
+    expectScopedToSessionUser(0, "clerk_user_id");
+    expect(whereQuery().params).toEqual(["user_123"]);
   });
 
   it("when the DB delete rejects, Clerk is never called and the copy is neutral", async () => {
