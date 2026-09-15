@@ -93,6 +93,20 @@ describe("/privacy (ACCT-04)", () => {
     expect(html).not.toContain("terracotta");
     expect(prose).not.toContain("!");
   });
+
+  // ClerkProvider is mounted in the root layout, so clerk-js loads for every
+  // visitor and writes __client_uat (value 0) before any sign-in; __session
+  // and __refresh_* arrive only after sign-in. The disclosure must say so —
+  // a policy claiming "no cookies" while one is being set is the one thing a
+  // privacy page must not do (T-06-10).
+  it("describes Clerk's cookies accurately: __client_uat for signed-out visitors, __session and __refresh_ after sign-in", () => {
+    expect(html).toContain("<code>__client_uat</code>");
+    expect(html).toContain("<code>__session</code>");
+    expect(html).toContain("<code>__refresh_");
+    expect(prose).toContain("signed out");
+    expect(prose).not.toContain("sets no cookies");
+    expect(prose).not.toContain("set only once you sign in");
+  });
 });
 
 describe("/privacy source scan (T-06-16 static, DB-free, auth-free route)", () => {

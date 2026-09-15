@@ -34,7 +34,7 @@ export const PRIVACY_CONTACT_EMAIL = "nick@whitflow.com";
  * T-05-05 pattern: a clock read would opt the page out of prerendering and
  * would also lie — the policy changes when its text changes, not daily).
  */
-export const PRIVACY_LAST_UPDATED = "2026-09-03";
+export const PRIVACY_LAST_UPDATED = "2026-09-15";
 
 // Shared failure copy (T-04-12 / T-06-04). ONE string so the account Server
 // Actions' neutral result and the client buttons' transport-failure fallback

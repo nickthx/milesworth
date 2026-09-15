@@ -43,9 +43,9 @@ export default function PrivacyPage() {
           </h1>
           <p className={MUTED_CLASS}>
             You can use Milesworth without an account. The guest flow keeps your
-            balances in your own browser and sends nothing to our server. An
-            optional account stores only what is listed below, and you can
-            delete it yourself at any time.
+            balances in your own browser; nothing you type is sent to our
+            server. An optional account stores only what is listed below, and
+            you can delete it yourself at any time.
           </p>
           <p className={LABEL_CLASS}>Last updated {PRIVACY_LAST_UPDATED}</p>
         </header>
@@ -148,12 +148,19 @@ export default function PrivacyPage() {
         <section className={SECTION_CLASS}>
           <h2 className={HEADING_CLASS}>Cookies</h2>
           <p className={BODY_CLASS}>
-            The only cookies are Clerk&apos;s strictly necessary session
-            cookies, <code>__session</code> and <code>__client_uat</code>, and
-            they are set only once you sign in. They exist so the site can tell
-            it is still you on the next request. Nothing optional is set, so
-            there is no cookie banner to click through. The guest flow sets no
-            cookies at all.
+            The only cookies come from Clerk, and all of them are strictly
+            necessary. As soon as any page loads, Clerk&apos;s script sets a
+            small <code>__client_uat</code> cookie (its value is <code>0</code>{" "}
+            while you are signed out) so the site can tell whether a session
+            exists without redirecting you. So the guest flow does set this one
+            cookie; it identifies nobody and holds no balances.
+          </p>
+          <p className={BODY_CLASS}>
+            Once you sign in, Clerk also sets <code>__session</code> and a{" "}
+            <code>__refresh_…</code> cookie so it is still you on the next
+            request and your session can be renewed without signing in again.
+            Nothing optional is set and we run no analytics, so there is no
+            cookie banner to click through.
           </p>
         </section>
 
