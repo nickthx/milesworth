@@ -673,28 +673,33 @@ export function CountUp({ cents, format }: { cents: number; format: (c: number) 
 | A10 | Clerk logs "development keys" as `console.warn`, not `console.error` (BP audit counts errors) | Pitfall 11 | BP score dips → visible in the first LHCI run |
 | A11 | All three new dev packages are legitimate (slopcheck unavailable) | Package audit | Planner checkpoint before install |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Custom domain / Clerk production instance before launch?**
    - What we know: `*.vercel.app` cannot host a Clerk production instance; the dev instance shows a "Development mode" badge in the modal a recruiter will see and caps at 100 users `[CITED: clerk docs]`. Cut-over is config only (domain → Vercel → `pk_live`/`sk_live` env → `NEXT_PUBLIC_SITE_URL` → Post Inspector re-scrape); 06-RESEARCH/06-07 explicitly deferred it to Phase 7.
    - What's unclear: whether Nick will buy a domain (≈$10–15/yr) this week.
    - Recommendation: decide in Wave 0. If yes, do it **first** (every URL, OG image, and the Clerk instance depend on the host); if no, accept the badge and record it.
+   - **Resolved by:** 07-01 Task 1 (checkpoint:decision) → recorded as `D7-01` (a|b + domain) in 07-01-SUMMARY `## Wave 0 Decisions`; consumed by 07-05, 07-09, 07-10.
 
 2. **Is Google (or any social connection) enabled on the Clerk instance?**
    - What we know: 06-01 said "enable Google if you want"; Dashboard state is not in the repo.
    - Recommendation: check the Dashboard at Wave 0; for launch keep Email code only, or ship Pattern 5's guard. Verify on device either way.
+   - **Resolved by:** 07-01 Task 1 → `D7-02` (a|b + providers); consumed by 07-05 Task 2 (hint rendered iff b) and 07-07 Task 2 step 6.
 
 3. **Launch dataset size N.**
    - What we know: 34 verified today; roadmap 80–120; Nick's time is the long pole.
    - Recommendation: Wave 0 checkpoint fixes N and the batch cadence; CI floor follows the data, never leads it.
+   - **Resolved by:** 07-01 Task 1 → `D7-03` (N, batch1, batch2); consumed by 07-06 (batch 1) and 07-08 (batch 2, floor = N).
 
 4. **Hero imagery on `/` or cards-only?**
    - What we know: cards-only is Lighthouse-safe; a hero band is more "magazine" but is the LCP risk (Pitfall 8).
    - Recommendation: the UI-SPEC decides; default to cards + a small editorial band that is not an `<img>` (type + terracotta rule) on mobile.
+   - **Resolved by:** 07-UI-SPEC Assumption A1 — imagery on result cards + the empty-state teaser only, no hero image on `/`, none on "Almost there"; implemented in 07-05 Task 2.
 
 5. **Android device for the pass?**
    - What we know: iOS (WKWebView) and Android (`wv`) differ in clipboard/storage behavior.
    - Recommendation: iOS is mandatory; Android is best-effort (borrow a device or accept emulation).
+   - **Resolved by:** 07-01 Task 1 → `android_device: yes|no` in 07-01-SUMMARY; consumed by 07-07 Task 2 step 10.
 
 ## Environment Availability
 
