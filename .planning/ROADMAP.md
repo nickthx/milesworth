@@ -172,11 +172,31 @@ Plans:
   2. The full flow works in LinkedIn's in-app browser and on small screens, verified by a real-device pass
   3. Lighthouse mobile scores are launch-worthy and the dataset has reached its launch size with all entries Nick-verified
 
-**Plans**: TBD
+**Plans**: 10 plans
 
 Plans:
 
-- [ ] 07-01: TBD
+**Wave 1** *(parallel)*
+- [ ] 07-01-PLAN.md — Wave 0 decisions (domain/Clerk prod, social connections, dataset N), package legitimacy gate, @lhci/cli + lighthouse + sharp install, LHCI config + scripts
+- [ ] 07-02-PLAN.md — Foundations: brand.ts, text-heading token, AA terracotta, warm neutrals, pb-safe, vendored weight/16px fixes, /og on brand.ts, design-system gate test
+
+**Wave 2** *(parallel, blocked on Wave 1)*
+- [ ] 07-03-PLAN.md — Imagery pipeline: sharp script, 20 sourced WebPs, typed manifest, image-manifest test, Nick photo review
+- [ ] 07-04-PLAN.md — Type sweep (text-heading everywhere, no text-lg), masthead, 44px nav links, safe-area footer + credits, no target=_blank, not-found + account loading
+
+**Wave 3** *(parallel, blocked on Wave 2)*
+- [ ] 07-05-PLAN.md — Island hardening: canonical share URL + clipboard fallback (share-link.tsx), in-app-browser helper, viewport export, card + teaser imagery, PLAT-02 gate pins
+- [ ] 07-06-PLAN.md — Dataset batch 1: drafts for thin programs + images, Nick verification checkpoint, floor raise, Neon reseed
+
+**Wave 4** *(parallel, blocked on Wave 3)*
+- [ ] 07-07-PLAN.md — Lighthouse mobile baseline on production + PSI cross-check, real-device LinkedIn WebView pass (human checkpoint)
+- [ ] 07-08-PLAN.md — Dataset batch 2 + launch-week re-check of featured 8 and the dated bonus, floor = N, reseed, Phase 2/3 bookkeeping
+
+**Wave 5** *(blocked on Wave 4)*
+- [ ] 07-09-PLAN.md — Launch flip: /account noindex, robots.ts + sitemap.ts, layout noindex removed, SEO gate to error, branded icons, scaffold cleanup, README, launch-gate test
+
+**Wave 6** *(blocked on Wave 5)*
+- [ ] 07-10-PLAN.md — Launch deploy: optional domain/Clerk production cut-over, live probes, final Lighthouse run, LinkedIn Post Inspector re-scrape + phone open
 
 ## Progress
 
