@@ -270,8 +270,8 @@ No new registry pulls planned. If the planner wants a `skeleton` for the account
 - [x] Dimension 1 Copywriting: PASS
 - [x] Dimension 2 Visuals: PASS
 - [x] Dimension 3 Color: PASS
-- [x] Dimension 4 Typography: PASS (FLAG: footer nav gap-3 is off the 4/8/16/24/32/48/64 scale — use gap-2/sm:gap-4 or whitelist 12px in Spacing exceptions)
-- [x] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS (FLAG: footer nav gap-3 is off the 4/8/16/24/32/48/64 scale — use gap-2/sm:gap-4 or whitelist 12px in Spacing exceptions)
+- [x] Dimension 6 Registry Safety: PASS
 
 **Approval:** approved 2026-09-16 by gsd-ui-checker — 6/6 dimensions, 1 non-blocking FLAG (spacing), 2 ledger nits (ring halo ≈3.1:1, ink-on-cream ≈15:1)
