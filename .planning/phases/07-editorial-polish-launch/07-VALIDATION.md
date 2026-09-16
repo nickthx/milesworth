@@ -32,7 +32,7 @@ updated: 2026-09-16
 - **After every task commit:** Run `npx vitest run tests/design-system-gate.test.ts tests/image-manifest.test.ts` plus the task's own test file
 - **Per-task `<automated>` budget:** targeted vitest files + typecheck/lint only; `npm run build` (~90 s) runs once per plan, on the plan's final auto task
 - **After every plan wave:** Run `npm test && npm run typecheck && npm run lint && npm run build`
-- **Before `/gsd:verify-work`:** Full suite green, `npm run lighthouse` green on production (SEO as error after 07-09), both human checkpoints (real-device LinkedIn pass 07-07, Nick dataset sign-off 07-06/07-08) approved, Post Inspector re-scrape (07-10) approved
+- **Before `/gsd:verify-work`:** Full suite green, origin/main pushed by 07-07 T1 and 07-10 T2 (the only Phase 7 pushes; execute workflows never push), `npm run lighthouse` green on production (SEO as error after 07-09), both human checkpoints (real-device LinkedIn pass 07-07, Nick dataset sign-off 07-06/07-08) approved, Post Inspector re-scrape (07-10) approved
 - **Max feedback latency:** 30 seconds (quick run)
 
 ---
@@ -59,7 +59,7 @@ updated: 2026-09-16
 | 07-06-01 | 07-06 | 3 | DATA-01/04 | T-07-09 | Batch 1 drafts (verifiedAt null) + images | unit | `npx vitest run tests/seed-data.test.ts tests/image-manifest.test.ts` + tsx count | ✅ | ⬜ pending |
 | 07-06-02 | 07-06 | 3 | DATA-04 | T-07-10 | Nick verifies batch 1 + held drafts | human | — | n/a | ⬜ pending |
 | 07-06-03 | 07-06 | 3 | DATA-04 | T-07-10, T-07-11, T-07-22 | Floor = achieved count; Neon = seed | unit + DB one-liner | `npm run db:seed && … && npm test` | ✅ | ⬜ pending |
-| 07-07-01 | 07-07 | 4 | PLAT-02 / SC3 | T-07-07, T-07-08 | Lighthouse baseline on 4 prod URLs; thresholds = baseline − noise | automated (LHCI) | `npm run lighthouse` | ❌ W1 (07-01) | ⬜ pending |
+| 07-07-01 | 07-07 | 4 | PLAT-02 / SC3 | T-07-07, T-07-08, T-07-28 | Deploy by push (waves 1–5 → production, viewport-fit=cover probe); Lighthouse baseline on 4 prod URLs; thresholds = baseline − noise | git + curl + LHCI | `git push origin HEAD:main` → poll probe → `npm run lighthouse` | ❌ W1 (07-01) | ⬜ pending |
 | 07-07-02 | 07-07 | 4 | PLAT-02 | T-07-02, T-07-01 | Real-device LinkedIn pass (iOS mandatory) | human | — | n/a | ⬜ pending |
 | 07-08-01 | 07-08 | 4 | DATA-01/04 | — | Batch 2 drafts + featured-8/bonus dossier | unit | `npx vitest run tests/seed-data.test.ts tests/image-manifest.test.ts` + tsx count | ✅ | ⬜ pending |
 | 07-08-02 | 07-08 | 4 | DATA-04 | T-07-10, T-07-23 | Nick verifies batch 2 + launch-week re-check | human | — | n/a | ⬜ pending |
@@ -68,7 +68,7 @@ updated: 2026-09-16
 | 07-09-02 | 07-09 | 5 | PLAT-02 | T-07-06 | Layout noindex removed (comment reworded); SEO → error | unit + grep | `npx vitest run tests/launch-gate.test.ts` + `! grep -qi noindex src/app/layout.tsx` (build once in 07-09-03) | ❌ W5 | ⬜ pending |
 | 07-09-03 | 07-09 | 5 | PLAT-05 | T-07-24, T-07-25 | Icon routes, scaffold cleanup, README | unit + build | `npx vitest run tests/launch-gate.test.ts tests/design-system-gate.test.ts && npm run build` | ❌ W5 | ⬜ pending |
 | 07-10-01 | 07-10 | 6 | PLAT-02 | T-07-08, T-07-13 | Domain/Clerk prod cut-over (D7-01 = a only) | human (checkpoint:human-action) | — | n/a | ⬜ pending |
-| 07-10-02 | 07-10 | 6 | PLAT-02 / SC3 | T-07-06, T-07-07 | Live probes (robots, sitemap, noindex, icons, og:url host, /og cache); final LHCI with SEO error | curl + LHCI | `LHCI_BASE_URL=HOST npm run lighthouse` | ❌ W1 (07-01) | ⬜ pending |
+| 07-10-02 | 07-10 | 6 | PLAT-02 / SC3 | T-07-06, T-07-07, T-07-08 | Deploy the flip by push; `vercel inspect` SHA = HEAD; live probes (robots, sitemap, noindex, icons, og:url host, /og cache); final LHCI with SEO error | git + curl + LHCI | `git push origin HEAD:main` → `vercel inspect` → `LHCI_BASE_URL=HOST npm run lighthouse` | ❌ W1 (07-01) | ⬜ pending |
 | 07-10-03 | 07-10 | 6 | PLAT-02/05 | T-07-27 | Post Inspector re-scrape + phone open | human | — | n/a | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
