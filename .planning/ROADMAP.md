@@ -182,7 +182,7 @@ Plans:
 
 **Wave 2** *(parallel, blocked on Wave 1)*
 - [ ] 07-03-PLAN.md — Imagery pipeline: sharp script, 20 sourced WebPs, typed manifest, image-manifest test, Nick photo review
-- [ ] 07-04-PLAN.md — Type sweep (text-heading everywhere, no text-lg), masthead, 44px nav links, safe-area footer + credits, no target=_blank, not-found + account loading
+- [x] 07-04-PLAN.md — Type sweep (text-heading everywhere, no text-lg), masthead, 44px nav links, safe-area footer + credits, no target=_blank, not-found + account loading
 
 **Wave 3** *(parallel, blocked on Wave 2)*
 - [ ] 07-05-PLAN.md — Island hardening: canonical share URL + clipboard fallback (share-link.tsx), in-app-browser helper, viewport export, card + teaser imagery, PLAT-02 gate pins
