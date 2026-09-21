@@ -13,6 +13,12 @@
 # testing
 /coverage
 
+# lighthouse
+/.lighthouseci/
+
+# image sources (not committed)
+/src/images/raw/
+
 # next.js
 /.next/
 /out/
