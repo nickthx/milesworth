@@ -198,3 +198,11 @@ None. No new network endpoint, auth path, or schema surface. T-07-SC, T-07-07, T
 - 07-07 can run `npm run lighthouse` for the first baseline; it needs a local Chrome. Thresholds are `[ASSUMED]` — tune after that baseline.
 - 07-09 must switch `categories:seo` from `warn` to `error` when it removes the noindex.
 - Blocker to watch: the D7-02 open human action above.
+
+## Self-Check: PASSED
+
+- FOUND: config/lighthouserc.cjs
+- FOUND: .planning/phases/07-editorial-polish-launch/07-01-SUMMARY.md
+- FOUND commits: 775787f, 55ab0a8
+- All 8 literal decision lines present (D7-01, domain, D7-02, providers, D7-03, batch1, batch2, android_device)
+- Working tree clean; STATE.md / ROADMAP.md untouched
