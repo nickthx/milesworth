@@ -35,7 +35,10 @@ import type { InterestState } from "@/app/actions/interest";
 const INITIAL: InterestState = { status: "idle", message: "" };
 
 export function AdvisorTease() {
-  const [state, formAction, pending] = useActionState(joinAdvisorWaitlist, INITIAL);
+  const [state, formAction, pending] = useActionState(
+    joinAdvisorWaitlist,
+    INITIAL,
+  );
   const statusRef = useRef<HTMLParagraphElement>(null);
 
   // Runs only when the status itself changes, so success focuses the message
@@ -55,7 +58,7 @@ export function AdvisorTease() {
         <p className="text-ink/70 text-sm font-semibold">Coming soon</p>
         <h2
           id="advisor-tease-heading"
-          className="font-heading text-ink text-[1.75rem] leading-tight font-semibold"
+          className="font-heading text-ink text-heading font-semibold"
         >
           The AI card-roadmap advisor
         </h2>
