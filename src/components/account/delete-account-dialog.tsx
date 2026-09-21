@@ -56,8 +56,10 @@ export function DeleteAccountDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete your account?</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="font-display text-ink text-heading font-semibold">
+            Delete your account?
+          </DialogTitle>
+          <DialogDescription className="text-ink/70 text-base leading-6">
             This removes your saved balances, bookmarks, and travel goals and
             deletes your sign-in. It cannot be undone.
           </DialogDescription>
