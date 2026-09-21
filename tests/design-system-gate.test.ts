@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
@@ -191,3 +191,90 @@ describe("accent budget (UI-SPEC: terracotta only on the hero, the CTA, the bonu
 });
 
 // extended in 07-04 (type sweep) and 07-05 (WebView pins)
+
+describe("PLAT-05 type sweep + chrome (07-04)", () => {
+  // One heading size token everywhere, 44px nav targets, a safe-area footer
+  // with the photo credit (T-07-14), same-tab outbound links (T-07-20), and
+  // the two designed states free of server-only imports (T-07-19).
+  const codeFiles = sourceFiles(SRC).filter((file) => /\.tsx?$/.test(file));
+
+  const HEADER = "src/components/site-header.tsx";
+  const FOOTER = "src/components/site-footer.tsx";
+  const NOT_FOUND = "src/app/not-found.tsx";
+  const LOADING = "src/app/account/loading.tsx";
+  const DIALOG = "src/components/account/delete-account-dialog.tsx";
+
+  it("has source files to scan", () => {
+    expect(codeFiles.length).toBeGreaterThan(0);
+  });
+
+  it("no source file carries the arbitrary text-[1.75rem] heading size", () => {
+    for (const file of codeFiles) {
+      expect(readFileSync(join(SRC, file), "utf8"), file).not.toContain(
+        "text-[1.75rem]",
+      );
+    }
+  });
+
+  it("no source file uses the undeclared text-lg size as a class token", () => {
+    const TEXT_LG = /\btext-lg\b/;
+    expect(TEXT_LG.test("font-heading text-lg font-semibold")).toBe(true);
+    expect(TEXT_LG.test("text-heading")).toBe(false);
+    for (const file of codeFiles) {
+      expect(readFileSync(join(SRC, file), "utf8"), file).not.toMatch(TEXT_LG);
+    }
+  });
+
+  it("no source file opens a new window (WebView-safe same-tab links)", () => {
+    for (const file of codeFiles) {
+      const source = readFileSync(join(SRC, file), "utf8");
+      expect(source, file).not.toContain('target="_blank"');
+      expect(source, file).not.toContain('rel="noreferrer"');
+    }
+  });
+
+  it("site-header.tsx types the masthead with the heading token and keeps a 44px link", () => {
+    const source = read("src", "components", "site-header.tsx");
+    expect(source, HEADER).toContain("text-heading");
+    expect(source, HEADER).toContain("min-h-11");
+  });
+
+  it("site-footer.tsx has safe-area padding, the photo credit, and two 44px links", () => {
+    const source = read("src", "components", "site-footer.tsx");
+    expect(source, FOOTER).toContain("pb-safe");
+    // 07-05 Task 3 and 07-08 Task 3 reconcile the wording against the image
+    // manifest's sources, so every valid form is accepted here.
+    expect(source, FOOTER).toMatch(
+      /Photos via (Unsplash( and Pexels)?|Pexels)/,
+    );
+    expect(source.split("min-h-11").length - 1, FOOTER).toBeGreaterThanOrEqual(
+      2,
+    );
+  });
+
+  it("not-found.tsx is a server component with the locked copy and no server-only imports", () => {
+    expect(existsSync(join(ROOT, NOT_FOUND)), NOT_FOUND).toBe(true);
+    const source = read("src", "app", "not-found.tsx");
+    expect(source.split("\n")[0].trim(), NOT_FOUND).not.toBe('"use client";');
+    expect(source, NOT_FOUND).toContain("Page not found");
+    expect(source, NOT_FOUND).toContain("Back to your results");
+    expect(source, NOT_FOUND).not.toContain("@clerk/nextjs/server");
+    expect(source, NOT_FOUND).not.toContain('from "@/db');
+  });
+
+  it("account/loading.tsx renders the locked copy without the page module, Clerk server, or the database", () => {
+    expect(existsSync(join(ROOT, LOADING)), LOADING).toBe(true);
+    const source = read("src", "app", "account", "loading.tsx");
+    expect(source, LOADING).toContain("Loading your account");
+    expect(source, LOADING).not.toContain("@clerk/nextjs/server");
+    expect(source, LOADING).not.toContain('from "@/db');
+    expect(source, LOADING).not.toContain('from "./page"');
+  });
+
+  it("delete-account-dialog.tsx types its title with the heading token", () => {
+    expect(
+      read("src", "components", "account", "delete-account-dialog.tsx"),
+      DIALOG,
+    ).toContain("text-heading");
+  });
+});
