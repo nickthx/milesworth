@@ -84,6 +84,8 @@ As of 2026-09-21 the live Clerk development instance (renewing-seal-8576.clerk.a
 
 **Open human action:** Nick enables Google in Clerk Dashboard → Configure → SSO connections (pending as of 2026-09-21)
 
+**Resolved 2026-09-21 (orchestrator, after this plan returned):** Nick enabled Google with "Enable for sign-up and sign-in" ON, "Block email subaddresses" OFF, "Use custom credentials" OFF (Clerk shared dev credentials). The public /v1/environment endpoint now reports `oauth_google` enabled and authenticatable; email_code remains a first factor. `providers: google` is now live, not just intended.
+
 No executor changes Clerk settings; this is Nick's Dashboard action.
 
 ### What the rulings mean downstream
@@ -182,7 +184,7 @@ Install sequence inside the worktree: `npm ci --prefer-offline --no-audit --no-f
 
 One open human action, from D7-02:
 
-- **Nick enables Google in Clerk Dashboard → Configure → SSO connections (pending as of 2026-09-21).** Until then the live instance offers email code only, and the 07-05 hint would refer to a provider the modal does not show.
+- **Nick enables Google in Clerk Dashboard → Configure → SSO connections (pending as of 2026-09-21).** Until then the live instance offers email code only, and the 07-05 hint would refer to a provider the modal does not show. **Done 2026-09-21** — confirmed via the public /v1/environment endpoint (`oauth_google` enabled). Still worth one re-check before launch in 07-10.
 
 ## Known Stubs
 

@@ -177,8 +177,8 @@ Plans:
 Plans:
 
 **Wave 1** *(parallel)*
-- [ ] 07-01-PLAN.md — Wave 0 decisions (domain/Clerk prod, social connections, dataset N), package legitimacy gate, @lhci/cli + lighthouse + sharp install, LHCI config + scripts
-- [ ] 07-02-PLAN.md — Foundations: brand.ts, text-heading token, AA terracotta, warm neutrals, pb-safe, vendored weight/16px fixes, /og on brand.ts, design-system gate test
+- [x] 07-01-PLAN.md — Wave 0 decisions (domain/Clerk prod, social connections, dataset N), package legitimacy gate, @lhci/cli + lighthouse + sharp install, LHCI config + scripts
+- [x] 07-02-PLAN.md — Foundations: brand.ts, text-heading token, AA terracotta, warm neutrals, pb-safe, vendored weight/16px fixes, /og on brand.ts, design-system gate test
 
 **Wave 2** *(parallel, blocked on Wave 1)*
 - [ ] 07-03-PLAN.md — Imagery pipeline: sharp script, 20 sourced WebPs, typed manifest, image-manifest test, Nick photo review
