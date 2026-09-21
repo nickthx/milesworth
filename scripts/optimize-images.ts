@@ -3,6 +3,11 @@
 // then expose through the typed manifest in src/images/destinations.ts.
 //   src/images/raw/<slug>.{jpg,jpeg,png,webp}  (gitignored sources)
 //     → src/images/destinations/<slug>.webp    (3:2, 1600×1067, q75, effort 6)
+// Byte gate: every output must be ≤ 204800 B. Encoding starts at q75; if the
+// result is over the gate the file is re-encoded at a lower quality (step 5,
+// floor 25) until it fits. Dense sources (foliage, water texture) need this —
+// at a fixed q75 some 1600×1067 frames cannot get under 200 KB at all. The
+// quality actually used is printed per file so the review can flag softening.
 // T-07-05: sharp re-encodes without carrying source metadata across, so EXIF
 // and GPS never reach a committed file.
 // T-07-09: a slug is only ever the capture group of SLUG_FILE_RE (directory
@@ -26,6 +31,40 @@ const SLUG_FILE_RE = /^([a-z0-9]+(?:-[a-z0-9]+)*)\.(jpe?g|png|webp)$/;
 const WIDTH = 1600;
 const HEIGHT = 1067;
 const MAX_BYTES = 204800; // 200 KB per file (UI-SPEC Imagery Contract — Asset)
+
+// Plan-specified encoder defaults; `quality` is the only value the step-down
+// loop overrides.
+const WEBP_OPTIONS = { quality: 75, effort: 6 } as const;
+const QUALITY_STEP = 5;
+const MIN_QUALITY = 25;
+
+/**
+ * Encode one source to the fixed output path. Starts at q75 and steps the
+ * quality down until the file fits MAX_BYTES or the floor is reached; the
+ * caller decides whether a floor-level miss is an offender. Resize params
+ * are identical on every attempt — only `quality` changes.
+ */
+async function encode(
+  input: string,
+  output: string,
+): Promise<{ quality: number; bytes: number }> {
+  let quality: number = WEBP_OPTIONS.quality;
+  for (;;) {
+    await sharp(input)
+      .resize({
+        width: WIDTH,
+        height: HEIGHT,
+        fit: "cover",
+        position: "attention",
+      })
+      .webp({ ...WEBP_OPTIONS, quality })
+      .toFile(output);
+
+    const bytes = statSync(output).size;
+    if (bytes <= MAX_BYTES || quality <= MIN_QUALITY) return { quality, bytes };
+    quality = Math.max(MIN_QUALITY, quality - QUALITY_STEP);
+  }
+}
 
 async function main(): Promise<void> {
   if (!existsSync(RAW_DIR)) {
@@ -73,19 +112,10 @@ async function main(): Promise<void> {
     const input = join(RAW_DIR, source);
     const output = join(OUT_DIR, `${slug}.webp`);
 
-    await sharp(input)
-      .resize({
-        width: WIDTH,
-        height: HEIGHT,
-        fit: "cover",
-        position: "attention",
-      })
-      .webp({ quality: 75, effort: 6 })
-      .toFile(output);
+    const { quality, bytes } = await encode(input, output);
 
     const meta = await sharp(output).metadata();
-    const bytes = statSync(output).size;
-    console.log(`${slug} ${meta.width}x${meta.height} ${bytes} B`);
+    console.log(`${slug} ${meta.width}x${meta.height} ${bytes} B q${quality}`);
 
     if (meta.width !== WIDTH || meta.height !== HEIGHT) {
       offenders.push(`${slug} (${meta.width}x${meta.height}, want 1600x1067)`);
