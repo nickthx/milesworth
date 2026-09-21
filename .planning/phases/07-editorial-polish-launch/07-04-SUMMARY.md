@@ -153,6 +153,13 @@ None - no external service configuration required.
 - 07-05 appends its WebView pins below the 07-04 describe block at the end of the gate file and drops `core-experience.tsx` from the accent `ALLOWED` list when `share-link.tsx` arrives.
 - A14 fallback remains available: if 28px crowds the bookmark list or saved-balance rows on a narrow phone, UI-SPEC permits body 16px semibold. That is a visual call for the 07-09/07-10 device pass; nothing here was checked on a physical device.
 
+## Self-Check: PASSED
+
+- FOUND: src/app/not-found.tsx, src/app/account/loading.tsx, src/components/site-footer.tsx, tests/design-system-gate.test.ts
+- FOUND commits: 71f344d, 85a2429, 037d219
+- No tracked files deleted between d38e07a and HEAD
+- Files changed since the base are exactly the plan's 14 plus this summary; STATE.md, ROADMAP.md and REQUIREMENTS.md untouched
+
 ---
 *Phase: 07-editorial-polish-launch*
 *Completed: 2026-09-21*
