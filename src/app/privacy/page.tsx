@@ -25,8 +25,7 @@ export const metadata: Metadata = {
 };
 
 const SECTION_CLASS = "flex flex-col gap-6";
-const HEADING_CLASS =
-  "font-heading text-ink text-[1.75rem] leading-tight font-semibold";
+const HEADING_CLASS = "font-heading text-ink text-heading font-semibold";
 const BODY_CLASS = "text-ink text-base leading-6";
 const MUTED_CLASS = "text-ink/70 text-base leading-6";
 const LABEL_CLASS = "text-ink/70 text-sm font-semibold";
@@ -94,19 +93,12 @@ export default function PrivacyPage() {
               <span className="font-semibold">Clerk</span> handles
               authentication: your sign-in credentials, session, and consent
               record never touch our own code. See Clerk&apos;s{" "}
-              <a
-                href="https://clerk.com/legal/dpa"
-                target="_blank"
-                rel="noreferrer"
-                className={LINK_CLASS}
-              >
+              <a href="https://clerk.com/legal/dpa" className={LINK_CLASS}>
                 data processing agreement
               </a>{" "}
               and{" "}
               <a
                 href="https://clerk.com/legal/subprocessors"
-                target="_blank"
-                rel="noreferrer"
                 className={LINK_CLASS}
               >
                 list of subprocessors

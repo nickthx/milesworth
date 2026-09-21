@@ -34,8 +34,7 @@ export const metadata: Metadata = {
 };
 
 const SECTION_CLASS = "flex flex-col gap-6";
-const HEADING_CLASS =
-  "font-heading text-ink text-[1.75rem] leading-tight font-semibold";
+const HEADING_CLASS = "font-heading text-ink text-heading font-semibold";
 const BODY_CLASS = "text-ink text-base leading-6";
 const MUTED_CLASS = "text-ink/70 text-base leading-6";
 const LABEL_CLASS = "text-ink/70 text-sm font-semibold";
@@ -137,7 +136,7 @@ export default async function AccountPage() {
                   className="border-ink/10 flex items-baseline justify-between gap-4 border-b pb-3"
                 >
                   <dt className={LABEL_CLASS}>{programName(slug)}</dt>
-                  <dd className="font-heading text-ink text-lg font-semibold">
+                  <dd className="font-display text-ink text-heading font-semibold">
                     {formatPoints(points)}
                   </dd>
                 </div>

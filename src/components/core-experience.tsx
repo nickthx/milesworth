@@ -101,7 +101,7 @@ const featuredTeaser: RedemptionSeed | undefined = redemptions.find(
 const dataset = { programs, routes, bonuses, redemptions };
 
 const SECTION_HEADING_CLASS =
-  "font-heading text-ink text-[1.75rem] leading-tight font-semibold";
+  "font-heading text-ink text-heading font-semibold";
 
 export function CoreExperience({
   asOf,
@@ -343,7 +343,7 @@ function EmptyState() {
       {featuredTeaser !== undefined && featuredTeaser.verifiedAt !== null && (
         <Card className="text-ink [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(6)]">
           <CardHeader>
-            <CardTitle className="text-ink text-[1.75rem] leading-tight font-semibold">
+            <CardTitle className="text-ink text-heading font-semibold">
               {featuredTeaser.title}
             </CardTitle>
           </CardHeader>

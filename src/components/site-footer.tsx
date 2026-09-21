@@ -10,25 +10,31 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="border-ink/10 mt-auto border-t">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-2 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <p className="text-ink text-sm font-semibold">Milesworth</p>
+    <footer className="border-border mt-auto border-t">
+      <div className="pb-safe mx-auto flex w-full max-w-3xl flex-col gap-3 px-4 pt-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <p className="font-display text-ink text-base font-semibold">
+          Milesworth
+        </p>
         <nav
           aria-label="Footer"
-          className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4"
+          className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
         >
           <Link
             href="/methodology"
-            className="text-ink/70 text-sm leading-5 underline-offset-4 hover:underline"
+            className="text-ink/70 inline-flex min-h-11 items-center text-sm leading-5 underline-offset-4 hover:underline"
           >
             Methodology
           </Link>
           <Link
             href="/privacy"
-            className="text-ink/70 text-sm leading-5 underline-offset-4 hover:underline"
+            className="text-ink/70 inline-flex min-h-11 items-center text-sm leading-5 underline-offset-4 hover:underline"
           >
             Privacy
           </Link>
+          {/* PLAT-05 / UI-SPEC A7, T-07-14: photo credit as plain text — no third-party link in the demo path. */}
+          <span className="text-ink/70 text-sm leading-5">
+            Photos via Unsplash
+          </span>
           <span className="text-ink/70 text-sm leading-5">
             Educational only — not financial advice
           </span>

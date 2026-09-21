@@ -37,7 +37,7 @@ export function AlmostThere({
 
   return (
     <section className="mt-12 flex flex-col gap-6">
-      <h2 className="font-heading text-ink text-[1.75rem] leading-tight font-semibold">
+      <h2 className="font-heading text-ink text-heading font-semibold">
         Almost there
       </h2>
       <ul className="flex flex-col gap-6">
@@ -62,7 +62,7 @@ export function AlmostThere({
             <li key={redemption.slug}>
               <Card className="text-ink">
                 <CardHeader>
-                  <CardTitle className="text-ink text-[1.75rem] leading-tight font-semibold">
+                  <CardTitle className="text-ink text-heading font-semibold">
                     {redemption.title}
                   </CardTitle>
                 </CardHeader>

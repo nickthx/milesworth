@@ -67,11 +67,7 @@ function buildBonusExample(): BonusExample | null {
   if (bonusMilesPerBlock === null || bonusBlockPoints === null) {
     return null;
   }
-  const sourcePoints = requiredSourcePoints(
-    route,
-    null,
-    EXAMPLE_PARTNER_MILES,
-  );
+  const sourcePoints = requiredSourcePoints(route, null, EXAMPLE_PARTNER_MILES);
   if (sourcePoints === null) {
     return null;
   }
@@ -89,8 +85,7 @@ function buildBonusExample(): BonusExample | null {
 const bonusExample = buildBonusExample();
 
 const SECTION_CLASS = "flex flex-col gap-6";
-const HEADING_CLASS =
-  "font-heading text-ink text-[1.75rem] leading-tight font-semibold";
+const HEADING_CLASS = "font-heading text-ink text-heading font-semibold";
 const BODY_CLASS = "text-ink text-base leading-6";
 const MUTED_CLASS = "text-ink/70 text-base leading-6";
 const LABEL_CLASS = "text-ink/70 text-sm font-semibold";

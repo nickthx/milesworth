@@ -25,9 +25,12 @@ import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 
 export function SiteHeader() {
   return (
-    <header className="border-ink/10 border-b">
+    <header className="border-border border-b">
       <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="text-ink text-sm font-semibold">
+        <Link
+          href="/"
+          className="font-display text-ink text-heading font-semibold"
+        >
           Milesworth
         </Link>
         <nav aria-label="Account" className="flex items-center gap-4">
@@ -35,7 +38,7 @@ export function SiteHeader() {
             <SignInButton mode="modal">
               <button
                 type="button"
-                className="text-ink/70 h-11 text-sm leading-5 underline-offset-4 hover:underline"
+                className="text-ink/70 inline-flex h-11 items-center text-sm leading-5 underline-offset-4 hover:underline"
               >
                 Sign in
               </button>
@@ -44,7 +47,7 @@ export function SiteHeader() {
           <Show when="signed-in">
             <Link
               href="/account"
-              className="text-ink/70 text-sm leading-5 underline-offset-4 hover:underline"
+              className="text-ink/70 inline-flex min-h-11 items-center text-sm leading-5 underline-offset-4 hover:underline"
             >
               My account
             </Link>

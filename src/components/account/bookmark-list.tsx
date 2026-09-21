@@ -31,7 +31,7 @@ export function BookmarkList({ slugs }: { slugs: readonly string[] }) {
           key={redemption.slug}
           className="border-ink/10 flex flex-col gap-1 border-b pb-4"
         >
-          <p className="font-heading text-ink text-lg font-semibold">
+          <p className="font-display text-ink text-heading font-semibold">
             {redemption.title}
           </p>
           {redemption.destination !== null && (

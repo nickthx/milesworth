@@ -75,7 +75,7 @@ export function ResultCard({
   return (
     <Card className="text-ink [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(6)]">
       <CardHeader>
-        <CardTitle className="text-ink text-[1.75rem] leading-tight font-semibold">
+        <CardTitle className="text-ink text-heading font-semibold">
           {redemption.title}
         </CardTitle>
       </CardHeader>
