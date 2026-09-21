@@ -11,19 +11,6 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -49,12 +36,15 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* D-13 warm editorial palette + display type scale (starting values — refined in Phase 7) */
+/* D-13 warm editorial palette + heading and display type scale. The three hex
+   values must equal src/lib/brand.ts — tests/design-system-gate.test.ts pins it. */
 @theme {
   --color-cream: #faf7f2; /* warm off-white page ground */
   --color-ink: #262119; /* warm near-black text */
-  --color-terracotta: #c05f33; /* warm accent */
+  --color-terracotta: #b25429; /* warm accent, AA on cream (UI-SPEC A3) */
 
+  --text-heading: 1.75rem;
+  --text-heading--line-height: 1.2;
   --text-display: 3rem;
   --text-display--line-height: 1.1;
   --text-display--letter-spacing: -0.02em;
@@ -63,73 +53,34 @@
   --text-display-xl--letter-spacing: -0.025em;
 }
 
+/* PLAT-02 / RESEARCH Pattern 3 — bottom padding that never sits under the
+   home indicator inside an edge-to-edge WebView. */
+@utility pb-safe {
+  padding-bottom: max(--spacing(8), env(safe-area-inset-bottom));
+}
+
+/* Every neutral is derived from ink (38 33 25) so borders, inputs, and rings
+   stay warm on the cream ground (PLAT-05). */
 :root {
   --background: #faf7f2; /* --color-cream */
   --foreground: #262119; /* --color-ink */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --card: #ffffff;
+  --card-foreground: #262119;
+  --popover: #ffffff;
+  --popover-foreground: #262119;
+  --primary: #262119;
+  --primary-foreground: #faf7f2;
+  --secondary: rgb(38 33 25 / 0.05);
+  --secondary-foreground: #262119;
+  --muted: rgb(38 33 25 / 0.05);
+  --muted-foreground: rgb(38 33 25 / 0.7);
+  --accent: rgb(38 33 25 / 0.05);
+  --accent-foreground: #262119;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --border: rgb(38 33 25 / 0.12);
+  --input: rgb(38 33 25 / 0.24);
+  --ring: #262119;
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -141,5 +92,6 @@
   }
   html {
     @apply font-sans;
+    color-scheme: light;
   }
 }
