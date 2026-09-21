@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { loadBalanceParams, paramsToBalances } from "@/lib/balance-params";
+import { CREAM, INK, TERRACOTTA } from "@/lib/brand";
 import { buildShareContent } from "@/lib/share-content";
 import { SITE_HOST } from "@/lib/site";
 
@@ -47,9 +48,6 @@ const CACHE_CONTROL =
 
 /** Canonicalizing 308s are cheap to recompute; keep them briefly cacheable. */
 const REDIRECT_CACHE_CONTROL = "public, max-age=0, s-maxage=60";
-
-const CREAM = "#faf7f2";
-const INK = "#262119";
 
 /**
  * Memoized font loader: the two .woff files are read exactly once per process
@@ -148,7 +146,7 @@ export async function GET(request: Request): Promise<Response> {
                 fontSize: 176,
                 lineHeight: 1,
                 letterSpacing: "-0.02em",
-                color: "#c05f33",
+                color: TERRACOTTA,
               }}
             >
               {share.headline}
