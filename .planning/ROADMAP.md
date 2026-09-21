@@ -181,7 +181,7 @@ Plans:
 - [x] 07-02-PLAN.md — Foundations: brand.ts, text-heading token, AA terracotta, warm neutrals, pb-safe, vendored weight/16px fixes, /og on brand.ts, design-system gate test
 
 **Wave 2** *(parallel, blocked on Wave 1)*
-- [ ] 07-03-PLAN.md — Imagery pipeline: sharp script, 20 sourced WebPs, typed manifest, image-manifest test, Nick photo review
+- [x] 07-03-PLAN.md — Imagery pipeline: sharp script, 20 sourced WebPs, typed manifest, image-manifest test, Nick photo review
 - [x] 07-04-PLAN.md — Type sweep (text-heading everywhere, no text-lg), masthead, 44px nav links, safe-area footer + credits, no target=_blank, not-found + account loading
 
 **Wave 3** *(parallel, blocked on Wave 2)*
