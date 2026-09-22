@@ -9,16 +9,26 @@
 // hosts sit behind Deployment Protection, so a crawler following an og:image
 // on that host gets a 401 and the canonical URL is wrong.
 
-/** Absolute origin, e.g. "https://milesworth.vercel.app". */
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://milesworth.vercel.app";
+const DEFAULT_SITE_URL = "https://milesworth.vercel.app";
 
-/**
- * Bare host for display, e.g. "milesworth.vercel.app". Derived, never
- * typed. A malformed NEXT_PUBLIC_SITE_URL throws here at module load — the
- * same failure metadataBase already has, surfaced at boot rather than in a
- * rendered card.
- */
+// 07-REVIEW WR-01: the override is normalized to its origin, so a value pasted
+// with a trailing slash or a path ("https://milesworth.com/") cannot produce
+// "https://milesworth.com//?ur=…" in every share link, the sitemap, and
+// robots.txt. An env var that exists but is blank (the key created before the
+// value is pasted) falls back to the default instead of throwing on `new
+// URL("")`. A genuinely malformed value still throws here at module load —
+// the same failure metadataBase already has, surfaced at boot rather than in
+// a rendered card.
+const RAW_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+/** Absolute origin with no trailing slash or path, e.g. "https://milesworth.vercel.app". */
+export const SITE_URL = new URL(
+  RAW_SITE_URL !== undefined && RAW_SITE_URL.length > 0
+    ? RAW_SITE_URL
+    : DEFAULT_SITE_URL,
+).origin;
+
+/** Bare host for display, e.g. "milesworth.vercel.app". Derived, never typed. */
 export const SITE_HOST = new URL(SITE_URL).host;
 
 // Privacy policy contacts (ACCT-04). Recorded in 06-01-SUMMARY.md by the

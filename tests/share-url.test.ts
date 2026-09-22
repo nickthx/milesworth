@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { MAX_BALANCE, PARAM_KEY_BY_SLUG } from "../src/lib/balance-params";
 import { shareUrl, toShareQuery } from "../src/lib/share-url";
@@ -102,5 +102,58 @@ describe("toShareQuery", () => {
 
   it('returns "" for empty balances', () => {
     expect(toShareQuery({})).toBe("");
+  });
+});
+
+// 07-REVIEW WR-01: SITE_URL is normalized to an origin at module load, so the
+// env override cannot leak a trailing slash (or a path, or a blank value) into
+// every share link, the sitemap, and robots.txt. The constants are evaluated
+// on import, so each case stubs the env, resets the module registry, and
+// re-imports a fresh copy.
+describe("SITE_URL normalization (WR-01)", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  async function load(value: string | undefined) {
+    vi.resetModules();
+    if (value === undefined) {
+      vi.stubEnv("NEXT_PUBLIC_SITE_URL", undefined);
+    } else {
+      vi.stubEnv("NEXT_PUBLIC_SITE_URL", value);
+    }
+    const site = await import("../src/lib/site");
+    const share = await import("../src/lib/share-url");
+    return { ...site, ...share };
+  }
+
+  it("strips a trailing slash from the override so no // follows the scheme", async () => {
+    const { SITE_URL: url, SITE_HOST: host, shareUrl: build } = await load(
+      "https://example.com/",
+    );
+    expect(url).toBe("https://example.com");
+    expect(host).toBe("example.com");
+    const link = build({ "chase-ur": 90_000 });
+    expect(link).toBe("https://example.com/?ur=90000");
+    expect(link.slice("https://".length)).not.toContain("//");
+    expect(new URL(link).pathname).toBe("/");
+  });
+
+  it("drops any path from the override", async () => {
+    const { SITE_URL: url } = await load("https://example.com/some/path");
+    expect(url).toBe("https://example.com");
+  });
+
+  it("falls back to the default when the env var is present but blank", async () => {
+    const blank = await load("   ");
+    expect(blank.SITE_URL).toBe("https://milesworth.vercel.app");
+    const unset = await load(undefined);
+    expect(unset.SITE_URL).toBe("https://milesworth.vercel.app");
+    expect(unset.SITE_HOST).toBe("milesworth.vercel.app");
+  });
+
+  it("still throws at module load for a malformed override", async () => {
+    await expect(load("not a url")).rejects.toThrow();
   });
 });
