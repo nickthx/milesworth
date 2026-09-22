@@ -115,4 +115,68 @@ describe("the site-wide noindex is gone and SEO is a hard Lighthouse assertion (
   });
 });
 
-// part 3 (07-09 Task 3) below
+// part 3 (07-09 Task 3): branded icons, scaffold cleanup, recruiter-facing README
+
+describe("branded icon routes render the Fraunces M from the vendored font (PLAT-05 A13 / T-07-24)", () => {
+  const icons: [string, string[]][] = [
+    ["icon", ["src", "app", "icon.tsx"]],
+    ["apple-icon", ["src", "app", "apple-icon.tsx"]],
+  ];
+
+  for (const [name, parts] of icons) {
+    const label = parts.join("/");
+
+    it(`/${name} exists and renders through ImageResponse`, () => {
+      expect(existsSync(join(ROOT, ...parts)), label).toBe(true);
+      expect(read(...parts), label).toContain("ImageResponse");
+    });
+
+    it(`/${name} reads the vendored Fraunces woff and the brand tokens`, () => {
+      const source = read(...parts);
+      expect(source, label).toContain("fraunces-latin-600-normal.woff");
+      expect(source, label).toContain('from "@/lib/brand"');
+    });
+
+    it(`/${name} uses no accent and never fetches at runtime`, () => {
+      const source = read(...parts);
+      expect(source, label).not.toContain("TERRACOTTA");
+      expect(source, label).not.toContain("fetch(");
+    });
+
+    it(`/${name} imports neither Clerk server helpers nor the database (T-07-26)`, () => {
+      const source = read(...parts);
+      expect(source, label).not.toContain("@clerk/nextjs/server");
+      expect(source, label).not.toContain('from "@/db');
+    });
+  }
+
+  it("the scaffold favicon.ico is gone (a second icon link would otherwise be emitted)", () => {
+    expect(existsSync(join(SRC, "app", "favicon.ico"))).toBe(false);
+  });
+});
+
+describe("no create-next-app leftovers remain (07-09 Task 3)", () => {
+  const scaffoldSvgs = [
+    "file.svg",
+    "globe.svg",
+    "next.svg",
+    "vercel.svg",
+    "window.svg",
+  ];
+
+  for (const file of scaffoldSvgs) {
+    it(`public/${file} does not exist`, () => {
+      expect(existsSync(join(ROOT, "public", file))).toBe(false);
+    });
+  }
+
+  it("README.md is the product README, not the scaffold one", () => {
+    const readme = read("README.md");
+    expect(readme, "README.md").not.toContain("create-next-app");
+    expect(readme, "README.md").not.toContain("Geist");
+    expect(readme, "README.md").toContain("Milesworth");
+    expect(readme, "README.md").toContain("/methodology");
+    expect(readme, "README.md").toContain("npm run db:seed");
+    expect(readme, "README.md").toContain("npm run lighthouse");
+  });
+});

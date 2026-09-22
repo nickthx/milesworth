@@ -113,6 +113,16 @@ describe("brand colors have one source (T-07-04 hotlink / drift)", () => {
     expect(source, "src/app/og/route.tsx").not.toMatch(/#[0-9a-fA-F]{6}/);
   });
 
+  // 07-09: the icon routes render the same brand tokens, so they obey the
+  // same one-source rule as the /og card.
+  for (const file of ["icon.tsx", "apple-icon.tsx"]) {
+    it(`src/app/${file} reads brand.ts and holds no six-digit hex literal`, () => {
+      const source = read("src", "app", file);
+      expect(source, `src/app/${file}`).toContain('from "@/lib/brand"');
+      expect(source, `src/app/${file}`).not.toMatch(/#[0-9a-fA-F]{6}/);
+    });
+  }
+
   it("src/lib/brand.ts is literal-only — no environment read ships to the client (T-07-17)", () => {
     expect(read("src", "lib", "brand.ts"), "src/lib/brand.ts").not.toContain(
       "process.env",
