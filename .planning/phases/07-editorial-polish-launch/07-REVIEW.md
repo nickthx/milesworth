@@ -55,7 +55,7 @@ findings:
   warning: 3
   info: 6
   total: 9
-status: issues_found
+status: fixed
 ---
 
 # Phase 07: Code Review Report
@@ -193,6 +193,29 @@ sources.set(slug, entry);
 **File:** `src/app/privacy/page.tsx:44-47,56-63`
 **Issue:** The header says "nothing you type is sent to our server", then the Guests paragraph correctly notes the balances live in the page URL and reach the server "only when you open a share link … or when you sign in and choose Save". A plain reload, a back/forward navigation, or a bookmark of `/?ur=…` also sends the URL to the server — and per the Vercel paragraph on the same page, that URL lands in short-lived request logs. The policy is internally inconsistent on a point the project treats as part of its credibility pitch. Not a code defect; flagged because the page's own comment says it "must match what … actually" happens.
 **Fix:** Soften the header line to "the guest flow keeps your balances in the page address and your own browser; they are never stored on our server" and, in the Guests paragraph, replace "only when you open a share link" with "whenever a page with balances in its address is loaded — a share link, a reload, or a bookmark".
+
+## Fix Log
+
+**Fixed at:** 2026-09-22 (iteration 1, scope: critical + warning)
+**Result:** 3 in scope — 2 fixed, 1 already fixed, 0 skipped. Suite 390 → 394 passing; typecheck and lint clean.
+
+### WR-01 — fixed (`f7abbb8`)
+
+**Files:** `src/lib/site.ts`, `tests/share-url.test.ts`
+`SITE_URL` is now `new URL(trimmed override || default).origin`, so a trailing slash or path in `NEXT_PUBLIC_SITE_URL` cannot emit `//` into share links, sitemap.xml, or robots.txt; a present-but-blank value falls back to the default instead of throwing on `new URL("")`; a malformed value still throws at module load. `SITE_HOST` unchanged. All importers (`share-url.ts`, `robots.ts`, `sitemap.ts`, `og/route.tsx`, `layout.tsx`) typecheck. Added a `SITE_URL normalization (WR-01)` block to `tests/share-url.test.ts` (stubs env, resets modules, re-imports) pinning: trailing slash stripped and no `//` after the scheme, path dropped, blank/unset fall back, malformed still throws.
+
+### WR-02 — fixed (`2118dd2`)
+
+**Files:** `src/components/share-link.tsx`
+Replaced the captured `fallbackUrl` state with a boolean `showFallback`; the fallback `<Input>` renders `value={shareUrl(balances)}` live, and the focus effect keys on `showFallback`. Markup, ids, classes, and the clipboard copy line are unchanged; `tests/design-system-gate.test.ts` source-scan assertions still pass.
+
+### WR-03 — already fixed (`c390572`)
+
+`config/lighthouserc.cjs` already demotes `categories:performance` to `"warn"` (minScore 0.8, median) with a dated comment recording the 07-VERIFICATION override and the v1.1 bundle work that re-promotes it. No change made.
+
+### Not addressed (out of scope)
+
+IN-01 through IN-06 — Info findings, excluded by `fix_scope: critical_warning`.
 
 ---
 
