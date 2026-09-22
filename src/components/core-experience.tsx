@@ -1,14 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useQueryStates } from "nuqs";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { AlmostThere } from "@/components/almost-there";
 import { BalanceForm } from "@/components/balance-form";
 import { ResultCard } from "@/components/result-card";
 import { SaveBalancesButton } from "@/components/save-balances-button";
-import { Button } from "@/components/ui/button";
+import { ShareLink } from "@/components/share-link";
 import {
   Card,
   CardContent,
@@ -36,15 +37,17 @@ import {
   writeStoredBalances,
 } from "@/lib/balance-storage";
 import { formatDollars, formatPoints, formatVerifiedDate } from "@/lib/format";
+import { getDestinationImage } from "@/images/destinations";
 
 // The guest-flow client island (INPUT-01/02/03, RANK-01/02, VAL-01). Owns the
 // three-way state dance — URL (nuqs) ↔ browser storage ↔ engine — and composes
 // the plan 04-03 presentational components. The engine runs in a useMemo per
 // edit: no submit button, no spinner, no server round-trip (RESEARCH Pattern 2).
 //
-// Accent discipline (UI-SPEC): terracotta appears here exactly once — the
-// "Copy my link" primary CTA (sanctioned use #2). The page hero heading, the
-// section headings, every state copy, and the Save CTA stay ink.
+// Accent discipline (UI-SPEC): this file renders no terracotta. The "Copy my
+// link" primary CTA (sanctioned use #2) lives in share-link.tsx (07-05). The
+// page hero heading, the section headings, every state copy, and the Save CTA
+// stay ink.
 //
 // Phase 6 (ACCT-01/02): the island receives account props from the server
 // page — isSignedIn, savedBalances, bookmarkedSlugs — and still never imports
@@ -213,25 +216,6 @@ export function CoreExperience({
     void setParams({ [PARAM_KEY_BY_SLUG[slug]]: value });
   }
 
-  // "Copy my link" (UI-SPEC Open Question 1 ruling): clipboard copy of the
-  // current URL with a 2s "Link copied" swap. T-04-14: clipboard may be
-  // absent or denied in WebViews — silent no-op, never an error UI.
-  const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    if (!copied) return;
-    const timeout = window.setTimeout(() => setCopied(false), 2000);
-    return () => window.clearTimeout(timeout);
-  }, [copied]);
-
-  async function handleCopyLink() {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-    } catch {
-      // T-04-14: degrade silently — the URL bar still carries the share link.
-    }
-  }
-
   const hasBalances = Object.keys(balances).length > 0;
 
   return (
@@ -246,20 +230,11 @@ export function CoreExperience({
           balances={balances}
           onBalanceChange={handleBalanceChange}
         />
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
-          <Button
-            type="button"
-            onClick={handleCopyLink}
-            // Sanctioned accent use #2 + UI-SPEC 44px touch target (h-11).
-            className="bg-terracotta hover:bg-terracotta/90 h-11 min-w-44 self-start px-6 text-base font-semibold text-white"
-          >
-            <span aria-live="polite">
-              {copied ? "Link copied" : "Copy my link"}
-            </span>
-          </Button>
-          {/* ACCT-01: explicit save beside the share CTA — ink/outline. */}
+        {/* PLAT-02: canonical share link + clipboard fallback (share-link.tsx);
+            ACCT-01: the explicit Save CTA rides in the same row as its child. */}
+        <ShareLink balances={balances}>
           <SaveBalancesButton balances={balances} isSignedIn={isSignedIn} />
-        </div>
+        </ShareLink>
       </header>
 
       {/* Pitfall 9: every branch is an explicit, designed state. */}
@@ -330,6 +305,12 @@ function ErrorState() {
  * delta requires a balance and inventing one would be UI arithmetic.
  */
 function EmptyState() {
+  // PLAT-05 Imagery Contract: the photo leads the teaser card; an unknown
+  // slug yields null and the card renders without an image (T-07-18).
+  const art =
+    featuredTeaser === undefined
+      ? null
+      : getDestinationImage(featuredTeaser.imageSlug);
   return (
     <section className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
@@ -342,6 +323,15 @@ function EmptyState() {
       </div>
       {featuredTeaser !== undefined && featuredTeaser.verifiedAt !== null && (
         <Card className="text-ink [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(6)]">
+          {art && (
+            <Image
+              src={art.image}
+              alt={art.alt}
+              placeholder="blur"
+              sizes="(min-width: 768px) 768px, 100vw"
+              className="aspect-[3/2] w-full object-cover"
+            />
+          )}
           <CardHeader>
             <CardTitle className="text-ink text-heading font-semibold">
               {featuredTeaser.title}

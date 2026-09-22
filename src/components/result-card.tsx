@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { BookmarkButton } from "@/components/bookmark-button";
 import {
   Card,
@@ -17,6 +19,7 @@ import {
   heroDelta,
 } from "@/lib/format";
 import { formatTransferPath } from "@/lib/path-display";
+import { getDestinationImage } from "@/images/destinations";
 
 // The wow card (VAL-01, VAL-04, RANK-03/04/05). Pure presentation: every
 // figure on this card is a pre-computed integer field on RankedResult passed
@@ -30,6 +33,12 @@ import { formatTransferPath } from "@/lib/path-display";
 // ACCT-02: when the island passes `bookmarked`, the footer carries an ink
 // BookmarkButton (a client child; this file stays server-compatible). Both
 // props are optional so the plan 04-03 callers and tests need no change.
+//
+// PLAT-05 Imagery Contract (07-05): the destination photo is the DIRECT first
+// child of <Card> (the vendored img-slot selectors key on that), blur
+// placeholder, lazy, 3:2, `sizes` capped at the 768px rail (T-07-21). Never
+// eager-loaded — nothing here is above the form. An unknown imageSlug
+// returns null and the card renders without a photo (T-07-18).
 
 interface ResultCardProps {
   result: RankedResult;
@@ -72,8 +81,19 @@ export function ResultCard({
     result.effectiveCppX100.atMax ?? result.effectiveCppX100.atMin,
   );
 
+  const art = getDestinationImage(redemption.imageSlug);
+
   return (
     <Card className="text-ink [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(6)]">
+      {art && (
+        <Image
+          src={art.image}
+          alt={art.alt}
+          placeholder="blur"
+          sizes="(min-width: 768px) 768px, 100vw"
+          className="aspect-[3/2] w-full object-cover"
+        />
+      )}
       <CardHeader>
         <CardTitle className="text-ink text-heading font-semibold">
           {redemption.title}

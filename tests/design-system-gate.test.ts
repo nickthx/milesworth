@@ -147,8 +147,9 @@ describe("PLAT-02 viewport-height units never lie inside WebViews", () => {
 });
 
 describe("accent budget (UI-SPEC: terracotta only on the hero, the CTA, the bonus badge)", () => {
-  // share-link.tsx arrives in 07-05; core-experience.tsx leaves the set there.
-  const ALLOWED = ["core-experience.tsx", "result-card.tsx", "share-link.tsx"];
+  // 07-05 moved the terracotta CTA out of core-experience.tsx into
+  // share-link.tsx; the island itself now renders no accent.
+  const ALLOWED = ["result-card.tsx", "share-link.tsx"];
 
   /**
    * Lines of real code naming the accent. Block comments are stripped from the
@@ -276,5 +277,82 @@ describe("PLAT-05 type sweep + chrome (07-04)", () => {
       read("src", "components", "account", "delete-account-dialog.tsx"),
       DIALOG,
     ).toContain("text-heading");
+  });
+});
+
+describe("PLAT-02 WebView hardening (07-05)", () => {
+  // The three concrete LinkedIn-WebView failure modes from RESEARCH (Pitfalls
+  // 3, 4, 7) pinned at the source level: the share link is built, never read
+  // from the address bar (T-07-02); the viewport declares safe-area support
+  // without a zoom lock; imagery is lazy and below the form (T-07-21); the two
+  // pure helpers stay free of browser globals (T-07-03).
+  const codeFiles = sourceFiles(SRC).filter((file) => /\.tsx?$/.test(file));
+
+  const LAYOUT = "src/app/layout.tsx";
+  const SHARE_LINK = "src/components/share-link.tsx";
+  const ISLAND = "src/components/core-experience.tsx";
+  const RESULT_CARD = "src/components/result-card.tsx";
+  const ALMOST_THERE = "src/components/almost-there.tsx";
+  const IN_APP = "src/lib/in-app-browser.ts";
+  const SHARE_URL = "src/lib/share-url.ts";
+
+  it("layout.tsx exports a viewport with viewport-fit=cover and the cream theme-color", () => {
+    const source = read("src", "app", "layout.tsx");
+    expect(source, LAYOUT).toMatch(/export const viewport/);
+    expect(source, LAYOUT).toMatch(/viewportFit:\s*"cover"/);
+    expect(source, LAYOUT).toContain("themeColor: CREAM");
+  });
+
+  it("layout.tsx never locks zoom (Lighthouse meta-viewport audit)", () => {
+    expect(read("src", "app", "layout.tsx"), LAYOUT).not.toMatch(
+      /userScalable:\s*false|maximumScale:\s*1\b/,
+    );
+  });
+
+  it("no source file reads window.location.href or calls navigator.share", () => {
+    expect(codeFiles.length).toBeGreaterThan(0);
+    for (const file of codeFiles) {
+      const source = readFileSync(join(SRC, file), "utf8");
+      expect(source, file).not.toContain("window.location.href");
+      expect(source, file).not.toContain("navigator.share");
+    }
+  });
+
+  it("share-link.tsx is a client child that builds the canonical URL and shows a read-only fallback", () => {
+    expect(existsSync(join(ROOT, SHARE_LINK)), SHARE_LINK).toBe(true);
+    const source = read("src", "components", "share-link.tsx");
+    expect(source.split("\n")[0].trim(), SHARE_LINK).toBe('"use client";');
+    expect(source, SHARE_LINK).toContain("shareUrl(");
+    expect(source, SHARE_LINK).toContain("readOnly");
+  });
+
+  it("core-experience.tsx mounts <ShareLink> and no longer owns the copy handler", () => {
+    const source = read("src", "components", "core-experience.tsx");
+    expect(source, ISLAND).toContain("<ShareLink");
+    expect(source, ISLAND).not.toContain("handleCopyLink");
+  });
+
+  it("result-card.tsx leads with a lazy blur-placeholder manifest image; Almost there stays type-only", () => {
+    const card = read("src", "components", "result-card.tsx");
+    expect(card, RESULT_CARD).toContain("getDestinationImage(");
+    expect(card, RESULT_CARD).toContain('placeholder="blur"');
+    for (const token of ["preload", "priority", "unoptimized"]) {
+      expect(card, RESULT_CARD).not.toContain(token);
+    }
+    expect(
+      read("src", "components", "almost-there.tsx"),
+      ALMOST_THERE,
+    ).not.toContain("getDestinationImage");
+  });
+
+  it("the pure helpers touch no browser global", () => {
+    for (const [file, parts] of [
+      [IN_APP, ["src", "lib", "in-app-browser.ts"]],
+      [SHARE_URL, ["src", "lib", "share-url.ts"]],
+    ] as const) {
+      const source = read(...parts);
+      expect(source, file).not.toContain("navigator.");
+      expect(source, file).not.toContain("window.");
+    }
   });
 });
