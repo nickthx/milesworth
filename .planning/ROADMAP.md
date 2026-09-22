@@ -189,8 +189,8 @@ Plans:
 - [x] 07-06-PLAN.md — Dataset batch 1: drafts for thin programs + images, Nick verification checkpoint, floor raise, Neon reseed
 
 **Wave 4** *(parallel, blocked on Wave 3)*
-- [ ] 07-07-PLAN.md — Lighthouse mobile baseline on production + PSI cross-check, real-device LinkedIn WebView pass (human checkpoint)
-- [ ] 07-08-PLAN.md — Dataset batch 2 + launch-week re-check of featured 8 and the dated bonus, floor = N, reseed, Phase 2/3 bookkeeping
+- [x] 07-07-PLAN.md — Lighthouse mobile baseline on production + PSI cross-check, real-device LinkedIn WebView pass (human checkpoint)
+- [x] 07-08-PLAN.md — Dataset batch 2 + launch-week re-check of featured 8 and the dated bonus, floor = N, reseed, Phase 2/3 bookkeeping
 
 **Wave 5** *(blocked on Wave 4)*
 - [ ] 07-09-PLAN.md — Launch flip: /account noindex, robots.ts + sitemap.ts, layout noindex removed, SEO gate to error, branded icons, scaffold cleanup, README, launch-gate test
