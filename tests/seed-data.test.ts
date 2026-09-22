@@ -155,11 +155,14 @@ describe("transfer bonuses (DATA-03)", () => {
 
 describe("provenance (DATA-04 automated portion)", () => {
   // Coverage gate (activated at the plan 02-05 verification gate): Nick's
-  // 2026-09-01 pass verified 34 of 36 entries; this floor makes any
-  // verification-coverage regression fail CI.
-  it("has ≥30 verified entries covering all 8 enterable programs", () => {
+  // 2026-09-01 pass verified 34 of 36 entries. Raised from 30 to 34 by plan
+  // 07-06 (Phase 7 batch 1, 2026-09-21): D7-03 fixed the launch number at
+  // N=34 with batch1=0, and Nick kept st-regis-maldives and
+  // gritti-palace-venice as drafts, so the floor now equals the achieved
+  // verified count. Any verification-coverage regression fails CI.
+  it("has ≥34 verified entries covering all 8 enterable programs", () => {
     const verified = redemptions.filter((r) => r.verifiedAt !== null);
-    expect(verified.length).toBeGreaterThanOrEqual(30);
+    expect(verified.length).toBeGreaterThanOrEqual(34);
     for (const p of programs.filter((pr) => pr.isUserEnterable)) {
       const reachable = verified.some(
         (r) =>

@@ -90,3 +90,13 @@ Delete amex-mr→virgin-atlantic 30% and citi-ty→avianca-lifemiles 25% placeho
 3. Two slug renames: jal-first-tokyo-via-alaska → jal-business-tokyo-via-alaska; singapore-suites-frankfurt → singapore-first-777-frankfurt (update titles/cabins/hints/notes per Batch 1/2 tables).
 4. Activate the deferred ≥30-verified / all-8-programs coverage test in tests/seed-data.test.ts (34 verified expected).
 5. npm run db:seed (expect 21 programs, 46 routes, 1 bonus, 36 redemptions, 34 verified) + full gate: test, typecheck, lint, build.
+
+## Phase 7 batch 1 (2026-09-21)
+
+Plan 07-06. Ruled by Nick on 2026-09-21.
+
+- **Batch size:** batch1 = 0 per Wave 0 decision D7-03 (`N=34`, "ship the dataset as-is"; 07-01-SUMMARY). No new entries were drafted, so there are no batch-1 slugs to rule on.
+- **Held drafts:** `st-regis-maldives` and `gritti-palace-venice` — **keep as drafts** (Nick, 2026-09-21). Both stay `verifiedAt: null` with their needs-manual-check sourceNotes and remain excluded from ranking. No marriott.com figures were supplied; the dossier of what to check lives in 07-06-SUMMARY.md for a future pass.
+- **Result:** V1 = 34 verified of 36 total. The CI floor in `tests/seed-data.test.ts` is raised from 30 to 34 (floor follows the data; never above it).
+- **Reseed:** no-op — no seed row changed, so Neon (seeded at 02-05 with 36 redemptions / 34 verified) already mirrors the files; `npm run db:seed` was intentionally not run.
+- **Ruling text:** "keep as drafts" for both; "batch 1 verified" (zero entries).

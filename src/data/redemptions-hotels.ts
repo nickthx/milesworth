@@ -3,8 +3,10 @@ import type { RedemptionSeed } from "./types";
 // Hotel redemptions (DATA-01/DATA-04). 13 of 15 entries verified by Nick on
 // 2026-09-01 against live 2026 sources (ruling log: .planning/phases/
 // 02-redemption-database/02-05-corrections.md); st-regis-maldives and
-// gritti-palace-venice remain verifiedAt: null pending a manual marriott.com
-// check. Hotel points/cash values are PER NIGHT; dynamic programs (Hyatt
+// gritti-palace-venice remain verifiedAt: null — re-ruled "keep as drafts" by
+// Nick on 2026-09-21 (Phase 7 batch 1, plan 07-06; the launch dataset is the
+// 34 verified entries per D7-03). They stay invisible to the engine until a
+// manual marriott.com check. Hotel points/cash values are PER NIGHT; dynamic programs (Hyatt
 // peak/off-peak, Hilton, Marriott) use pointsMin/pointsMax ranges.
 // taxesFeesCents is 0 where award nights typically include taxes — verify per
 // property (resort/destination fees can still apply).
