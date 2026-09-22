@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -6,6 +6,7 @@ import "./globals.css";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { CREAM } from "@/lib/brand";
 import { SITE_URL } from "@/lib/site";
 
 // D-13: Fraunces chosen for its optical-size (opsz) axis — it carries the big
@@ -60,6 +61,18 @@ export const metadata: Metadata = {
     description: "See what your credit card points are actually worth.",
     images: ["/og"],
   },
+};
+
+// PLAT-02 / RESEARCH Pattern 3: viewport-fit=cover lets the `pb-safe` footer
+// clear the home indicator inside the LinkedIn WebView, and the cream
+// theme-color tints the in-app chrome to match the page. `maximumScale` and
+// `userScalable` are deliberately absent — locking zoom fails the Lighthouse
+// accessibility meta-viewport audit and is never needed here.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: CREAM,
 };
 
 export default function RootLayout({
