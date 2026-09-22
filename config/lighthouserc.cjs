@@ -8,10 +8,21 @@
 // fails Lighthouse's is-crawlable audit until the launch flip in plan 07-09, which
 // switches this assertion to "error".
 //
-// No secrets here: LHCI_BASE_URL is the only env var read (T-07-08). Reports are written
-// to .lighthouseci/, which is gitignored. `/og` is never collected — Satori rendering is
-// CPU-heavy and must not be hammered by a CI tool (T-07-07).
+// No secrets here: LHCI_BASE_URL and LHCI_CHROME_PORT are the only env vars read
+// (T-07-08). Reports are written to .lighthouseci/, which is gitignored. `/og` is never
+// collected — Satori rendering is CPU-heavy and must not be hammered by a CI tool (T-07-07).
+//
+// Windows note (07-07 baseline): chrome-launcher deletes its temp profile synchronously
+// right after taskkill; on Windows the orphaned Chrome child processes still hold the
+// profile files for a moment, so every run dies with "EPERM, Permission denied:
+// ...\Temp\lighthouse.NNNN" even though the audit completed. Work around it by attaching
+// to a Chrome you start yourself (no temp profile is created or deleted in that path):
+//   "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new \
+//     --remote-debugging-port=9222 --user-data-dir=%TEMP%\lhci-chrome-profile about:blank
+//   LHCI_CHROME_PORT=9222 npm run lighthouse
+// Lighthouse still clears the cache and origin storage at the start of every run.
 const BASE = process.env.LHCI_BASE_URL ?? "https://milesworth.vercel.app";
+const PORT = Number.parseInt(process.env.LHCI_CHROME_PORT ?? "", 10);
 
 module.exports = {
   ci: {
@@ -23,16 +34,31 @@ module.exports = {
         `${BASE}/privacy`,
       ],
       numberOfRuns: 3,
-      settings: { chromeFlags: "--headless=new" },
+      settings: {
+        chromeFlags: "--headless=new",
+        ...(Number.isInteger(PORT) && PORT > 0 ? { port: PORT } : {}),
+      },
     },
     assert: {
       assertions: {
+        // baseline 2026-09-22 (median of 3, production): / 0.77, /?ur=90000&mr=50000 0.75,
+        // /methodology 0.85, /privacy 0.83. Plan 07-07 rule: median − 0.03, floor 0.80.
+        // / and /?ur sit below the floor — LCP is the <h1> (text) but Lantern's simulated
+        // slow-4G LCP (3.4 s / 4.5 s) and TBT (420 ms / 340 ms) are dominated by the
+        // first-party Next chunks and Clerk's clerk-js/ui (~370 KB). Gap for verify-work 7.
         "categories:performance": [
           "error",
-          { minScore: 0.85, aggregationMethod: "median" },
+          { minScore: 0.8, aggregationMethod: "median" },
         ],
+        // baseline 2026-09-22: 1.00 on all four routes.
         "categories:accessibility": ["error", { minScore: 0.95 }],
-        "categories:best-practices": ["error", { minScore: 0.95 }],
+        // baseline 2026-09-22: 0.79 on all four routes (deterministic). The only failing
+        // audits are third-party-cookies + inspector-issues for Cloudflare's __cf_bm /
+        // _cfuvid on the Clerk DEVELOPMENT instance host (*.clerk.accounts.dev) — a
+        // consequence of D7-01 (b), not of anything in this repo. A Clerk production
+        // instance on a custom domain makes FAPI first-party and clears both audits.
+        // Plan floor 0.90 keeps this red until that decision is revisited.
+        "categories:best-practices": ["error", { minScore: 0.9 }],
         "categories:seo": ["warn", { minScore: 0.9 }],
       },
     },
