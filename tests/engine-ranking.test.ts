@@ -17,8 +17,23 @@ import type {
 
 const dataset: EngineDataset = { programs, routes, bonuses, redemptions };
 
+// Same real programs/routes/redemptions with NO promo rows. Tests that assert
+// base-rate partition arithmetic ("via chase-ur 1:1") use this so they do not
+// shift with whichever dated promos happen to cover the pinned asOf — plan
+// 07-08 added Chase UR → Marriott +70% (2026-09-15 → 2026-10-15) and other
+// launch-week bonuses, which legitimately change the live-dataset answer.
+const baseDataset: EngineDataset = { ...dataset, bonuses: [] };
+
 function rank(balances: Balances, asOf = "2026-09-15", options?: EngineOptions) {
   return rankRedemptions({ balances, dataset, asOf, options });
+}
+
+function rankBase(
+  balances: Balances,
+  asOf = "2026-09-15",
+  options?: EngineOptions,
+) {
+  return rankRedemptions({ balances, dataset: baseDataset, asOf, options });
 }
 
 function findIn(list: RankedResult[], slug: string): RankedResult | undefined {
@@ -59,7 +74,7 @@ describe("rankRedemptions partitioning (A2 conservative gate, 0.75 default thres
   });
 
   it("chase-ur 80,000 puts st-regis-bora-bora (100,000 Bonvoy via chase-ur 1:1) in almostThere with pointsAway exactly 20,000", () => {
-    const { bookableNow, almostThere } = rank({ "chase-ur": 80_000 });
+    const { bookableNow, almostThere } = rankBase({ "chase-ur": 80_000 });
     expect(findIn(bookableNow, "st-regis-bora-bora")).toBeUndefined();
     const result = mustFind(almostThere, "st-regis-bora-bora");
     expect(result.chosenPath.requiredSourcePoints).toBe(100_000);
@@ -69,10 +84,23 @@ describe("rankRedemptions partitioning (A2 conservative gate, 0.75 default thres
   });
 
   it("coverage exactly at the 0.75 default threshold is INCLUDED in almostThere (chase-ur 75,000 vs 100,000 needed)", () => {
-    const { almostThere } = rank({ "chase-ur": 75_000 });
+    const { almostThere } = rankBase({ "chase-ur": 75_000 });
     const result = mustFind(almostThere, "st-regis-bora-bora");
     expect(result.coverage).toBe(0.75);
     expect(result.pointsAway).toBe(25_000);
+  });
+
+  it("the live Chase UR → Marriott +70% promo (2026-09-15 → 2026-10-15) lifts st-regis-bora-bora into bookableNow for chase-ur 80,000", () => {
+    // 80,000 UR × 1.70 = 136,000 Bonvoy ≥ the 100,000 conservative need.
+    // Same balance is almostThere on the base-rate dataset (test above) and
+    // again the day before the window opens.
+    const live = rank({ "chase-ur": 80_000 });
+    const result = mustFind(live.bookableNow, "st-regis-bora-bora");
+    expect(result.coverage).toBeGreaterThanOrEqual(1);
+    expect(result.pointsAway).toBeNull();
+    const before = rank({ "chase-ur": 80_000 }, "2026-09-14");
+    expect(findIn(before.bookableNow, "st-regis-bora-bora")).toBeUndefined();
+    expect(mustFind(before.almostThere, "st-regis-bora-bora").coverage).toBe(0.8);
   });
 
   it("coverage exactly 1 lands in bookableNow (chase-ur 75,000 covers park-hyatt-tokyo's 75,000 exactly)", () => {
@@ -85,11 +113,11 @@ describe("rankRedemptions partitioning (A2 conservative gate, 0.75 default thres
   it("coverage ~0.62 is excluded by default but appears with almostThereThreshold 0.5 (ritz-carlton-kyoto)", () => {
     // ritz-carlton-kyoto needs 130,000 Bonvoy conservatively; 80,000 chase-ur
     // gives coverage ≈ 0.615 — below the 0.75 default, above the 0.5 override.
-    const byDefault = rank({ "chase-ur": 80_000 });
+    const byDefault = rankBase({ "chase-ur": 80_000 });
     expect(findIn(byDefault.bookableNow, "ritz-carlton-kyoto")).toBeUndefined();
     expect(findIn(byDefault.almostThere, "ritz-carlton-kyoto")).toBeUndefined();
 
-    const widened = rank({ "chase-ur": 80_000 }, "2026-09-15", {
+    const widened = rankBase({ "chase-ur": 80_000 }, "2026-09-15", {
       almostThereThreshold: 0.5,
     });
     const result = mustFind(widened.almostThere, "ritz-carlton-kyoto");
@@ -142,7 +170,7 @@ describe("rankRedemptions sorting", () => {
   });
 
   it("almostThere sorts by coverage descending (lufthansa 0.889 before st-regis-bora-bora 0.8; chase-ur 80,000)", () => {
-    const { almostThere } = rank({ "chase-ur": 80_000 });
+    const { almostThere } = rankBase({ "chase-ur": 80_000 });
     expect(slugsOf(almostThere)).toEqual([
       "lufthansa-first-via-aeroplan",
       "st-regis-bora-bora",
@@ -188,7 +216,8 @@ describe("rankRedemptions result fields", () => {
 
     // Redemption passthrough for Phase 4 display.
     expect(result.redemption.availabilityRating).toBe("plan_ahead");
-    expect(result.redemption.verifiedAt).toBe("2026-09-01");
+    // conrad-maldives is featured: re-confirmed in launch week (07-08).
+    expect(result.redemption.verifiedAt).toBe("2026-09-21");
     expect(result.redemption.bookingHint.length).toBeGreaterThan(0);
   });
 
