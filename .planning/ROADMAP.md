@@ -12,8 +12,8 @@ Build bottom-up in horizontal layers: stand up the production skeleton on Vercel
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation** - Next.js 16 + Neon + CI skeleton deployed to production Vercel (completed 2026-09-01)
-- [ ] **Phase 2: Redemption Database** - Schema, typed seed files, and the verified curated dataset
-- [ ] **Phase 3: Valuation & Ranking Engine** - Pure TypeScript engine: transfer paths, cpp math, wow delta, hybrid ranking
+- [x] **Phase 2: Redemption Database** - Schema, typed seed files, and the verified curated dataset (completed 2026-09-01)
+- [x] **Phase 3: Valuation & Ranking Engine** - Pure TypeScript engine: transfer paths, cpp math, wow delta, hybrid ranking (completed 2026-09-01)
 - [x] **Phase 4: Core Experience** - Balance entry → ranked results flow, shareable URLs, guest-first
 - [x] **Phase 5: Credibility Layer** - Methodology page, OG cards, v2 advisor tease (completed 2026-09-03)
 - [x] **Phase 6: Accounts & Legal** - Optional Clerk save, bookmarks, goals, privacy/deletion (completed 2026-09-15)
@@ -206,8 +206,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 (5 and 6 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 5/5 | Complete    | 2026-09-01 |
-| 2. Redemption Database | 0/TBD | Not started | - |
-| 3. Valuation & Ranking Engine | 0/TBD | Not started | - |
+| 2. Redemption Database | 5/5 | Complete    | 2026-09-01 |
+| 3. Valuation & Ranking Engine | 4/4 | Complete    | 2026-09-01 |
 | 4. Core Experience | 0/4 | Planned | - |
 | 5. Credibility Layer | 5/5 | Complete    | 2026-09-03 |
 | 6. Accounts & Legal | 7/7 | Complete    | 2026-09-15 |

@@ -26,10 +26,10 @@
 
 ### Redemption Database
 
-- [ ] **DATA-01**: Curated database of 80–120 redemptions with program, partner, transfer ratio, points cost, representative cash fare, taxes/fees, verified date, and booking notes — maintained as typed seed files in the repo
-- [ ] **DATA-02**: Transfer routes modeled structurally (ratio + bonus rule + transfer increment), correctly handling edge cases: Marriott 3:1 with 5K bonus per 60K, Amex→Hilton 1:2, and similar
-- [ ] **DATA-03**: Transfer bonuses are manual override entries with start/end dates, editable in seed data without schema changes
-- [ ] **DATA-04**: Database content is drafted collaboratively and verified by Nick before launch (verification gate — no unverified entry ships)
+- [ ] **DATA-01**: Curated database of 80–120 redemptions with program, partner, transfer ratio, points cost, representative cash fare, taxes/fees, verified date, and booking notes — maintained as typed seed files in the repo — launch size N=34 per D7-03; 80–120 target carried forward
+- [x] **DATA-02**: Transfer routes modeled structurally (ratio + bonus rule + transfer increment), correctly handling edge cases: Marriott 3:1 with 5K bonus per 60K, Amex→Hilton 1:2, and similar
+- [x] **DATA-03**: Transfer bonuses are manual override entries with start/end dates, editable in seed data without schema changes
+- [x] **DATA-04**: Database content is drafted collaboratively and verified by Nick before launch (verification gate — no unverified entry ships)
 
 ### Accounts & Legal
 

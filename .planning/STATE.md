@@ -121,7 +121,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Data verification | Plan 02-05 DATA-04 gate: verify ≥30 redemption entries (all 8 programs) + rule on A1–A4 assumptions + replace 2 placeholder promo rows. All 36 entries remain `verifiedAt: null`; ≥30-verified coverage test still dormant. Resume with `/gsd-execute-phase 2`. | deferred | 2026-09-01 |
+| Data verification | Plan 02-05 DATA-04 gate: verify ≥30 redemption entries (all 8 programs) + rule on A1–A4 assumptions + replace 2 placeholder promo rows. All 36 entries remain `verifiedAt: null`; ≥30-verified coverage test still dormant. Resume with `/gsd-execute-phase 2`. | resolved (07-08: N=34 verified) | 2026-09-01 |
 
 ## Quick Tasks Completed
 

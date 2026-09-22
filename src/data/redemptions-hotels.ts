@@ -6,7 +6,10 @@ import type { RedemptionSeed } from "./types";
 // gritti-palace-venice remain verifiedAt: null — re-ruled "keep as drafts" by
 // Nick on 2026-09-21 (Phase 7 batch 1, plan 07-06; the launch dataset is the
 // 34 verified entries per D7-03). They stay invisible to the engine until a
-// manual marriott.com check. Hotel points/cash values are PER NIGHT; dynamic programs (Hyatt
+// manual marriott.com check. The three featured entries (park-hyatt-tokyo,
+// conrad-maldives, st-regis-bora-bora) were re-confirmed unchanged by Nick in
+// launch week (2026-09-21, plan 07-08) and carry that date.
+// Hotel points/cash values are PER NIGHT; dynamic programs (Hyatt
 // peak/off-peak, Hilton, Marriott) use pointsMin/pointsMax ranges.
 // taxesFeesCents is 0 where award nights typically include taxes — verify per
 // property (resort/destination fees can still apply).
@@ -31,8 +34,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative high-season nightly rate incl. taxes.",
     sourceNote:
-      "Verified 2026-09-01 — Category 8; May 20 2026 five-tier chart tops out at 75K/night. Reopened Dec 2025 post-renovation.",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): Category 8; May 20 2026 five-tier chart tops out at 75K/night. Reopened Dec 2025 post-renovation.",
+    verifiedAt: "2026-09-21",
     imageSlug: "tokyo",
     featured: true,
     notes: null,
@@ -177,8 +180,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes/service; seaplane transfer excluded.",
     sourceNote:
-      "Verified 2026-09-01 — 160K/night observed Mar 2026 after the Nov 2025 devaluation (partially walked back).",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): 160K/night observed Mar 2026 after the Nov 2025 devaluation (partially walked back).",
+    verifiedAt: "2026-09-21",
     imageSlug: "maldives",
     featured: true,
     notes: null,
@@ -275,8 +278,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes/service.",
     sourceNote:
-      "Verified 2026-09-01 — 70K off-peak / 85K standard / 100K high season; the draft range was too high.",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): 70K off-peak / 85K standard / 100K high season; the draft range was too high.",
+    verifiedAt: "2026-09-21",
     imageSlug: "bora-bora",
     featured: true,
     notes: null,

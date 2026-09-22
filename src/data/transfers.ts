@@ -149,6 +149,15 @@ export const routes = [
 // editing one is a data-only change, never a schema change. Per Assumption A4
 // (confirmed 2026-09-01, documented in types.ts) a promo bonus multiplies the
 // base-converted amount and does not stack with structural block bonuses.
+//
+// Launch-week pass (Nick, 2026-09-21, plan 07-08): the Hilton row was
+// re-confirmed live, and the other active bonuses Nick verified on program
+// transfer pages were added — but only where both endpoints are already
+// modeled routes above. Bonuses to partners that are not modeled programs
+// (Iberia Avios, Aer Lingus Avios, JAL Mileage Bank) were deliberately NOT
+// added; see 07-08-SUMMARY.md "Bonuses not added". A bonus whose window has
+// passed is ignored by the engine automatically (activeBonusFor is
+// date-bounded), so expired rows can stay as history.
 export const bonuses = [
   {
     fromProgramSlug: "amex-mr",
@@ -157,6 +166,38 @@ export const bonuses = [
     startDate: "2026-09-01",
     endDate: "2026-10-14",
     sourceNote:
-      "Verified 2026-09-01 — Amex MR→Hilton Honors 30% transfer bonus (effective 1:2.6 with the 1:2 base rate), live Sept 1–Oct 14 2026 per Amex/point.me/AwardWallet.",
+      "Verified 2026-09-21 — re-confirmed live in launch week (first verified 2026-09-01): Amex MR→Hilton Honors 30% transfer bonus (effective 1:2.6 with the 1:2 base rate), Sept 1–Oct 14 2026 per Amex/point.me/AwardWallet.",
+  },
+  {
+    fromProgramSlug: "amex-mr",
+    toProgramSlug: "british-airways-avios",
+    bonusPercent: 30,
+    startDate: "2026-09-21",
+    endDate: "2026-09-27",
+    sourceNote: "Verified 2026-09-21 — Nick, program transfer pages",
+  },
+  {
+    fromProgramSlug: "chase-ur",
+    toProgramSlug: "air-canada-aeroplan",
+    bonusPercent: 20,
+    startDate: "2026-09-21",
+    endDate: "2026-09-30",
+    sourceNote: "Verified 2026-09-21 — Nick, program transfer pages",
+  },
+  {
+    fromProgramSlug: "chase-ur",
+    toProgramSlug: "marriott-bonvoy",
+    bonusPercent: 70,
+    startDate: "2026-09-15",
+    endDate: "2026-10-15",
+    sourceNote: "Verified 2026-09-21 — Nick, program transfer pages",
+  },
+  {
+    fromProgramSlug: "citi-ty",
+    toProgramSlug: "avianca-lifemiles",
+    bonusPercent: 25,
+    startDate: "2026-09-20",
+    endDate: "2026-10-24",
+    sourceNote: "Verified 2026-09-21 — Nick, program transfer pages",
   },
 ] satisfies TransferBonusSeed[];

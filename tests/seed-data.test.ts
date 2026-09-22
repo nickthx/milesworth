@@ -160,6 +160,8 @@ describe("provenance (DATA-04 automated portion)", () => {
   // N=34 with batch1=0, and Nick kept st-regis-maldives and
   // gritti-palace-venice as drafts, so the floor now equals the achieved
   // verified count. Any verification-coverage regression fails CI.
+  // launch floor N=34 per D7-03, verified 2026-09-21 (plan 07-08: batch2=0,
+  // the 8 featured entries re-confirmed unchanged in launch week, V2 = 34).
   it("has ≥34 verified entries covering all 8 enterable programs", () => {
     const verified = redemptions.filter((r) => r.verifiedAt !== null);
     expect(verified.length).toBeGreaterThanOrEqual(34);
