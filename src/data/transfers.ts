@@ -157,6 +157,6 @@ export const bonuses = [
     startDate: "2026-09-01",
     endDate: "2026-10-14",
     sourceNote:
-      "Verified 2026-09-01 — Amex MR→Hilton Honors 30% transfer bonus (effective 1:2.6 with the 1:2 base rate), live Sept 1–Oct 14 2026 per Amex/point.me/AwardWallet.",
+      "Verified 2026-09-21 — re-confirmed live in launch week (first verified 2026-09-01): Amex MR→Hilton Honors 30% transfer bonus (effective 1:2.6 with the 1:2 base rate), Sept 1–Oct 14 2026 per Amex/point.me/AwardWallet.",
   },
 ] satisfies TransferBonusSeed[];

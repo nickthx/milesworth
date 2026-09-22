@@ -4,7 +4,10 @@ import type { RedemptionSeed } from "./types";
 // redemptions-flights.ts to honor the 500-line rule. All entries in this file
 // were verified by Nick on 2026-09-01 against live 2026 sources (ruling log:
 // .planning/phases/02-redemption-database/02-05-corrections.md). sourceNote
-// records the finding; verifiedAt is the verification date. Dynamic pricing
+// records the finding; verifiedAt is the verification date. The two featured
+// entries (singapore-first-777-frankfurt, emirates-first-dubai) were
+// re-confirmed unchanged by Nick in launch week (2026-09-21, plan 07-08) and
+// carry that date. Dynamic pricing
 // uses ranges, money is integer cents, and the fare-benchmark convention
 // (confirmed 2026-09-01) is: discounted realistic retail for economy/business,
 // undiscounted retail for First — see types.ts.
@@ -149,8 +152,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a one-way retail first fare.",
     sourceNote:
-      "Verified 2026-09-01 — KrisFlyer 777 First JFK–FRA = 156K one-way; the A380 Suites left the route in March 2026.",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): KrisFlyer 777 First JFK–FRA = 156K one-way; the A380 Suites left the route in March 2026.",
+    verifiedAt: "2026-09-21",
     imageSlug: "frankfurt",
     featured: true,
     notes:
@@ -174,8 +177,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a one-way retail first fare; Emirates F is rarely discounted.",
     sourceNote:
-      "Verified 2026-09-01 — May 2026 Skywards devaluation: JFK–DXB First saver ~188K (zone rates from 136K); surcharges run ~$1,000 per leg.",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): May 2026 Skywards devaluation: JFK–DXB First saver ~188K (zone rates from 136K); surcharges run ~$1,000 per leg.",
+    verifiedAt: "2026-09-21",
     imageSlug: "dubai",
     featured: true,
     notes: null,

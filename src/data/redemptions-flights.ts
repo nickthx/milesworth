@@ -4,7 +4,10 @@ import type { RedemptionSeed } from "./types";
 // this file were verified by Nick on 2026-09-01 against live 2026 sources in a
 // joint research pass (see .planning/phases/02-redemption-database/
 // 02-05-corrections.md for the ruling log). sourceNote records the finding;
-// verifiedAt is the verification date. Dynamic or uncertain pricing uses
+// verifiedAt is the verification date. The three featured entries
+// (ana-business-tokyo-roundtrip, ana-first-tokyo-via-virgin,
+// jal-business-tokyo-via-alaska) were re-confirmed unchanged by Nick in launch
+// week (2026-09-21, plan 07-08) and carry that date. Dynamic or uncertain pricing uses
 // pointsMin/pointsMax ranges; pointsMax: null is reserved for genuinely fixed
 // charts. Money is integer cents. Fare-benchmark convention (confirmed
 // 2026-09-01): discounted realistic retail for economy/business, undiscounted
@@ -30,8 +33,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a discounted retail round-trip business fare, not full-flex.",
     sourceNote:
-      "Verified 2026-09-01 — ANA 'The Room' round-trip NA–Japan runs 75–90K seasonal per ANA's current chart (2026).",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): ANA 'The Room' round-trip NA–Japan runs 75–90K seasonal per ANA's current chart (2026).",
+    verifiedAt: "2026-09-21",
     imageSlug: "tokyo",
     featured: true,
     notes: "The flagship pitch redemption: ~90K Amex MR → Tokyo in business.",
@@ -54,8 +57,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a one-way retail first fare; F is rarely sold discounted.",
     sourceNote:
-      "Verified 2026-09-01 — Virgin→ANA F West Coast ~72.5K one-way (145K RT SFO ÷ 2, post-2023 chart). Caution: some sources quote 55K one-way; the conservative figure is used.",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): Virgin→ANA F West Coast ~72.5K one-way (145K RT SFO ÷ 2, post-2023 chart). Caution: some sources quote 55K one-way; the conservative figure is used.",
+    verifiedAt: "2026-09-21",
     imageSlug: "tokyo",
     featured: true,
     notes: null,
@@ -246,8 +249,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "Verified 2026-09-01 — Alaska Atmos Rewards (ex-Mileage Plan, Aug 2025 rebrand) prices JAL business at 60K one-way US–Tokyo; JAL First is NOT bookable via Alaska.",
-    verifiedAt: "2026-09-01",
+      "Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): Alaska Atmos Rewards (ex-Mileage Plan, Aug 2025 rebrand) prices JAL business at 60K one-way US–Tokyo; JAL First is NOT bookable via Alaska.",
+    verifiedAt: "2026-09-21",
     imageSlug: "tokyo",
     featured: true,
     notes:

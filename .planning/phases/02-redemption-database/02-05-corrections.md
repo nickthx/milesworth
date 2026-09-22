@@ -100,3 +100,15 @@ Plan 07-06. Ruled by Nick on 2026-09-21.
 - **Result:** V1 = 34 verified of 36 total. The CI floor in `tests/seed-data.test.ts` is raised from 30 to 34 (floor follows the data; never above it).
 - **Reseed:** no-op — no seed row changed, so Neon (seeded at 02-05 with 36 redemptions / 34 verified) already mirrors the files; `npm run db:seed` was intentionally not run.
 - **Ruling text:** "keep as drafts" for both; "batch 1 verified" (zero entries).
+
+## Phase 7 batch 2 + launch-week re-check (2026-09-21)
+
+Plan 07-08. Ruled by Nick on 2026-09-21.
+
+- **Batch size:** batch2 = 0 per D7-03 (`N=34`). No new entries drafted, no photos sourced; nothing to rule on.
+- **Featured 8 (launch-week re-check):** `ana-business-tokyo-roundtrip`, `ana-first-tokyo-via-virgin`, `jal-business-tokyo-via-alaska`, `singapore-first-777-frankfurt`, `emirates-first-dubai`, `park-hyatt-tokyo`, `conrad-maldives`, `st-regis-bora-bora` — **all unchanged** (every points range, cash benchmark and taxes/fees figure kept as stored). `verifiedAt` re-stamped `2026-09-01` → `2026-09-21` on all eight; each sourceNote now opens `Verified 2026-09-21 — re-confirmed unchanged in launch week (first verified 2026-09-01): …`. The 26 non-featured verified entries keep `2026-09-01`.
+- **Amex MR → Hilton Honors +30% (2026-09-01 → 2026-10-14):** **live as stored**. Dates and percent unchanged; sourceNote re-stamped to `Verified 2026-09-21 — re-confirmed live in launch week (first verified 2026-09-01): …`.
+- **Scope addition (Nick-directed):** Nick verified the full set of active transfer bonuses on program transfer pages on 2026-09-21 and asked for all of them in `src/data/transfers.ts`. Added only where both the source program and the partner already exist as a modeled route (no programs invented): Amex MR → British Airways Avios +30% (2026-09-21 → 2026-09-27); Chase UR → Air Canada Aeroplan +20% (2026-09-21 → 2026-09-30); Chase UR → Marriott Bonvoy +70% (2026-09-15 → 2026-10-15); Citi ThankYou → Avianca LifeMiles +25% (2026-09-20 → 2026-10-24). Not added because the partner is not a modeled program/route: Amex MR → Iberia Avios +30%, Amex MR → Aer Lingus Avios +30% (no Iberia / Aer Lingus programs; Avios is modeled only as `british-airways-avios`), Capital One → JAL Mileage Bank +30% and Citi ThankYou → JAL Mileage Bank +30% (no `jal-mileage-bank` program; JAL is reachable only as an Alaska partner award). Where Nick's list gave only an end date the startDate is 2026-09-21.
+- **Result:** V2 = 34 verified of 36 total = N. CI floor stays at 34 (already there since 07-06). Bonus rows 1 → 5.
+- **Reseed:** required (verifiedAt/sourceNote rows and the bonuses table changed) — run in the main checkout with `DATABASE_URL` after merge; expected post-seed counts 36 redemptions / 34 verified / 5 bonuses.
+- **Ruling text:** "ALL UNCHANGED" (featured 8, re-stamp 2026-09-21); "LIVE as stored" (Hilton bonus); "N = 34 stands"; "batch 2 verified".
