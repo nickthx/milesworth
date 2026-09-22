@@ -185,8 +185,8 @@ Plans:
 - [x] 07-04-PLAN.md — Type sweep (text-heading everywhere, no text-lg), masthead, 44px nav links, safe-area footer + credits, no target=_blank, not-found + account loading
 
 **Wave 3** *(parallel, blocked on Wave 2)*
-- [ ] 07-05-PLAN.md — Island hardening: canonical share URL + clipboard fallback (share-link.tsx), in-app-browser helper, viewport export, card + teaser imagery, PLAT-02 gate pins
-- [ ] 07-06-PLAN.md — Dataset batch 1: drafts for thin programs + images, Nick verification checkpoint, floor raise, Neon reseed
+- [x] 07-05-PLAN.md — Island hardening: canonical share URL + clipboard fallback (share-link.tsx), in-app-browser helper, viewport export, card + teaser imagery, PLAT-02 gate pins
+- [x] 07-06-PLAN.md — Dataset batch 1: drafts for thin programs + images, Nick verification checkpoint, floor raise, Neon reseed
 
 **Wave 4** *(parallel, blocked on Wave 3)*
 - [ ] 07-07-PLAN.md — Lighthouse mobile baseline on production + PSI cross-check, real-device LinkedIn WebView pass (human checkpoint)
