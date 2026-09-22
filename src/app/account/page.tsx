@@ -31,6 +31,10 @@ import type { AccountSnapshot } from "@/lib/server/account-data";
 export const metadata: Metadata = {
   title: "Your account — Milesworth",
   description: "Your saved balances, bookmarks, and travel goals.",
+  // 06-REVIEW IN-05: route-level noindex — must exist before layout.tsx drops
+  // the site-wide one (07-09 Task 2). robots.ts disallows /account as well
+  // (T-07-06); this directive is the belt to that suspender.
+  robots: { index: false, follow: false },
 };
 
 const SECTION_CLASS = "flex flex-col gap-6";
