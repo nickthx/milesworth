@@ -34,7 +34,11 @@ interface ShareLinkProps {
 
 export function ShareLink({ balances, children }: ShareLinkProps) {
   const [copied, setCopied] = useState(false);
-  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
+  // 07-REVIEW WR-02: only the field's visibility is state. Its value is
+  // derived from the current `balances` prop on every render, so a balance
+  // edit made after the fallback appears can never leave a stale URL in
+  // "Your link" — the T-07-02 invariant holds for both copy paths.
+  const [showFallback, setShowFallback] = useState(false);
   const fallbackRef = useRef<HTMLInputElement>(null);
 
   // 2 s "Link copied" swap, then back to the idle label.
@@ -47,9 +51,9 @@ export function ShareLink({ balances, children }: ShareLinkProps) {
   // UI-SPEC Accessibility: focus moves to the fallback field once it appears
   // (effects only — never during render).
   useEffect(() => {
-    if (fallbackUrl === null) return;
+    if (!showFallback) return;
     fallbackRef.current?.focus();
-  }, [fallbackUrl]);
+  }, [showFallback]);
 
   async function handleCopyLink() {
     try {
@@ -58,8 +62,7 @@ export function ShareLink({ balances, children }: ShareLinkProps) {
     } catch {
       // Pitfall 3: clipboard absent/denied — show the same canonical link in
       // the field instead of nothing (shareUrl is pure; the call is cheap).
-      const url = shareUrl(balances);
-      setFallbackUrl(url);
+      setShowFallback(true);
     }
   }
 
@@ -79,7 +82,7 @@ export function ShareLink({ balances, children }: ShareLinkProps) {
         {/* ACCT-01: explicit save beside the share CTA — ink/outline. */}
         {children}
       </div>
-      {fallbackUrl !== null && (
+      {showFallback && (
         <div className="flex flex-col gap-2">
           <Label
             htmlFor="share-link-fallback"
@@ -91,7 +94,7 @@ export function ShareLink({ balances, children }: ShareLinkProps) {
             id="share-link-fallback"
             ref={fallbackRef}
             readOnly
-            value={fallbackUrl}
+            value={shareUrl(balances)}
             onFocus={(e) => e.currentTarget.select()}
             className="text-ink h-11 bg-white text-base"
           />
