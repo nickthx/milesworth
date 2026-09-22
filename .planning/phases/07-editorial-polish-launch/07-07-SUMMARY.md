@@ -18,9 +18,9 @@ requires:
 provides:
   - "First Phase 7 production deploy: origin/main 30428ed -> 9bee33a (47 commits) -> 4d058c4"
   - "Lighthouse mobile baseline (median of 3) for the four launch routes on production"
-  - "config/lighthouserc.cjs thresholds tuned to the plan floors with inline baseline comments"
+  - "config/lighthouserc.cjs: perf error at the 0.80 floor, a11y error 0.95, best-practices WARN 0.90 (Clerk dev-instance cookies), SEO warn 0.90 — all with dated baseline comments"
   - "LHCI_CHROME_PORT override: Windows-safe way to run npm run lighthouse"
-  - "Device-pass findings (Task 2 — pending Nick's reply)"
+  - "Device-pass evidence for PLAT-02: Nick approved the full flow inside LinkedIn's iOS in-app browser"
 affects: [07-09, 07-10, verify-work 7]
 
 # Tech tracking
@@ -37,30 +37,32 @@ key-files:
     - config/lighthouserc.cjs
 
 key-decisions:
-  - "Performance minScore 0.85 -> 0.80 (plan floor); best-practices 0.95 -> 0.90 (plan floor); accessibility 0.95 and SEO warn unchanged"
+  - "Performance minScore 0.85 -> 0.80 (plan floor, error); accessibility 0.95 unchanged; SEO warn unchanged"
+  - "Best-practices demoted to warn at 0.90 (orchestrator ruling 2026-09-22): the 0.79 baseline is entirely Cloudflare cookies from the Clerk dev-instance host under D7-01 (b); 07-10 / the Clerk production instance re-promotes it to error"
   - "No site-header.tsx change: TBT is not the dominant metric and Clerk's blocking share (140 ms of 420 ms) cannot lift / from 0.77 to 0.80 on its own"
-  - "Best-practices 0.79 is structural (Cloudflare cookies on the Clerk dev-instance host, D7-01 b) — recorded as a gap, not patched"
+  - "Performance on / (0.77) and /?ur (0.75) stays an open gap under the 0.80 error floor — recorded for 07-10 and verify-work 7, not lowered below the floor"
 
 patterns-established:
   - "Deployment readiness probes after a push: poll viewport-fit=cover every 15 s, then Photos via once"
+  - "Lighthouse gate categories blocked by an accepted external decision (SEO by the noindex flip, best-practices by the Clerk dev instance) run as warn with a dated comment naming the plan that re-promotes them"
 
-requirements-completed: []
+requirements-completed: [PLAT-02]
 
 # Metrics
-duration: "~25 min executor time to the Task 2 checkpoint"
-completed: "2026-09-22 (Task 1); Task 2 pending"
+duration: "~35 min executor time across two sessions (device pass by Nick excluded)"
+completed: "2026-09-22"
 ---
 
 # Phase 07 Plan 07: Lighthouse Gate + LinkedIn In-App-Browser Device Pass Summary
 
-**Waves 1–3 are live on https://milesworth.vercel.app (fast-forward push 30428ed..9bee33a, both readiness probes = 1), the first production Lighthouse mobile baseline is recorded (a11y 1.00 everywhere; perf 0.77 / 0.75 / 0.85 / 0.83; best-practices 0.79 everywhere because of Clerk dev-instance cookies), thresholds sit at the plan floors, and the real-device LinkedIn pass is awaiting Nick.**
+**Waves 1–3 are live on https://milesworth.vercel.app (fast-forward push 30428ed..9bee33a, both readiness probes = 1); the first production Lighthouse mobile baseline is recorded (a11y 1.00 everywhere; perf 0.77 / 0.75 / 0.85 / 0.83; best-practices 0.79 everywhere from Clerk dev-instance cookies, now a warn); and Nick approved the full flow on a real iPhone inside LinkedIn's in-app browser.**
 
 ## Status
 
 | Task | State |
 |------|-------|
-| 1 — deploy, probes, LHCI baseline, thresholds, PSI | Complete — commit `4d058c4` (config), pushed |
-| 2 — real-device pass inside the LinkedIn app (iOS) | **Checkpoint pending** — see `## Device-pass findings` |
+| 1 — deploy, probes, LHCI baseline, thresholds, PSI | Complete — commits `4d058c4` (pushed), `2b51c2f` (best-practices warn, local) |
+| 2 — real-device pass inside the LinkedIn app (iOS) | Complete — approved by Nick, see `## Device-pass findings` |
 
 ## Task 1 — Deploy by push
 
@@ -103,16 +105,18 @@ Representative-run metrics:
 - TBT 420 ms: `bootup-time` top entries are a first-party chunk (`3n7zfry7sjo-4.js`, 573 ms scripting), the document itself, the Turbopack runtime (230 ms), then `clerk.browser.js` (110 ms) and `@clerk/ui` vendors (69 ms). `third-party-summary` attributes 140 ms of blocking time to accounts.dev. `unused-javascript` names `@clerk/ui` ui-common (86 KB wasted) and vendors (63 KB) first.
 - Plan branch (c) (defer `UserButton` in `site-header.tsx`) was **not** applied: TBT is not the dominant metric (LCP and TBT contribute similarly), the `@clerk/ui` chunks load after the observed LCP, and removing Clerk's entire 140 ms blocking share would lift `/` by roughly two points — not enough to reach the 0.80 floor, and `/?ur` (0.75) even less so. `site-header.tsx` is unchanged.
 
-**Threshold changes (plan rule d: median − 0.03, floors 0.80 / 0.90), commit `4d058c4`:**
+**Threshold changes (plan rule d: median − 0.03, floors 0.80 / 0.90), commits `4d058c4` and `2b51c2f`:**
 
 | Assertion | Before | After | Baseline | Result under the new threshold |
 |-----------|--------|-------|----------|--------------------------------|
-| `categories:performance` (error, median) | 0.85 | **0.80** (floor) | 0.77 / 0.75 / 0.85 / 0.83 | `/methodology`, `/privacy` pass; `/`, `/?ur` still fail |
+| `categories:performance` (error, median) | 0.85 | **0.80** (floor) | 0.77 / 0.75 / 0.85 / 0.83 | `/methodology`, `/privacy` pass; `/`, `/?ur` still fail (open gap) |
 | `categories:accessibility` (error) | 0.95 | 0.95 (unchanged) | 1.00 ×4 | pass |
-| `categories:best-practices` (error) | 0.95 | **0.90** (floor) | 0.79 ×4 | still fails on all four |
-| `categories:seo` (warn) | 0.90 | 0.90 (unchanged) | 0.63 / 0.63 / 0.60 / 0.60 | warns (expected) |
+| `categories:best-practices` | error 0.95 | **warn 0.90** (`2b51c2f`, orchestrator ruling) | 0.79 ×4 | warns on all four (expected until the Clerk production instance) |
+| `categories:seo` (warn) | 0.90 | 0.90 (unchanged) | 0.63 / 0.63 / 0.60 / 0.60 | warns (expected until 07-09) |
 
-`npx lhci assert` against the saved runs with the tuned config: 6 failures (2 perf, 4 best-practices), 4 SEO warnings. **`npm run lighthouse` therefore does not exit 0** — the two remaining failures are at the plan's own floors and cannot be closed inside `config/lighthouserc.cjs` / `site-header.tsx`. Both are recorded as gaps for `/gsd:verify-work 7` (see `## Gaps`). The config still has SEO at `warn`, 4 URLs, none `/og`, `aggregationMethod: "median"`; the plan's config-shape verify (`node -e …minScore<0.8…`) exits 0.
+`4d058c4` first set best-practices to the 0.90 error floor (still red on all four routes). The orchestrator then ruled to demote it to `warn` with the same treatment as SEO — the cause is external (third-party cookies from the Clerk development instance `renewing-seal-8576.clerk.accounts.dev` under D7-01 (b)) and 07-10, or whichever plan lands a Clerk production instance, re-promotes it to `error` at 0.90. The dated comment in the config says so.
+
+`npx lhci assert` against the saved runs with the final config: **2 failures (perf on `/` and `/?ur`), 8 warnings (best-practices ×4, SEO ×4)**. `npm run lighthouse` therefore still exits 1 on the two perf routes — that is the deliberate open gap for 07-10 / verify-work 7, kept at the plan's floor rather than lowered below it. The config still has SEO at `warn`, 4 URLs, none `/og`, `aggregationMethod: "median"`; the plan's config-shape verify (`node -e …minScore<0.8…`) exits 0.
 
 **PSI cross-check:** not available — both calls to `pagespeedonline/v5/runPagespeed` (for `/` and `/?ur=90000&mr=50000`) returned `Quota exceeded … 'Queries per day' … pagespeedonline.googleapis.com` for the anonymous shared key. PSI is advisory; re-run tomorrow or with a personal API key. (PSI runs the same Lantern simulation, so the simulated-LCP finding above would reproduce there.)
 
@@ -124,14 +128,19 @@ Representative-run metrics:
 - Fix applied: optional `LHCI_CHROME_PORT` → `collect.settings.port`. With a port set, `ChromeLauncher.launch({port})` finds the running instance and returns before `prepare()` creates a temp dir, so nothing is deleted at exit. Procedure (documented in the config header): start `chrome.exe --headless=new --remote-debugging-port=9222 --user-data-dir=%TEMP%\lhci-chrome-profile about:blank`, then `LHCI_CHROME_PORT=9222 npm run lighthouse`. Lighthouse still clears cache and origin storage per run. Unset → behaviour identical to before (macOS / CI unaffected). Helper Chrome was stopped after the run.
 - No packages installed, no global Chrome changes (checkpoint_note honoured).
 
-## Gaps (for /gsd:verify-work 7)
+## Gaps (for 07-10 and /gsd:verify-work 7)
 
-1. **Performance on `/` (0.77) and `/?ur=90000&mr=50000` (0.75) is below the 0.80 floor.** LCP is text, fonts are preloaded; the simulated LCP is byte-volume driven (Next chunks + Clerk ~370 KB). Candidate remediations are outside this plan's file list: trimming the first-party client bundle on `/` (the 121 KB + 65 KB chunks), deferring Clerk's prebuilt UI until interaction, or accepting a lower floor for the dynamic route as a documented decision.
-2. **Best-practices 0.79 on all routes** is a D7-01 (b) consequence (Cloudflare cookies from `*.clerk.accounts.dev`). Options: (a) keep D7-01 (b) and demote `categories:best-practices` to `warn` the way SEO is handled, with a comment pointing at the Clerk production-instance cut-over; (b) revisit D7-01 (custom domain + Clerk production instance) which also removes the "Development mode" badge. Nick's call — not made here.
+1. **Performance on `/` (0.77) and `/?ur=90000&mr=50000` (0.75) is below the 0.80 error floor — OPEN.** LCP is text, fonts are preloaded; the simulated LCP is byte-volume driven (Next chunks + Clerk ~370 KB). Candidate remediations are outside this plan's file list: trimming the first-party client bundle on `/` (the 121 KB + 65 KB chunks), deferring Clerk's prebuilt UI until interaction, or accepting a lower floor for the dynamic route as a documented decision. 07-10 re-runs the gate post-flip and reads this baseline.
+2. **Best-practices 0.79 on all routes — RESOLVED as a warn (`2b51c2f`)** per the orchestrator ruling; the underlying cause (D7-01 (b), Clerk dev-instance cookies) remains and is re-promoted to `error` by 07-10 or the plan that lands a Clerk production instance on a custom domain (which also removes the "Development mode" badge).
+3. **Device pass step 5 partially captured:** Nick saw the expected canonical URL (`…?ur=90000&mr=50000&hyatt=40000`) on the phone — the T-07-02 real-world signal that the share URL carries only the short keys (no `__clerk_db_jwt` / `utm_`) — but did not say whether the label flipped to "Link copied" or the "Your link" fallback field appeared. Copy-path unknown; verify-work may ask for that one detail.
 
 ## Device-pass findings
 
-**Pending.** Task 2 is a blocking `checkpoint:human-verify`; the executor stopped after committing Task 1 and returned the ten-step phone script to the orchestrator. Nick's reply (approved — copied / approved — fallback, or the failing step numbers with what he saw) is to be recorded here verbatim by the continuation executor, including the step-5 path and the pasted URL's parameter keys.
+Nick: approved (2026-09-21, iPhone, LinkedIn in-app browser). No failing steps reported. Copy-path (copied vs. fallback) and pasted URL not captured.
+
+Step 5: Nick reports the expected canonical URL (…&hyatt=40000) was shown on the phone; copied-vs-fallback path not explicitly distinguished.
+
+Relayed by the orchestrator as a one-word "approved" against the ten-step script (DM unfurl → in-app open → landing without zoom/horizontal scroll → photo cards → live re-rank → Copy my link → email-code sign-in in the Clerk modal → Save → /account → footer on all four routes + Clerk DPA link → /nowhere 404), followed by the step-5 addendum "it showed the url you said in step 4" (`https://milesworth.vercel.app/?ur=90000&mr=50000&hyatt=40000`). Android skipped per `android_device: no`. A visible URL is consistent with the read-only fallback field but is not proof of it; whether the label flipped to "Link copied" was not stated and is not inferred here (see Gaps 3).
 
 ## Deviations from Plan
 
@@ -143,10 +152,17 @@ Representative-run metrics:
 - **Files modified:** `config/lighthouserc.cjs`
 - **Commit:** `4d058c4`
 
+**2. [Orchestrator ruling] Best-practices assertion demoted from `error` to `warn`**
+- **Found during:** Task 1 threshold tuning (baseline 0.79 < 0.90 floor on every route, cause external)
+- **Fix:** `categories:best-practices: ["warn", { minScore: 0.9 }]` with a dated comment naming the cause and the re-promotion owner (07-10 / Clerk production instance). Raised at the Task 2 checkpoint as a Rule 4 decision; ruled by the orchestrator, not improvised.
+- **Files modified:** `config/lighthouserc.cjs`
+- **Commit:** `2b51c2f`
+
 ### Plan assumptions that did not hold
 
-- The plan expected `npm run lighthouse` to be brought to exit 0 by lowering thresholds to the floors. The floors (0.80 perf, 0.90 best-practices) are above the measured medians on `/`, `/?ur` (perf) and all routes (best-practices), and the two permitted remediation files cannot change either outcome. Thresholds were set to the floors as instructed and the residual failures are logged as gaps rather than papered over with sub-floor values.
+- The plan expected `npm run lighthouse` to be brought to exit 0 by lowering thresholds to the floors. The floors (0.80 perf, 0.90 best-practices) are above the measured medians on `/`, `/?ur` (perf) and all routes (best-practices), and the two permitted remediation files cannot change either outcome. Performance was set to the floor as instructed and left red as an open gap; best-practices was demoted to warn by ruling.
 - PSI second opinion unavailable (daily anonymous quota exhausted).
+- Nick's device-pass reply did not include the step-5 path or URL the plan's acceptance criteria asked for; recorded as given, not filled in.
 
 ## Threat Flags
 
@@ -162,4 +178,14 @@ None.
 |------|--------|------|-------|
 | 1 (deploy) | — | push `30428ed..9bee33a` | (no new commit; deploy of waves 1–3) |
 | 1 (thresholds + Windows override) | `4d058c4` | chore | `config/lighthouserc.cjs` (pushed `9bee33a..4d058c4`) |
-| 2 | pending | — | — |
+| 1 (draft SUMMARY at the checkpoint) | `151f070` | docs | `07-07-SUMMARY.md` |
+| 1 (best-practices → warn, ruling) | `2b51c2f` | chore | `config/lighthouserc.cjs` (local; orchestrator pushes with tracking) |
+| 2 (device pass) | no code commit — findings recorded in this SUMMARY's completion commit | docs | `07-07-SUMMARY.md` |
+
+## Self-Check: PASSED
+
+- FOUND: `config/lighthouserc.cjs` (perf error 0.80 median, a11y error 0.95, best-practices warn 0.90, SEO warn 0.90, 4 URLs, none `/og`)
+- FOUND: `.planning/phases/07-editorial-polish-launch/07-07-SUMMARY.md`
+- FOUND commits: `4d058c4`, `151f070`, `2b51c2f`
+- `git rev-parse origin/main` included `4d058c4` after the second push; production probes re-checked at 1 / 1
+- `src/components/site-header.tsx` unchanged; STATE.md / ROADMAP.md untouched; no env values in any output; `.lighthouseci/` untracked (gitignored)
