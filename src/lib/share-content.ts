@@ -4,7 +4,6 @@
 import { bonuses, programs, redemptions, routes } from "@/data";
 import { rankRedemptions } from "@/engine";
 import type { Balances, RankedResult } from "@/engine";
-import { balancesToParams } from "@/lib/balance-params";
 // "@/engine" also exports a cashOutValueCents(spentSourcePoints, program);
 // the framing copy uses the @/lib/format variant (points, rawBaseline) —
 // the same one result-card.tsx renders — so share text and card agree.
@@ -14,6 +13,7 @@ import {
   formatPoints,
   heroDelta,
 } from "@/lib/format";
+import { toShareQuery } from "@/lib/share-url";
 
 // The single source of share text (PLAT-03): generateMetadata (title,
 // description, og:image alt) and the /og ImageResponse (eyebrow, headline,
@@ -55,20 +55,9 @@ const CLOSING_LINE = "See every redemption these balances unlock.";
 /** The engine dataset, assembled once (core-experience.tsx pattern). */
 const dataset = { programs, routes, bonuses, redemptions };
 
-/**
- * Canonical query string: balancesToParams iterates PARAM_KEY_BY_SLUG order
- * and emits null for absent/invalid balances, so filtering nulls and feeding
- * URLSearchParams yields the locked `ur=…&mr=…` ordering regardless of the
- * caller's object key order.
- */
-function toQueryString(balances: Balances): string {
-  const present = Object.entries(balancesToParams(balances)).filter(
-    (entry): entry is [string, number] => entry[1] !== null,
-  );
-  return new URLSearchParams(
-    present.map(([key, value]) => [key, String(value)]),
-  ).toString();
-}
+// The canonical `ur=…&mr=…` query comes from src/lib/share-url.ts — the
+// single implementation shared with the "Copy my link" CTA (PLAT-02,
+// PATTERNS "Single source of truth for share query").
 
 function baselineContent(queryString: string): ShareContent {
   return {
@@ -156,7 +145,7 @@ export function buildShareContent(input: {
   asOf: string;
 }): ShareContent {
   const { balances, asOf } = input;
-  const queryString = toQueryString(balances);
+  const queryString = toShareQuery(balances);
 
   let top: RankedResult | undefined;
   try {
