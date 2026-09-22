@@ -54,11 +54,14 @@ module.exports = {
         "categories:accessibility": ["error", { minScore: 0.95 }],
         // baseline 2026-09-22: 0.79 on all four routes (deterministic). The only failing
         // audits are third-party-cookies + inspector-issues for Cloudflare's __cf_bm /
-        // _cfuvid on the Clerk DEVELOPMENT instance host (*.clerk.accounts.dev) — a
-        // consequence of D7-01 (b), not of anything in this repo. A Clerk production
-        // instance on a custom domain makes FAPI first-party and clears both audits.
-        // Plan floor 0.90 keeps this red until that decision is revisited.
-        "categories:best-practices": ["error", { minScore: 0.9 }],
+        // _cfuvid set by the Clerk DEVELOPMENT instance host
+        // renewing-seal-8576.clerk.accounts.dev — a consequence of D7-01 (b), not of
+        // anything in this repo. A Clerk production instance on a custom domain makes
+        // FAPI first-party and clears both audits.
+        // WARN, not error (orchestrator ruling 2026-09-22, same treatment as SEO): plan
+        // 07-10, or whichever plan lands the Clerk production instance, re-promotes this
+        // to "error" at minScore 0.90.
+        "categories:best-practices": ["warn", { minScore: 0.9 }],
         "categories:seo": ["warn", { minScore: 0.9 }],
       },
     },
