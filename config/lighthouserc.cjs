@@ -45,9 +45,12 @@ module.exports = {
         // /methodology 0.85, /privacy 0.83. Plan 07-07 rule: median − 0.03, floor 0.80.
         // / and /?ur sit below the floor — LCP is the <h1> (text) but Lantern's simulated
         // slow-4G LCP (3.4 s / 4.5 s) and TBT (420 ms / 340 ms) are dominated by the
-        // first-party Next chunks and Clerk's clerk-js/ui (~370 KB). Gap for verify-work 7.
+        // first-party Next chunks and Clerk's clerk-js/ui (~370 KB).
+        // 2026-09-22: demoted to warn — Nick accepted 0.77 (/) and 0.75 (/?ur) for
+        // launch (07-VERIFICATION override); a11y/SEO 1.00 carry the gate. v1.1 bundle
+        // work (trim first-party chunks, defer Clerk UI) re-promotes this to error.
         "categories:performance": [
-          "error",
+          "warn",
           { minScore: 0.8, aggregationMethod: "median" },
         ],
         // baseline 2026-09-22: 1.00 on all four routes.
