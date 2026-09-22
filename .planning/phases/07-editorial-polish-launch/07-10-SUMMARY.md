@@ -19,7 +19,8 @@ provides:
   - "Production deploy of the launch flip: origin/main 4d058c4 -> 5e7f692 (16 commits, fast-forward), Vercel dpl_HQ6S4DzqoZ6zjE4WznQzuuQsEQJ6 built from 5e7f692"
   - "Live probe transcript for every launch surface on https://milesworth.vercel.app (robots, sitemap, noindex placement, icons, og:url host, /og CDN HIT, 404, credits, viewport-fit)"
   - "Final Lighthouse mobile table on production with SEO asserted as error: SEO 1.00 x4, a11y 1.00 x4"
-  - "Launch URL: https://milesworth.vercel.app/?ur=90000&mr=50000"
+  - "Launch URL: https://milesworth.vercel.app/?ur=90000&mr=50000 — Post Inspector re-scrape + iPhone LinkedIn in-app open verified by Nick (launch verified)"
+  - "Launch findings for gap closure: /og text soft in LinkedIn's preview (v1.1: render at 2x); CI typecheck fixed by orchestrator in 7740879"
 affects: [verify-work 7]
 
 # Tech tracking
@@ -44,7 +45,7 @@ patterns-established: []
 requirements-completed: [PLAT-02, PLAT-05]
 
 # Metrics
-duration: "~7 min executor time to the Task 3 checkpoint (Nick's Post Inspector + phone pass excluded)"
+duration: "~9 min executor time across two sessions (Nick's Post Inspector + phone pass excluded)"
 completed: "2026-09-22"
 ---
 
@@ -58,7 +59,7 @@ completed: "2026-09-22"
 |------|-------|
 | 1 — Domain + Clerk production cut-over | **Skipped per D7-01: b** (07-01-SUMMARY: `D7-01: b`, `domain: none`). No pause; proceeded straight to Task 2. |
 | 2 — Deploy, probes, final Lighthouse gate | Complete (no code changes; results below) |
-| 3 — LinkedIn Post Inspector re-scrape + final phone open | **Awaiting Nick** (checkpoint:human-verify) |
+| 3 — LinkedIn Post Inspector re-scrape + final phone open | Complete — Nick replied **"launch verified"** (see `## Task 3`) |
 
 **Launch URL:** `https://milesworth.vercel.app/?ur=90000&mr=50000` (baseline card: `https://milesworth.vercel.app/`)
 
@@ -118,11 +119,18 @@ Representative-run metrics: `/` LCP 3.4 s (sim), TBT 520 ms, CLS 0.012; `/?ur` L
 
 ## Task 3 — Post Inspector result and phone open
 
-_Pending Nick's checkpoint reply. To be recorded here: Post Inspector title / description / image OK / reported URL for `HOST/?ur=90000&mr=50000` and `HOST/`; phone unfurl + in-app open + favicon observation._
+Nick's reply (2026-09-22, relayed by the orchestrator): **"launch verified"**.
+
+- **Post Inspector** (`https://www.linkedin.com/post-inspector/`) re-scrape of `https://milesworth.vercel.app/?ur=90000&mr=50000`: card shown with the title, the OG image, and the reported URL on `milesworth.vercel.app` — fresh scrape, not the pre-launch cached card (T-07-27 mitigated).
+- **Phone** (iPhone, LinkedIn app): the DM unfurl matched the Post Inspector card and tapping it opened the page correctly in the in-app browser.
+- "Development mode" badge check not applicable (D7-01 = b, Clerk development instance retained by decision).
+
+**Launch URL:** `https://milesworth.vercel.app/?ur=90000&mr=50000`
 
 ## Launch findings
 
-_None recorded yet — filled from Nick's reply if anything differs._
+1. **OG card text looks soft in LinkedIn's preview (not a blocker).** Nick, verbatim: "the text is very blurry" in the Post Inspector preview. The orchestrator fetched the live `/og?ur=90000&mr=50000` PNG: 1200x630, 76,279 B, crisp at native resolution — the softness is LinkedIn's downscaled/recompressed preview, not the rendered image. **v1.1 candidate:** render `/og` at 2x (2400x1260) so LinkedIn's re-encode starts from more pixels (watch Satori CPU cost per T-07-07 and the 24h CDN cache when flipping it).
+2. **CI was red on the three pushes since 07-03 merged (orchestrator action, already fixed).** The `typecheck` job ran on a fresh checkout without the gitignored `next-env.d.ts`, so the `*.webp` static imports had no module types. Fixed in commit `7740879` (`npx next typegen` before `npm run typecheck` in `.github/workflows/ci.yml`); GitHub Actions run 35676575750 is green. Production / Vercel builds were never affected (Vercel runs `next build`, which generates the file itself).
 
 ## Deviations from Plan
 
@@ -142,7 +150,7 @@ _None recorded yet — filled from Nick's reply if anything differs._
 
 ## Threat Flags
 
-None — no new endpoints, auth paths, or schema. T-07-08 / T-07-28 held (env names never listed, values never printed; API JSON filtered to git fields). T-07-13 held (og:url and Sitemap on HOST). T-07-06 held (noindex only on /account; /account absent from sitemap). T-07-07 held (`/og` probed with 3 requests, CDN HIT proven; never collected by LHCI). T-07-27 pending Task 3.
+None — no new endpoints, auth paths, or schema. T-07-08 / T-07-28 held (env names never listed, values never printed; API JSON filtered to git fields). T-07-13 held (og:url and Sitemap on HOST). T-07-06 held (noindex only on /account; /account absent from sitemap). T-07-07 held (`/og` probed with 3 requests, CDN HIT proven; never collected by LHCI). T-07-27 held (Post Inspector forced re-scrape showed the fresh card).
 
 ## Known Stubs
 
@@ -153,11 +161,12 @@ None.
 | Task | Commit | Type | Files |
 |------|--------|------|-------|
 | 2 (deploy) | — | push `4d058c4..5e7f692` | (no new commit; deploy of 07-07 finalization + 07-08 + 07-09) |
-| 2 (draft SUMMARY at the checkpoint) | see git log | docs | `07-10-SUMMARY.md` |
-| 3 | pending | docs | `07-10-SUMMARY.md` (Post Inspector result) |
+| 2 (draft SUMMARY at the checkpoint) | `8a41b8c` | docs | `07-10-SUMMARY.md` |
+| — (orchestrator, between checkpoint and finalization) | `7740879` | ci | `.github/workflows/ci.yml` (typegen before typecheck; not part of this plan's file list) |
+| 3 (launch verified, findings, completion) | this file's completion commit | docs | `07-10-SUMMARY.md` |
 
-## Self-Check: PENDING (Task 3 checkpoint open)
+## Self-Check: PASSED
 
-- FOUND: `.planning/phases/07-editorial-polish-launch/07-10-SUMMARY.md`
-- `git rev-parse origin/main` = `5e7f692` = deployed SHA; tracked tree clean at push time
-- STATE.md / ROADMAP.md untouched; `.vscode/` never staged; no env values in any output; `.lighthouseci/` gitignored
+- FOUND: `.planning/phases/07-editorial-polish-launch/07-10-SUMMARY.md` (contains `robots.txt`, the probe transcript, the Lighthouse table, the Post Inspector result, and the launch URL)
+- FOUND commits: `5e7f692` (deployed SHA = `git rev-parse origin/main` at push time = Vercel `meta.githubCommitSha`), `8a41b8c` (draft SUMMARY), `7740879` (orchestrator CI fix, on top of `8a41b8c`)
+- STATE.md / ROADMAP.md untouched by this executor; `.vscode/` never staged; no env values in any output; `.lighthouseci/` gitignored; no force-push, reset, rebase, or stash
