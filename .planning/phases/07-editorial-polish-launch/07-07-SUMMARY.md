@@ -132,15 +132,15 @@ Representative-run metrics:
 
 1. **Performance on `/` (0.77) and `/?ur=90000&mr=50000` (0.75) is below the 0.80 error floor — OPEN.** LCP is text, fonts are preloaded; the simulated LCP is byte-volume driven (Next chunks + Clerk ~370 KB). Candidate remediations are outside this plan's file list: trimming the first-party client bundle on `/` (the 121 KB + 65 KB chunks), deferring Clerk's prebuilt UI until interaction, or accepting a lower floor for the dynamic route as a documented decision. 07-10 re-runs the gate post-flip and reads this baseline.
 2. **Best-practices 0.79 on all routes — RESOLVED as a warn (`2b51c2f`)** per the orchestrator ruling; the underlying cause (D7-01 (b), Clerk dev-instance cookies) remains and is re-promoted to `error` by 07-10 or the plan that lands a Clerk production instance on a custom domain (which also removes the "Development mode" badge).
-3. **Device pass step 5 partially captured:** Nick saw the expected canonical URL (`…?ur=90000&mr=50000&hyatt=40000`) on the phone — the T-07-02 real-world signal that the share URL carries only the short keys (no `__clerk_db_jwt` / `utm_`) — but did not say whether the label flipped to "Link copied" or the "Your link" fallback field appeared. Copy-path unknown; verify-work may ask for that one detail.
+3. **Device pass step 5 not captured:** Nick confirmed step 4 (the address bar gained `&hyatt=40000` on edit) but did not report what "Copy my link" did — neither the copied-vs-fallback path nor a pasted URL. The T-07-02 real-world check that the *shared* URL carries only the short keys (no `__clerk_db_jwt` / `utm_`) therefore rests on 07-05's unit tests and gate rather than on a phone observation. Verify-work may ask Nick for that one step.
 
 ## Device-pass findings
 
 Nick: approved (2026-09-21, iPhone, LinkedIn in-app browser). No failing steps reported. Copy-path (copied vs. fallback) and pasted URL not captured.
 
-Step 5: Nick reports the expected canonical URL (…&hyatt=40000) was shown on the phone; copied-vs-fallback path not explicitly distinguished.
+Step 4 confirmed: editing Hyatt to 40,000 updated the URL to include &hyatt=40000. Step 5 (Copy my link: copied vs. fallback path, pasted URL) not reported; Nick approved overall.
 
-Relayed by the orchestrator as a one-word "approved" against the ten-step script (DM unfurl → in-app open → landing without zoom/horizontal scroll → photo cards → live re-rank → Copy my link → email-code sign-in in the Clerk modal → Save → /account → footer on all four routes + Clerk DPA link → /nowhere 404), followed by the step-5 addendum "it showed the url you said in step 4" (`https://milesworth.vercel.app/?ur=90000&mr=50000&hyatt=40000`). Android skipped per `android_device: no`. A visible URL is consistent with the read-only fallback field but is not proof of it; whether the label flipped to "Link copied" was not stated and is not inferred here (see Gaps 3).
+Relayed by the orchestrator as a one-word "approved" against the ten-step script (DM unfurl → in-app open → landing without zoom/horizontal scroll → photo cards → live re-rank → Copy my link → email-code sign-in in the Clerk modal → Save → /account → footer on all four routes + Clerk DPA link → /nowhere 404). A first addendum ("it showed the url you said in step 4") was initially read as a step-5 observation; Nick then clarified "when i added 40000 hyatt points it added that to the url" — that is step 4 (the address bar updating live), not the Copy my link result. Nothing about what "Copy my link" did (label swap vs. fallback field, pasted URL) has been reported and nothing is inferred here (see Gaps 3). Android skipped per `android_device: no`.
 
 ## Deviations from Plan
 
