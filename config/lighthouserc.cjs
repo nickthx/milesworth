@@ -4,9 +4,9 @@
 // Location: lives in config/ and is passed with `--config` (see the `lighthouse` npm
 // script). RuFlo rule: no new config files at the repo root.
 //
-// SEO sequencing: `categories:seo` is a WARNING, not an error. The layout-level noindex
-// fails Lighthouse's is-crawlable audit until the launch flip in plan 07-09, which
-// switches this assertion to "error".
+// SEO sequencing: `categories:seo` was a WARNING while the layout-level noindex failed
+// Lighthouse's is-crawlable audit (07-07 baseline 0.60–0.63). Plan 07-09 removed that
+// directive and promoted the assertion to "error"; 07-10 re-measures against production.
 //
 // No secrets here: LHCI_BASE_URL and LHCI_CHROME_PORT are the only env vars read
 // (T-07-08). Reports are written to .lighthouseci/, which is gitignored. `/og` is never
@@ -62,7 +62,10 @@ module.exports = {
         // 07-10, or whichever plan lands the Clerk production instance, re-promotes this
         // to "error" at minScore 0.90.
         "categories:best-practices": ["warn", { minScore: 0.9 }],
-        "categories:seo": ["warn", { minScore: 0.9 }],
+        // error since the 07-09 launch flip: the site-wide noindex is gone, so the
+        // is-crawlable audit passes on all four collected routes (/account is never
+        // collected and keeps its route-level noindex).
+        "categories:seo": ["error", { minScore: 0.9 }],
       },
     },
     upload: { target: "filesystem", outputDir: ".lighthouseci" },

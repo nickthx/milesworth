@@ -92,4 +92,27 @@ describe("metadata routes stay static: no clock, no auth, no database (T-07-26)"
   }
 });
 
-// part 2 (07-09 Task 2) and part 3 (Task 3) below
+// part 2 (07-09 Task 2): the site-wide gate is lifted and SEO is a hard assertion
+
+describe("the site-wide noindex is gone and SEO is a hard Lighthouse assertion (07-09 Task 2)", () => {
+  const LAYOUT = "src/app/layout.tsx";
+  const LHCI = "config/lighthouserc.cjs";
+
+  it("layout.tsx carries no robots index: false directive", () => {
+    expect(read("src", "app", "layout.tsx"), LAYOUT).not.toMatch(
+      /index:\s*false/,
+    );
+  });
+
+  it("layout.tsx never mentions noindex, even in a comment", () => {
+    expect(read("src", "app", "layout.tsx"), LAYOUT).not.toMatch(/noindex/i);
+  });
+
+  it("lighthouserc.cjs asserts categories:seo at the error level", () => {
+    expect(read("config", "lighthouserc.cjs"), LHCI).toMatch(
+      /"categories:seo":\s*\[\s*"error"/,
+    );
+  });
+});
+
+// part 3 (07-09 Task 3) below

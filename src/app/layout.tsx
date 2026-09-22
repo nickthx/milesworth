@@ -32,11 +32,13 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Milesworth",
   description: "See what your credit card points are actually worth.",
-  // D-03 noindex gate: keep the pre-launch site out of search indexes.
-  // Removing this is an explicit Phase 7 launch-gate task.
-  robots: { index: false, follow: false },
+  // No site-wide robots directive: the D-03 pre-launch gate was lifted in
+  // 07-09 (PLAT-02 launch flip). The one private route, /account, carries
+  // its own directive in src/app/account/page.tsx and is disallowed in
+  // src/app/robots.ts; tests/launch-gate.test.ts pins all three.
   // Relative openGraph/twitter image URLs resolve against this (Pitfall 2 —
-  // omitting it is a build error). Note: unfurl crawlers ignore noindex (A5).
+  // omitting it is a build error). Note: unfurl crawlers ignore robots
+  // directives (A5).
   metadataBase: new URL(SITE_URL),
   // Site-wide social defaults; `/` overrides these per share link with
   // complete openGraph/twitter objects (nested objects are shallow-replaced,
