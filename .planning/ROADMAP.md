@@ -193,7 +193,7 @@ Plans:
 - [x] 07-08-PLAN.md — Dataset batch 2 + launch-week re-check of featured 8 and the dated bonus, floor = N, reseed, Phase 2/3 bookkeeping
 
 **Wave 5** *(blocked on Wave 4)*
-- [ ] 07-09-PLAN.md — Launch flip: /account noindex, robots.ts + sitemap.ts, layout noindex removed, SEO gate to error, branded icons, scaffold cleanup, README, launch-gate test
+- [x] 07-09-PLAN.md — Launch flip: /account noindex, robots.ts + sitemap.ts, layout noindex removed, SEO gate to error, branded icons, scaffold cleanup, README, launch-gate test
 
 **Wave 6** *(blocked on Wave 5)*
 - [ ] 07-10-PLAN.md — Launch deploy: optional domain/Clerk production cut-over, live probes, final Lighthouse run, LinkedIn Post Inspector re-scrape + phone open
