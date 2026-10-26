@@ -56,7 +56,8 @@ export const routes = [
     ratioDenominator: 1,
     incrementPoints: 1000,
     transferTimeDays: 0,
-    notes: "1 MR → 2 Hilton points. Verified 2026-09-01 — the 1:2 rate is current.",
+    notes:
+      "1 MR → 2 Hilton points. Verified 2026-09-01 — the 1:2 rate is current.",
   }),
   route("amex-mr", "ana-mileage-club", {
     transferTimeDays: 2,
@@ -84,7 +85,8 @@ export const routes = [
   route("capital-one", "emirates-skywards", { transferTimeDays: 0 }),
   route("capital-one", "virgin-atlantic", {
     transferTimeDays: 1,
-    notes: "Capital One reaches Virgin Atlantic via Virgin Red; 1:1 effective rate.",
+    notes:
+      "Capital One reaches Virgin Atlantic via Virgin Red; 1:1 effective rate.",
   }),
 
   // ── Citi ThankYou Points ─────────────────────────────────────────────────
@@ -109,7 +111,8 @@ export const routes = [
   route("bilt", "world-of-hyatt", { transferTimeDays: 0 }),
   route("bilt", "united-mileageplus", {
     transferTimeDays: 0,
-    notes: "Verified 2026-09-01 — United remains a Bilt partner post-Bilt 2.0. 1:1.",
+    notes:
+      "Verified 2026-09-01 — United remains a Bilt partner post-Bilt 2.0. 1:1.",
   }),
   route("bilt", "air-france-flying-blue", { transferTimeDays: 0 }),
   route("bilt", "air-canada-aeroplan", { transferTimeDays: 0 }),
@@ -199,5 +202,35 @@ export const bonuses = [
     startDate: "2026-09-20",
     endDate: "2026-10-24",
     sourceNote: "Verified 2026-09-21 — Nick, program transfer pages",
+  },
+  // Pre-post refresh (Nick, 2026-10-26): every launch-week bonus above had
+  // expired. Only bonuses between already-modeled routes were added; start
+  // dates are the verification date because the tracker lists end dates only.
+  {
+    fromProgramSlug: "amex-mr",
+    toProgramSlug: "air-france-flying-blue",
+    bonusPercent: 25,
+    startDate: "2026-10-26",
+    endDate: "2026-10-31",
+    sourceNote:
+      "Verified 2026-10-26 — Nick, via AwardWallet transfer-bonus tracker",
+  },
+  {
+    fromProgramSlug: "capital-one",
+    toProgramSlug: "british-airways-avios",
+    bonusPercent: 20,
+    startDate: "2026-10-26",
+    endDate: "2026-10-31",
+    sourceNote:
+      "Verified 2026-10-26 — Nick, via AwardWallet transfer-bonus tracker",
+  },
+  {
+    fromProgramSlug: "citi-ty",
+    toProgramSlug: "cathay-asia-miles",
+    bonusPercent: 10,
+    startDate: "2026-10-26",
+    endDate: "2026-11-14",
+    sourceNote:
+      "Verified 2026-10-26 — Nick, via AwardWallet transfer-bonus tracker",
   },
 ] satisfies TransferBonusSeed[];
