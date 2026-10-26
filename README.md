@@ -6,6 +6,12 @@ Milesworth shows people with credit-card points — but no idea what to do with 
 
 https://milesworth.vercel.app
 
+<p>
+  <img src="docs/screenshots/results.png" alt="A Milesworth result card: ANA First Class to Tokyo via Virgin Atlantic, $12,870 of value versus about $730 cashing out" width="300">
+  &nbsp;
+  <img src="docs/screenshots/methodology.png" alt="The Milesworth methodology page, explaining how each valuation is calculated" width="300">
+</p>
+
 ## What it does
 
 - Enter balances for up to eight programs: Amex Membership Rewards, Chase Ultimate Rewards, Capital One Miles, Citi ThankYou Points, Bilt Rewards, World of Hyatt, Hilton Honors, and Marriott Bonvoy. Nothing is required except one non-zero balance.
