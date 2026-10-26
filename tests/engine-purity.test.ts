@@ -7,9 +7,9 @@
 // commit with no test change.
 //
 // Note: `import type ... from "../data/types"` is the ONE permitted external
-// specifier. It is safe despite src/data/types.ts importing zod at runtime,
-// because type-only imports erase at compile time — nothing of zod reaches
-// the engine's emitted code.
+// specifier. src/data/types.ts is itself type-only (the Zod schemas live in
+// src/data/schemas.ts), and type-only imports erase at compile time — nothing
+// of zod reaches the engine's emitted code.
 //
 // node:fs / node:path are permitted in tests (this file), never in the engine.
 import { readFileSync, readdirSync } from "node:fs";

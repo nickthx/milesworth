@@ -3,17 +3,14 @@
 // database credentials by design, and none are needed here.
 import { describe, expect, it } from "vitest";
 
+import { bonuses, programs, redemptions, routes } from "../src/data";
 import {
-  bonuses,
   programSeedSchema,
-  programs,
   redemptionSeedSchema,
-  redemptions,
-  routes,
   transferBonusSeedSchema,
   transferRouteSeedSchema,
   validateDataset,
-} from "../src/data";
+} from "../src/data/schemas";
 
 // Canonical user-enterable currencies (balance-entry form surface).
 const ENTERABLE_SLUGS = [

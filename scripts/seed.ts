@@ -34,8 +34,8 @@ async function main(): Promise<void> {
     routes,
     bonuses,
     redemptions: redemptionData,
-    validateDataset,
   } = await import("../src/data");
+  const { validateDataset } = await import("../src/data/schemas");
 
   validateDataset({
     programs: programData,
@@ -87,6 +87,9 @@ async function main(): Promise<void> {
 
 main().catch((err: unknown) => {
   // Print only the error message — never the connection string.
-  console.error("seed failed:", err instanceof Error ? err.message : String(err));
+  console.error(
+    "seed failed:",
+    err instanceof Error ? err.message : String(err),
+  );
   process.exit(1);
 });
