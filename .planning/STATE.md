@@ -134,3 +134,4 @@ Items acknowledged and carried forward from previous milestone close:
 Last session: 2026-09-16T19:52:34.289Z
 Stopped at: Phase 7 UI-SPEC approved
 Resume file: .planning/phases/07-editorial-polish-launch/07-UI-SPEC.md
+| 2026-10-26 | fast | Add 3 live transfer bonuses (Amex→Flying Blue, Cap One→BA, Citi→Cathay) | ✅ |

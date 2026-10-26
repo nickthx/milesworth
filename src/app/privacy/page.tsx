@@ -122,8 +122,11 @@ export default function PrivacyPage() {
         <section className={SECTION_CLASS}>
           <h2 className={HEADING_CLASS}>What we never do</h2>
           <p className={BODY_CLASS}>
-            We run no analytics and no advertising trackers. We do not sell your
-            data and do not share it with anyone for marketing.
+            We run no advertising trackers. We count page views with Vercel Web
+            Analytics, which is cookieless and anonymous and never records your
+            balances: the part of the address that holds them is removed before
+            anything is sent. We do not sell your data and do not share it with
+            anyone for marketing.
           </p>
           <p className={BODY_CLASS}>
             We never ask for your card numbers, your program logins, or any
@@ -151,8 +154,8 @@ export default function PrivacyPage() {
             Once you sign in, Clerk also sets <code>__session</code> and a{" "}
             <code>__refresh_…</code> cookie so it is still you on the next
             request and your session can be renewed without signing in again.
-            Nothing optional is set and we run no analytics, so there is no
-            cookie banner to click through.
+            Nothing optional is set and our analytics use no cookies, so there
+            is no cookie banner to click through.
           </p>
         </section>
 

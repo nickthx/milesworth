@@ -4,6 +4,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
+import { PageAnalytics } from "@/components/page-analytics";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CREAM } from "@/lib/brand";
@@ -104,6 +105,9 @@ export default function RootLayout({
             <SiteFooter />
           </NuqsAdapter>
         </ClerkProvider>
+        {/* Cookieless page-view counts; query strings (balances) are
+            stripped before sending — see page-analytics.tsx. */}
+        <PageAnalytics />
       </body>
     </html>
   );
